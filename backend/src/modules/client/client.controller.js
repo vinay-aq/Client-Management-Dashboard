@@ -1,4 +1,4 @@
-const {fetchClients} = require("./client.service.js")
+const {fetchClients, fetchClientsById,createClientService } = require("./client.service.js")
 
 async function getClients(req, res, next) {
   let page = Math.max(req.query.page || 1,1);
@@ -12,6 +12,30 @@ async function getClients(req, res, next) {
   }
 }
 
+async function getClientById(req, res, next) {
+  
+  try {
+    const {id} = req.params;
+    const data = await fetchClientsById(id);
+    res.status(200).json({success: true, ...data})
+  } catch (err) {
+    next(err)
+  }
+  
+}
+
+async function createClient(req, res, next) {
+  try {
+    const client = await createClientService(req.body);
+    res.status(201).json({...client})
+  } catch(err) {
+    next(err)
+  }
+
+}
+
 module.exports = {
   getClients,
+  getClientById, 
+  createClient
 };
