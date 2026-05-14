@@ -1,11 +1,12 @@
-const {fetchClients, fetchClientsById,createClientService } = require("./client.service.js")
+const {fetchClients, fetchClientsById,createClientService, updateClientService,deleteClientService } = require("./client.service.js")
 
 async function getClients(req, res, next) {
   let page = Math.max(req.query.page || 1,1);
   let limit = Math.min(req.query.limit || 10, 50);
+  let search = req.query.search || "";
 
   try {
-    let data = await fetchClients(page, limit);
+    let data = await fetchClients(page, limit,search);
     res.status(200).json({success: true,...data });
   } catch (err) {
     next(err);
@@ -34,8 +35,30 @@ async function createClient(req, res, next) {
 
 }
 
+async function updateClient(req, res, next) {
+  const {id} = req.params;
+   try {
+    const client = await updateClientService(id,req.body);
+    res.status(200).json({...client})
+  } catch(err) {
+    next(err)
+  }
+}
+
+async function deleteClient(req, res, next) {
+  const {id} = req.params;
+  try {
+    await deleteClientService(id);
+    res.status(200).json({success: true, message: "Client deleted successfully"})
+  } catch(err) {
+    next(err)
+  }
+}
+
 module.exports = {
   getClients,
   getClientById, 
-  createClient
+  createClient,
+  updateClient,
+  deleteClient
 };

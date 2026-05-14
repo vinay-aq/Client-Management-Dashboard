@@ -3,24 +3,34 @@ import {
   fetchClientsAPI,
   fetchClientByIdAPI,
   createClientAPI,
+  updateClientAPI,
+  deleteClientAPI,
 } from "./clientAPI";
 
 const initialState = {
   clients: [],
-  loading: false,
   error: null,
   page: 1,
   limit: 10,
   totalPages: 0,
   totalCount: 0,
   selectedClient: null,
+  isFetchingClients: false,
+
+  isFetchingClientDetails: false,
+
+  isCreatingClient: false,
+
+  isUpdatingClient: false,
+
+  isDeletingClient: false,
 };
 
 export const fetchClients = createAsyncThunk(
   "/clients/fetchClients",
-  async ({ page, limit }, thunkAPI) => {
+  async ({ page, limit, search }, thunkAPI) => {
     try {
-      const res = await fetchClientsAPI(page, limit);
+      const res = await fetchClientsAPI(page, limit, search);
       return res;
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -58,16 +68,44 @@ export const createClient = createAsyncThunk(
   },
 );
 
+export const updateClient = createAsyncThunk(
+  "/clients/updateClient",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const res = await updateClientAPI(id, data);
+      return res;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to updated client",
+      );
+    }
+  },
+);
+
+export const deleteClient = createAsyncThunk(
+  "/clients/deleleClient",
+  async (id, thunkAPI) => {
+    try {
+      const res = await deleteClientAPI(id);
+      return res;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to delete client",
+      );
+    }
+  },
+);
+
 const clientsSlice = createSlice({
   name: "clients",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchClients.pending, (state) => {
-      state.loading = true;
+      state.isFetchingClients = true;
     });
     builder.addCase(fetchClients.fulfilled, (state, action) => {
-      state.loading = false;
+      state.isFetchingClients = false;
       state.clients = action.payload.clients;
       state.page = action.payload.page;
       state.limit = action.payload.limit;
@@ -75,31 +113,56 @@ const clientsSlice = createSlice({
       state.totalCount = action.payload.totalCount;
     });
     builder.addCase(fetchClients.rejected, (state, action) => {
-      state.loading = false;
+      state.isFetchingClients = false;
       state.error = action.payload;
     });
 
     builder.addCase(fetchClientById.pending, (state) => {
-      state.loading = true;
+      state.isFetchingClientDetails = true;
     });
     builder.addCase(fetchClientById.fulfilled, (state, action) => {
-      state.loading = false;
+      state.isFetchingClientDetails = false;
       state.selectedClient = action.payload;
     });
     builder.addCase(fetchClientById.rejected, (state, action) => {
-      state.loading = false;
+      state.isFetchingClientDetails = false;
       state.error = action.payload;
     });
 
     builder.addCase(createClient.pending, (state) => {
-      state.loading = true;
+      state.isCreatingClient = true;
       state.error = null;
     });
     builder.addCase(createClient.fulfilled, (state, action) => {
-      state.loading = false;
+      state.isCreatingClient = false;
     });
     builder.addCase(createClient.rejected, (state, action) => {
-      state.loading = false;
+      state.isCreatingClient = false;
+      state.error = action.payload;
+    });
+
+    builder.addCase(updateClient.pending, (state) => {
+      state.isUpdatingClient = true;
+      state.error = null;
+    });
+    builder.addCase(updateClient.fulfilled, (state, action) => {
+      state.isUpdatingClient = false;
+    });
+    builder.addCase(updateClient.rejected, (state, action) => {
+      state.isUpdatingClient = false;
+      state.error = action.payload;
+    });
+
+    builder.addCase(deleteClient.pending, (state) => {
+      state.isDeletingClient = true;
+      state.error = null;
+    });
+    builder.addCase(deleteClient.fulfilled, (state, action) => {
+      state.isDeletingClient = false;
+      state.selectedClient = null;
+    });
+    builder.addCase(deleteClient.rejected, (state, action) => {
+      state.isDeletingClient = false;
       state.error = action.payload;
     });
   },

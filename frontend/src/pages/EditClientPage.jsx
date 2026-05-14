@@ -1,26 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createClient } from "../features/clients/clientSlice";
+import { updateClient, fetchClientById } from "../features/clients/clientSlice";
+import { useParams } from "react-router-dom";
 
-function CreateClientPage() {
+function EditClientPage() {
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isCreatingClient, error } = useSelector((state) => state.clients);
+  const { isUpdatingClient, error, selectedClient } = useSelector(
+    (state) => state.clients,
+  );
+  const { id } = useParams();
+
+  useEffect(() => {
+    dispatch(fetchClientById(id));
+  }, []);
+
+  useEffect(() => {
+    setFormData({
+      name: selectedClient.name || "",
+      email: selectedClient.email || "",
+      phone: selectedClient.phone || "",
+      company: selectedClient.company || "",
+      status: selectedClient.status || "",
+    });
+  }, [selectedClient]);
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    const result = await dispatch(createClient(formData));
-    if (createClient.fulfilled.match(result)) {
-      navigate("/clients");
+    const result = await dispatch(updateClient({ id, data: formData }));
+    if (updateClient.fulfilled.match(result)) {
+      navigate(`/clients/${id}`);
     }
   }
 
   function handleChange(e) {
-    setFormData(prev => ({...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
   return (
@@ -75,8 +92,8 @@ function CreateClientPage() {
       </select>
       <br />
       <br />
-      <button type="submit" disabled={isCreatingClient}>
-        {isCreatingClient ? "loading..." : "Create Client"}{" "}
+      <button type="submit" disabled={isUpdatingClient}>
+        {isUpdatingClient ? "loading..." : "Update Client"}{" "}
       </button>
 
       {error && <p>{error}</p>}
@@ -84,4 +101,4 @@ function CreateClientPage() {
   );
 }
 
-export default CreateClientPage;
+export default EditClientPage;

@@ -4,6 +4,7 @@ import ClientsPage from "../pages/ClientsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import ClientDetailsPage from "../pages/ClientDetailsPage";
 import CreateClientPage from "../pages/CreateClientPage";
+import EditClientPage from "../pages/EditClientPage";
 
 function AppRoutes() {
   return (
@@ -34,6 +35,17 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/clients/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditClientPage />
+            </ProtectedRoute>
+          }
+        />
+
+        
       </Routes>
     </BrowserRouter>
   );

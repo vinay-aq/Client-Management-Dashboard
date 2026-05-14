@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchClients } from "../features/clients/clientSlice";
 import ClientsTable from "../components/clients/ClientsTable";
@@ -11,34 +11,65 @@ function ClientsPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 10;
+  const search = searchParams.get("search") || "";
 
-  const page = Number(searchParams.get("page")) || 1; 
-  const limit = Number(searchParams.get("limit")) || 10 ; 
+  const [searchInput, setSearchInput] = useState(search);
 
-
-  const { clients, loading, error, totalCount} = useSelector(
+  const { clients, isFetchingClients, error, totalCount } = useSelector(
     (state) => state.clients,
   );
 
   useEffect(() => {
-    dispatch(fetchClients({ page, limit }));
-  }, [dispatch, page, limit]);
+    const timer = setTimeout(() => {
+      setSearchParams({
+        page: 1,
+        limit: limit,
+        search: searchInput,
+      });
+    }, 500);
 
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchInput]);
+
+  useEffect(() => {
+    dispatch(fetchClients({ page, limit, search }));
+  }, [dispatch, page, limit, search]);
 
   function handlePageChange(newpage) {
-    setSearchParams({page: newpage, limit})
+    setSearchParams({ page: newpage, limit, search });
   }
-
-  if (loading) return <h2>Loading...</h2>;
-  if (error) return <h2>{error}</h2>;
 
   return (
     <div>
       <h2>Clients</h2>
-      <button onClick={() => navigate("/clients/createClient")}>Create Client</button>
-      <ClientsTable clients={clients} />
-      <Pagination page={page} limit={limit}  totalCount={totalCount} onPageChange={handlePageChange}/>
+      <input
+        type="text"
+        placeholder="search name or email"
+        onChange={(e) => setSearchInput(e.target.value)}
+        value={searchInput}
+      />
+      <button onClick={() => navigate("/clients/createClient")}>
+        Create Client
+      </button>
+      {error && <h2>{error}</h2>}
 
+      {isFetchingClients ? (
+        <h2>Loading...</h2>
+      ) : (
+        <>
+          <ClientsTable clients={clients} />
+          <Pagination
+            page={page}
+            limit={limit}
+            totalCount={totalCount}
+            onPageChange={handlePageChange}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -1,41 +1,59 @@
 const clientModel = require("./client.model");
 const AppError = require("../../utils/AppError");
-async function fetchClients(page, limit) {
-  let skip = limit * (page - 1);
-  try {
-    let [clients, totalCount] = await Promise.all([
-      clientModel
-        .find()
-        .select("_id name email phone company status createdAt")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit),
-      clientModel.countDocuments(),
-    ]);
+const mongoose = require("mongoose");
+async function fetchClients(page, limit, search) {
+  console.log("search", search)
+  let query = {};
 
-    return {
-      page,
-      limit,
-      skip,
-      totalCount,
-      totalPages: Math.ceil(totalCount / limit),
-      clients,
-    };
-  } catch (err) {
-    throw new AppError("Failed to fetch clients", 400);
+  if(search) {
+    query = {
+      $or: [
+        {
+          name: {
+            $regex: search,
+            $options: "i"
+          }
+        },{
+          email: {
+            $regex: search,
+            $options: "i"
+          }
+        }
+      ]
+    }
   }
+
+  console.log("query: ", query)
+
+
+  let skip = limit * (page - 1);
+
+  let [clients, totalCount] = await Promise.all([
+    clientModel
+      .find(query)
+      .select("_id name email phone company status createdAt")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    clientModel.countDocuments(query),
+  ]);
+
+  return {
+    page,
+    limit,
+    skip,
+    totalCount,
+    totalPages: Math.ceil(totalCount / limit),
+    clients,
+  };
 }
 
 async function fetchClientsById(id) {
-  try {
-    let clientData = await clientModel.findById(id).lean();
-    if (!clientData) {
-      throw new AppError("Client not found", 404);
-    }
-    return clientData;
-  } catch (err) {
-    throw new AppError("Failed to fetch client", 400);
+  let clientData = await clientModel.findById(id).lean();
+  if (!clientData) {
+    throw new AppError("Client not found", 404);
   }
+  return clientData;
 }
 
 async function createClientService(data) {
@@ -47,22 +65,78 @@ async function createClientService(data) {
   if (existingClient.length) {
     throw new AppError("Email already in use", 409);
   }
-  try {
-    const newClient = await clientModel.create({
-      name,
-      email,
-      phone,
-      company,
-      status,
-    });
-    return newClient.toObject();
-  } catch (err) {
-    throw new AppError(err, 500);
+
+  const newClient = await clientModel.create({
+    name,
+    email,
+    phone,
+    company,
+    status,
+  });
+  return newClient.toObject();
+}
+
+async function updateClientService(id, data) {
+  const { name, email, phone, company, status } = data;
+  const isValid = mongoose.Types.ObjectId.isValid(id);
+  if (!isValid) {
+    throw new AppError("Id is invalid", 400);
   }
+
+  if (!id) {
+    throw new AppError("Id is missing", 400);
+  }
+
+  if (!name || !company || !phone || !email || !status) {
+    throw new AppError("One or more fields are missing", 400);
+  }
+
+  const client = await clientModel.findById(id);
+
+  if (!client) {
+    throw new AppError("Client does not exist", 404);
+  }
+
+  const duplicateClient = await clientModel.findOne({
+    email: email,
+    _id: { $ne: id },
+  });
+  if (duplicateClient) {
+    throw new AppError("Email already exist", 400);
+  }
+
+  const updatedClient = await clientModel.findByIdAndUpdate(
+    id,
+    { name, email, phone, company, status },
+    { new: true },
+  );
+  return updatedClient.toObject();
+}
+
+async function deleteClientService(id) {
+  const isValid = mongoose.Types.ObjectId.isValid(id);
+  if (!isValid) {
+    throw new AppError("Id is invalid", 400);
+  }
+
+  if (!id) {
+    throw new AppError("Id is missing", 400);
+  }
+
+  const client = await clientModel.findById(id);
+
+  if (!client) {
+    throw new AppError("Client does not exist", 404);
+  }
+
+  await clientModel.findByIdAndDelete(id);
+  return;
 }
 
 module.exports = {
   fetchClients,
   fetchClientsById,
   createClientService,
+  updateClientService,
+  deleteClientService,
 };
