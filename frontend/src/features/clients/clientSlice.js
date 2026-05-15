@@ -30,9 +30,12 @@ export const fetchClients = createAsyncThunk(
   "/clients/fetchClients",
   async ({ page, limit, search }, thunkAPI) => {
     try {
-      const res = await fetchClientsAPI(page, limit, search);
+      const res = await fetchClientsAPI(page, limit, search, thunkAPI.signal);
       return res;
     } catch (err) {
+      if(err.name=== "CanceledError") {
+        return ;
+      }
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to fetch clients",
       );

@@ -1,30 +1,47 @@
 const clientModel = require("./client.model");
 const AppError = require("../../utils/AppError");
 const mongoose = require("mongoose");
+
+async function testAbortController(search) {
+  let delay = 1000;
+
+  if (search.length === 1) {
+    delay = 4000;
+  }
+
+  if (search.length === 2) {
+    delay = 2000;
+  }
+
+  if (search.length >= 3) {
+    delay = 500;
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, delay));
+}
 async function fetchClients(page, limit, search) {
-  console.log("search", search)
+  // await testAbortController(search);
+
   let query = {};
 
-  if(search) {
+  if (search) {
     query = {
       $or: [
         {
           name: {
             $regex: search,
-            $options: "i"
-          }
-        },{
+            $options: "i",
+          },
+        },
+        {
           email: {
             $regex: search,
-            $options: "i"
-          }
-        }
-      ]
-    }
+            $options: "i",
+          },
+        },
+      ],
+    };
   }
-
-  console.log("query: ", query)
-
 
   let skip = limit * (page - 1);
 

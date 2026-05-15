@@ -1,8 +1,9 @@
 import axiosInstance from "../../services/axiosInstance";
 
-export const fetchClientsAPI = async (page, limit, search) => {
+export const fetchClientsAPI = async (page, limit, search, signal) => {
   const res = await axiosInstance.get(
     `/api/clients?page=${page}&limit=${limit}&search=${search}`,
+    { signal },
   );
   return res.data;
 };
@@ -26,4 +27,3 @@ export const deleteClientAPI = async (id) => {
   const res = await axiosInstance.delete(`/api/clients/${id}`);
   return res.data;
 };
-

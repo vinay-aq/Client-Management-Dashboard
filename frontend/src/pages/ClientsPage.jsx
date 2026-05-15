@@ -36,7 +36,11 @@ function ClientsPage() {
   }, [searchInput]);
 
   useEffect(() => {
-    dispatch(fetchClients({ page, limit, search }));
+    const promise = dispatch(fetchClients({ page, limit, search }));
+
+    return () => {
+      promise.abort();
+    };
   }, [dispatch, page, limit, search]);
 
   function handlePageChange(newpage) {
