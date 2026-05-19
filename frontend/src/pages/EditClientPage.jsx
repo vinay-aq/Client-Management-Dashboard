@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { updateClient, fetchClientById } from "../features/clients/clientSlice";
 import { useParams } from "react-router-dom";
+import ClientForm from "../components/clients/ClientForm";
 
 function EditClientPage() {
   const [formData, setFormData] = useState({});
@@ -28,76 +29,23 @@ function EditClientPage() {
     });
   }, [selectedClient]);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleUpdateClient(formData) {
     const result = await dispatch(updateClient({ id, data: formData }));
     if (updateClient.fulfilled.match(result)) {
       navigate(`/clients/${id}`);
     }
   }
-
-  function handleChange(e) {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
-
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Create Client</h2>
-      <label>Name: </label>
-      <input
-        type="text"
-        name="name"
-        onChange={handleChange}
-        value={formData.name}
-        placeholder="Name"
+    <>
+      <ClientForm
+        initialFormData={formData}
+        loading={isUpdatingClient}
+        submitLabel="Update Client"
+        onSubmit={handleUpdateClient}
       />
-      <br />
-      <br />
-      <label>Email: </label>
-      <input
-        type="text"
-        name="email"
-        onChange={handleChange}
-        value={formData.email}
-        placeholder="Email"
-      />
-      <br />
-      <br />
-      <label>Company: </label>
-      <input
-        type="text"
-        name="company"
-        onChange={handleChange}
-        value={formData.company}
-        placeholder="Company"
-      />
-      <br />
-      <br />
-      <label>Phone: </label>
-      <input
-        type="text"
-        name="phone"
-        onChange={handleChange}
-        value={formData.phone}
-        placeholder="Phone"
-      />
-      <br />
-      <br />
-      <label>Status: </label>
-      <select name="status" onChange={handleChange}>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-        <option value="pending">Pending</option>
-        <option value="suspended">Suspended</option>
-      </select>
-      <br />
-      <br />
-      <button type="submit" disabled={isUpdatingClient}>
-        {isUpdatingClient ? "loading..." : "Update Client"}{" "}
-      </button>
 
       {error && <p>{error}</p>}
-    </form>
+    </>
   );
 }
 
