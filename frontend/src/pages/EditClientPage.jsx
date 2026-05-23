@@ -30,7 +30,17 @@ function EditClientPage() {
     });
   }, [selectedClient]);
 
-  async function handleUpdateClient(formData) {
+  async function handleUpdateClient(data) {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("phone", data.phone);
+    formData.append("company", data.company);
+    formData.append("status", data.status);
+    if (data?.avatar[0]) {
+      formData.append("avatar", data.avatar[0]);
+    }
+
     const result = await dispatch(updateClient({ id, data: formData }));
     if (updateClient.fulfilled.match(result)) {
       toast.success("Client updated successfully");

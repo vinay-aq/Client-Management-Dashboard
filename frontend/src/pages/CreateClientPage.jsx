@@ -9,7 +9,16 @@ function CreateClientPage() {
   const navigate = useNavigate();
   const { isCreatingClient, error } = useSelector((state) => state.clients);
 
-  async function handleCreateClient(formData) {
+  async function handleCreateClient(data) {
+    const formData = new FormData();
+    formData.append("name", data.name)
+    formData.append("email", data.email)
+    formData.append("phone", data.phone)
+    formData.append("company", data.company)
+    formData.append("status", data.status)
+    if(data?.avatar[0]) {
+       formData.append("avatar", data.avatar[0])
+    }
     const result = await dispatch(createClient(formData));
     if (createClient.fulfilled.match(result)) {
       toast.success("Client created successfully")

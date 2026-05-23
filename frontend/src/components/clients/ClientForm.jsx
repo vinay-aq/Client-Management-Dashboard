@@ -4,6 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
+  const [previewImage, setPreviewImage] = useState(
+    initialFormData?.avatar
+      ? `http://localhost:8000/${initialFormData?.avatar}`
+      : "",
+  );
   const {
     register,
     handleSubmit,
@@ -28,8 +33,18 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       phone: initialFormData?.phone || "",
       company: initialFormData?.company || "",
       status: initialFormData?.status || "active",
+      avatar: initialFormData?.avatar || ""
     });
   }, [initialFormData, reset]);
+
+  function handleImageChange(e) {
+    const file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+    const imageURL = URL.createObjectURL(file);
+    setPreviewImage(imageURL);
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -48,7 +63,9 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       <br />
       <label>Company: </label>
       <input type="text" {...register("company")} placeholder="Company" />
-      {touchedFields.company && errors.company && <p>{errors.company.message}</p>}
+      {touchedFields.company && errors.company && (
+        <p>{errors.company.message}</p>
+      )}
 
       <br />
       <br />
@@ -65,6 +82,27 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
         <option value="pending">Pending</option>
         <option value="suspended">Suspended</option>
       </select>
+      <br />
+      <br />
+      <input
+        type="file"
+        {...register("avatar")}
+        accept="image/*"
+      />
+      {previewImage && (
+        <div>
+          <img
+            src={previewImage}
+            alt="avatar"
+            width="120"
+            height="120"
+            style={{
+              objectFit: "cover",
+              borderRadius: "8px",
+            }}
+          />
+        </div>
+      )}
       <br />
       <br />
       <button type="submit" disabled={loading || isSubmitting || !isDirty}>
