@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { updateClient, fetchClientById } from "../features/clients/clientSlice";
 import { useParams } from "react-router-dom";
 import ClientForm from "../components/clients/ClientForm";
+import toast from "react-hot-toast";
 
 function EditClientPage() {
   const [formData, setFormData] = useState({});
@@ -32,7 +33,10 @@ function EditClientPage() {
   async function handleUpdateClient(formData) {
     const result = await dispatch(updateClient({ id, data: formData }));
     if (updateClient.fulfilled.match(result)) {
+      toast.success("Client updated successfully");
       navigate(`/clients/${id}`);
+    } else {
+      toast.error(result.payload || "Failed to update client");
     }
   }
   return (

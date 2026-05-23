@@ -74,7 +74,7 @@ async function fetchClientsById(id) {
 }
 
 async function createClientService(data) {
-  const { name, email, phone, company, status } = data;
+  const { name, email, phone, company, status, avatar } = data;
   if (!name || !company || !phone || !email || !status) {
     throw new AppError("One or more fields are missing", 404);
   }
@@ -89,12 +89,13 @@ async function createClientService(data) {
     phone,
     company,
     status,
+    avatar
   });
   return newClient.toObject();
 }
 
 async function updateClientService(id, data) {
-  const { name, email, phone, company, status } = data;
+  const { name, email, phone, company, status, avatar } = data;
   const isValid = mongoose.Types.ObjectId.isValid(id);
   if (!isValid) {
     throw new AppError("Id is invalid", 400);
@@ -119,12 +120,13 @@ async function updateClientService(id, data) {
     _id: { $ne: id },
   });
   if (duplicateClient) {
+    console.log('duplicateClient',duplicateClient, id)
     throw new AppError("Email already exist", 400);
   }
 
   const updatedClient = await clientModel.findByIdAndUpdate(
     id,
-    { name, email, phone, company, status },
+    { name, email, phone, company, status, avatar },
     { new: true },
   );
   return updatedClient.toObject();

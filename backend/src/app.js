@@ -8,6 +8,9 @@ const errorMiddleware = require("./middlewares/err.middleware");
 
 const app = express();
 
+const path = require("path");
+app.use("/uploads", express.static(path.resolve("src/uploads")));
+
 app.use((req, res, next) => {
   console.log(req.method, req.url);
   next();
@@ -17,7 +20,7 @@ app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
-  })
+  }),
 );
 
 app.use(express.json());
