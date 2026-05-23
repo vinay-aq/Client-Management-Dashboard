@@ -50,8 +50,23 @@ function ClientDetailsPage() {
       <p>Phone: {selectedClient?.phone}</p>
       <p>Company: {selectedClient?.company}</p>
       <p>Status: {selectedClient?.status}</p>
+      {selectedClient?.avatar && <p>
+        <img
+          src={`http://localhost:8000${selectedClient?.avatar}`}
+          alt="avatar"
+          width="120"
+          height="120"
+          style={{
+            objectFit: "cover",
+            borderRadius: "8px",
+          }}
+        />
+      </p>}
       <button onClick={handleEditClient}>Edit client</button>
-      <button onClick={() => setIsDeleteModalOpen(true)} disabled={isDeletingClient}>
+      <button
+        onClick={() => setIsDeleteModalOpen(true)}
+        disabled={isDeletingClient}
+      >
         {isDeletingClient ? "Deleting..." : "Delete client"}
       </button>
 

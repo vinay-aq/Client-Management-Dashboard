@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
   const [previewImage, setPreviewImage] = useState(
     initialFormData?.avatar
-      ? `http://localhost:8000/${initialFormData?.avatar}`
+      ? `http://localhost:8000${initialFormData?.avatar}`
       : "",
   );
   const {
@@ -23,8 +23,11 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       phone: "",
       company: "",
       status: "active",
+      avatar: null,
     },
   });
+
+  
 
   useEffect(() => {
     reset({
@@ -33,7 +36,7 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       phone: initialFormData?.phone || "",
       company: initialFormData?.company || "",
       status: initialFormData?.status || "active",
-      avatar: initialFormData?.avatar || ""
+      avatar: initialFormData?.avatar || "",
     });
   }, [initialFormData, reset]);
 
@@ -46,9 +49,10 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
     setPreviewImage(imageURL);
   }
 
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h2>Create Client</h2>
+    
       <label>Name: </label>
       <input type="text" {...register("name")} placeholder="Name" />
       {touchedFields.name && errors.name && <p>{errors.name.message}</p>}
@@ -86,13 +90,15 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       <br />
       <input
         type="file"
-        {...register("avatar")}
         accept="image/*"
+        {...register("avatar", {
+          onChange: handleImageChange,
+        })}
       />
-      {previewImage && (
+      {(previewImage || initialFormData?.avatar) && (
         <div>
           <img
-            src={previewImage}
+            src={previewImage || `http://localhost:8000${initialFormData?.avatar}`}
             alt="avatar"
             width="120"
             height="120"

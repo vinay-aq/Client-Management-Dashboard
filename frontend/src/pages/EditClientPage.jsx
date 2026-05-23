@@ -22,11 +22,12 @@ function EditClientPage() {
 
   useEffect(() => {
     setFormData({
-      name: selectedClient.name || "",
-      email: selectedClient.email || "",
-      phone: selectedClient.phone || "",
-      company: selectedClient.company || "",
-      status: selectedClient.status || "",
+      name: selectedClient?.name || "",
+      email: selectedClient?.email || "",
+      phone: selectedClient?.phone || "",
+      company: selectedClient?.company || "",
+      status: selectedClient?.status || "",
+      avatar: selectedClient?.avatar || ""
     });
   }, [selectedClient]);
 
@@ -51,6 +52,7 @@ function EditClientPage() {
   }
   return (
     <>
+     <h2>Update Client</h2>
       <ClientForm
         initialFormData={formData}
         loading={isUpdatingClient}
