@@ -1,36 +1,57 @@
 import { useNavigate } from "react-router-dom";
+import DataTable from "../table/DataTable";
+import StatusBadge from "../table/StatusBadge";
 
 function ClientsTable({ clients }) {
   const navigate = useNavigate();
 
-  if (!clients.length) {
-    return <h2>No clients data</h2>;
-  }
+  const columns = [
+    {
+      header: "Name",
+      accessor: "name",
+    },
+    {
+      header: "Email",
+      accessor: "email",
+    },
+    {
+      header: "Company",
+      accessor: "company",
+    },
+    {
+      header: "Status",
+      accessor: "status",
+      render: (row) => {
+        return (
+          <div style={{textAlign: 'center'}}>
+             <StatusBadge status={row.status}/>
+          </div>
+         
+        )
+      }
+    },
+    {
+      header: "Action",
+      accessor: "action",
+      render: (row) => {
+        return (
+          <button
+            style={{ cursor: "pointer", margin: 'auto', display:'flex' }}
+            onClick={() => navigate(`/clients/${row._id}`)}
+          >
+            View
+          </button>
+        );
+      },
+    },
+  ];
+
   return (
-    <div>
-      <table border="1" cellPadding="10">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clients.map((client) => (
-            <tr
-              key={client._id}
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate(`/clients/${client._id}`)}
-            >
-              <td>{client.name}</td>
-              <td>{client.email}</td>
-              <td>{client.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <DataTable
+      columns={columns}
+      data={clients}
+      emptyMessage={"No clients data"}
+    />
   );
 }
 

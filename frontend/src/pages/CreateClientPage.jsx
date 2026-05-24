@@ -10,8 +10,6 @@ function CreateClientPage() {
   const { isCreatingClient, error } = useSelector((state) => state.clients);
 
   async function handleCreateClient(data) {
-    console.log(data);
-    console.log(data.avatar);
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("email", data.email);
