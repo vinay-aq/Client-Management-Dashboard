@@ -53,11 +53,8 @@ async function loginUser(email, password) {
 }
 
 async function handleRefreshToken(oldRefreshToken) {
-  if(!oldRefreshToken) {
-     throw new AppError(
-      "No refresh token found!",
-      401,
-    );
+  if (!oldRefreshToken) {
+    throw new AppError("No refresh token found!", 401);
   }
   let decodedUser = verifyRefreshToken(oldRefreshToken);
   let refreshToken = await refreshTokenModel.findOne({
@@ -93,7 +90,7 @@ async function handleRefreshToken(oldRefreshToken) {
   });
 
   let newAccessToken = generateAccessToken(user);
-  return { newAccessToken, newRefreshToken };
+  return { newAccessToken, newRefreshToken, user };
 }
 
 async function handleLogout(userId) {

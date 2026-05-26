@@ -1,6 +1,5 @@
 const authService = require("./auth.service");
 
-
 async function signupUser(req, res, next) {
   const { password, email, name } = req.body;
   try {
@@ -13,22 +12,28 @@ async function signupUser(req, res, next) {
 
 async function loginUser(req, res, next) {
   const { email, password } = req.body;
-  const userAgent = req.headers['user-agent'];
+  const userAgent = req.headers["user-agent"];
   const clientIp = req.ip;
   try {
-    const { accessToken, refreshToken, user} =
-      await authService.loginUser(email, password);
+    const { accessToken, refreshToken, user } = await authService.loginUser(
+      email,
+      password,
+    );
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
     });
-    res.send({ accessToken, user:{
-      id: user._id,
-      email: user.email,
-      status: user.status
-    } });
+
+    res.send({
+      accessToken,
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (err) {
     next(err);
   }
@@ -37,10 +42,8 @@ async function loginUser(req, res, next) {
 async function refreshToken(req, res, next) {
   const oldRefreshToken = req.cookies?.refreshToken;
   try {
-    let { newAccessToken, newRefreshToken } =
-      await authService.handleRefreshToken(
-        oldRefreshToken
-      );
+    let { newAccessToken, newRefreshToken, user } =
+      await authService.handleRefreshToken(oldRefreshToken);
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
@@ -48,7 +51,11 @@ async function refreshToken(req, res, next) {
       sameSite: "strict",
     });
 
-    res.send({ accessToken: newAccessToken });
+    res.send({ accessToken: newAccessToken, user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      }, });
   } catch (err) {
     next(err);
   }
@@ -57,5 +64,5 @@ async function refreshToken(req, res, next) {
 module.exports = {
   loginUser,
   refreshToken,
-  signupUser
+  signupUser,
 };

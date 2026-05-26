@@ -89,7 +89,7 @@ async function createClientService(data) {
     phone,
     company,
     status,
-    avatar
+    avatar,
   });
   return newClient.toObject();
 }
@@ -120,7 +120,6 @@ async function updateClientService(id, data) {
     _id: { $ne: id },
   });
   if (duplicateClient) {
-    console.log('duplicateClient',duplicateClient, id)
     throw new AppError("Email already exist", 400);
   }
 
@@ -152,10 +151,13 @@ async function deleteClientService(id) {
   return;
 }
 
+
+
 module.exports = {
   fetchClients,
   fetchClientsById,
   createClientService,
   updateClientService,
   deleteClientService,
+  
 };

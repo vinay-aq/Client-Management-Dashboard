@@ -5,11 +5,14 @@ import ClientsTable from "../components/clients/ClientsTable";
 import Pagination from "../components/clients/Pagination";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import usePermission from "../hooks/usePermission";
+import { PERMISSIONS } from "../utils/permissions";
 
 function ClientsPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const canCreateClient = usePermission(PERMISSIONS.CREATE_CLIENT);
 
   const page = Number(searchParams.get("page")) || 1;
   const limit = Number(searchParams.get("limit")) || 10;
@@ -56,9 +59,12 @@ function ClientsPage() {
         onChange={(e) => setSearchInput(e.target.value)}
         value={searchInput}
       />
-      <button onClick={() => navigate("/clients/createClient")}>
-        Create Client
-      </button>
+
+      {canCreateClient && (
+        <button onClick={() => navigate("/clients/createClient")}>
+          Create Client
+        </button>
+      )}
       {error && <h2>{error}</h2>}
 
       {isFetchingClients ? (

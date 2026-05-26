@@ -4,6 +4,8 @@ const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./modules/auth/auth.routes");
 const clientRoutes = require("./modules/client/client.routes");
+const dashboardRoutes = require("./modules/dashboard/dashboard.routes");
+const userRoutes = require("./modules/user/user.routes")
 const errorMiddleware = require("./middlewares/err.middleware");
 
 const app = express();
@@ -38,6 +40,8 @@ app.post("/simple-login", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/users", userRoutes);
 
 app.use(errorMiddleware);
 

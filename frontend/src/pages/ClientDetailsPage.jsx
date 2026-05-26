@@ -5,6 +5,8 @@ import { fetchClientById, deleteClient } from "../features/clients/clientSlice";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "../components/ui/ConfirmModal";
+import usePermission from "../hooks/usePermission";
+import { PERMISSIONS } from "../utils/permissions";
 
 import toast from "react-hot-toast";
 
@@ -13,6 +15,8 @@ function ClientDetailsPage() {
   const dispatch = useDispatch();
   const [iseDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { id } = useParams();
+  const canDeleteClient = usePermission(PERMISSIONS.DELETE_CLIENT);
+  const canEditClient = usePermission(PERMISSIONS.EDIT_CLIENT);
 
   const { selectedClient, error, isFetchingClientDetails, isDeletingClient } =
     useSelector((state) => state.clients);
@@ -50,25 +54,30 @@ function ClientDetailsPage() {
       <p>Phone: {selectedClient?.phone}</p>
       <p>Company: {selectedClient?.company}</p>
       <p>Status: {selectedClient?.status}</p>
-      {selectedClient?.avatar && <p>
-        <img
-          src={`http://localhost:8000${selectedClient?.avatar}`}
-          alt="avatar"
-          width="120"
-          height="120"
-          style={{
-            objectFit: "cover",
-            borderRadius: "8px",
-          }}
-        />
-      </p>}
-      <button onClick={handleEditClient}>Edit client</button>
-      <button
-        onClick={() => setIsDeleteModalOpen(true)}
-        disabled={isDeletingClient}
-      >
-        {isDeletingClient ? "Deleting..." : "Delete client"}
-      </button>
+      {selectedClient?.avatar && (
+        <p>
+          <img
+            src={`http://localhost:8000${selectedClient?.avatar}`}
+            alt="avatar"
+            width="120"
+            height="120"
+            style={{
+              objectFit: "cover",
+              borderRadius: "8px",
+            }}
+          />
+        </p>
+      )}
+      {canEditClient && <button onClick={handleEditClient}>Edit client</button>}
+      {canDeleteClient && (
+        <button
+          onClick={() => setIsDeleteModalOpen(true)}
+          disabled={isDeletingClient}
+        >
+          {isDeletingClient ? "Deleting..." : "Delete client"}
+        </button>
+      )}
+      <button onClick={() => navigate("/clients")}>Back to Clients</button>
 
       <ConfirmModal
         isOpen={iseDeleteModalOpen}

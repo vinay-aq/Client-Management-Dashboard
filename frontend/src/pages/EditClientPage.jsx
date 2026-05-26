@@ -45,7 +45,7 @@ function EditClientPage() {
     const result = await dispatch(updateClient({ id, data: formData }));
     if (updateClient.fulfilled.match(result)) {
       toast.success("Client updated successfully");
-      navigate(`/clients/${id}`);
+      navigate(`/clients`);
     } else {
       toast.error(result.payload || "Failed to update client");
     }

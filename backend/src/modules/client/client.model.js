@@ -11,7 +11,7 @@ const clientSchema = new mongoose.Schema(
       enum: ["active", "inactive", "pending","suspended"], // Restricts input to specific values
       default: "pending",
     },
-    avatar: {type: String}
+    avatar: {type: String},
   },
   {
     timestamps: true,
