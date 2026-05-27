@@ -9,18 +9,19 @@ async function getUsers(req, res, next) {
     console.log('get users controller called')
   try {
     const users = await fetchUsers();
-    return res.status(200).json({ success: true, ...users });
+    return res.status(200).json({ success: true, users: users });
   } catch (err) {
     next(err);
   }
 }
 
 async function updateUserRole(req, res, next) {
+
   const userId = req.params.id;
   const role = req.body.role;
   try {
-    const res = await updateUserRoleService();
-    return res.data;
+    const updatedUser = await updateUserRoleService(userId, role);
+    res.status(200).json(updatedUser)
   } catch (err) {
     next(err);
   }
@@ -30,8 +31,8 @@ async function toggleUserStatus(req, res, next) {
   const userId = req.params.id;
   const role = req.body.isActive;
   try {
-    const res = await toggleUserStatusService();
-    return res.data;
+    const updatedUser = await toggleUserStatusService(userId, role);
+    res.status(200).json(updatedUser)
   } catch (err) {
     next(err);
   }

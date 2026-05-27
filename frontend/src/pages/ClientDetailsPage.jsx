@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import { fetchClientById, deleteClient } from "../features/clients/clientSlice";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
