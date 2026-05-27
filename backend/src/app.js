@@ -6,6 +6,7 @@ const authRoutes = require("./modules/auth/auth.routes");
 const clientRoutes = require("./modules/client/client.routes");
 const dashboardRoutes = require("./modules/dashboard/dashboard.routes");
 const userRoutes = require("./modules/user/user.routes");
+const activityRoutes = require("./modules/activity/activity.route")
 
 const errorMiddleware = require("./middlewares/err.middleware");
 
@@ -43,6 +44,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/activity", activityRoutes);
 
 app.use(errorMiddleware);
 

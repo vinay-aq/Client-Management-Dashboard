@@ -8,10 +8,10 @@ const clientSchema = new mongoose.Schema(
     company: { type: String },
     status: {
       type: String,
-      enum: ["active", "inactive", "pending","suspended"], // Restricts input to specific values
+      enum: ["active", "inactive", "pending", "suspended"], // Restricts input to specific values
       default: "pending",
     },
-    avatar: {type: String},
+    avatar: { type: String },
   },
   {
     timestamps: true,

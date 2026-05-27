@@ -1,6 +1,7 @@
 const userModel = require("./user.model");
 const AppError = require("../../utils/AppError");
 const mongoose = require("mongoose");
+const { createActivityService } = require("../activity/acitvity.service");
 const { ROLE_VALUES } = require("../../constants/roles");
 
 async function fetchUsers() {
@@ -25,6 +26,10 @@ async function updateUserRoleService(userId, role) {
   const updatedUser = await userModel
     .findByIdAndUpdate(userId, { role }, { new: true })
     .select("-password");
+
+  await createActivityService(
+    `User ${updatedUser.name} role updated to ${updatedUser.role}`,
+  );
   return updatedUser.toObject();
 }
 
@@ -47,6 +52,11 @@ async function toggleUserStatusService(userId, isActive) {
   const updatedUser = await userModel
     .findByIdAndUpdate(userId, { isActive }, { new: true })
     .select("-password");
+    
+  await createActivityService(
+    `User ${updatedUser.name} is marked as ${isActive ? "active" : "inactive"}`,
+  );
+
   return updatedUser.toObject();
 }
 

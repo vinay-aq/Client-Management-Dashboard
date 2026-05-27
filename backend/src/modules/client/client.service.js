@@ -1,6 +1,8 @@
 const clientModel = require("./client.model");
 const AppError = require("../../utils/AppError");
 const mongoose = require("mongoose");
+const {createActivityService} = require("../activity/acitvity.service");
+
 
 async function testAbortController(search) {
   let delay = 1000;
@@ -91,6 +93,8 @@ async function createClientService(data) {
     status,
     avatar,
   });
+
+  await createActivityService(`Client ${newClient.name} is created`);
   return newClient.toObject();
 }
 
@@ -128,6 +132,8 @@ async function updateClientService(id, data) {
     { name, email, phone, company, status, avatar },
     { new: true },
   );
+
+  await createActivityService(`Client ${updatedClient.name} is updated`);
   return updatedClient.toObject();
 }
 
@@ -147,7 +153,8 @@ async function deleteClientService(id) {
     throw new AppError("Client does not exist", 404);
   }
 
-  await clientModel.findByIdAndDelete(id);
+  const deletedClient = await clientModel.findByIdAndDelete(id);
+  await createActivityService(`Client ${deletedClient.name} is deleted`);
   return;
 }
 
