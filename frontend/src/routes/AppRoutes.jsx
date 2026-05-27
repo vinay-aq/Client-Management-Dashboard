@@ -11,6 +11,8 @@ import Navbar from "../components/layout/Navbar";
 import AppLayout from "../components/layout/AppLayout";
 import DashboardPage from "../pages/DashboardPage";
 import AdminUserPage from "../pages/AdminUserPage";
+import ActivityFeed from "../components/dashboard/ActivityFeed";
+
 
 function AppRoutes() {
   return (
@@ -51,7 +53,7 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/admin/users"
             element={
               <ProtectedRoute allowedRoles={PERMISSIONS.MANAGER_USERS}>
@@ -68,7 +70,14 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
-         
+          <Route
+            path="/activity/feed"
+            element={
+              <ProtectedRoute>
+                <ActivityFeed />
+              </ProtectedRoute>
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>

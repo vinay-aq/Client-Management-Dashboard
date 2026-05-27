@@ -41,6 +41,7 @@ function Navbar() {
       >
         <Link to="/dashboard">Dashboard</Link>
         <Link to="/clients">Clients</Link>
+        <Link to="/activity/feed">Activity</Link>
         {canManageUsers && <Link to="/admin/users">Users</Link>}
       </div>
       <div

@@ -8,6 +8,7 @@ async function createActivityService(message) {
 
 async function fetchActivityService() {
     const activities = await activityModel.find().sort({createdAt: -1}).limit(20);
+    console.log(activities)
     return activities;
 }
 

@@ -44,7 +44,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/activity", activityRoutes);
+app.use("/api/activities", activityRoutes);
 
 app.use(errorMiddleware);
 
