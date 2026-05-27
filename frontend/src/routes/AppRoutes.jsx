@@ -10,7 +10,7 @@ import UnauthorizedPage from "../pages/UnauthorizedPage";
 import Navbar from "../components/layout/Navbar";
 import AppLayout from "../components/layout/AppLayout";
 import DashboardPage from "../pages/DashboardPage";
-
+import AdminUserPage from "../pages/AdminUserPage";
 
 function AppRoutes() {
   return (
@@ -51,6 +51,14 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute allowedRoles={PERMISSIONS.MANAGER_USERS}>
+                <AdminUserPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           <Route
             path="/dashboard"
@@ -60,6 +68,7 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
+         
         </Route>
       </Routes>
     </BrowserRouter>

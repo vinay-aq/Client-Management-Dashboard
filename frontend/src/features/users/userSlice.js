@@ -14,22 +14,25 @@ const initialState = {
   selectedUser: null,
 };
 
-export const getUsers = createAsyncThunk("/users/getUsers", async (_, thunk) => {
-  try {
-    const res = await fetchUsersAPI();
-    return res;
-  } catch (err) {
-    thunk.rejectWithValue(
-      err.response?.data?.message || "Failed to retreive users data",
-    );
-  }
-});
+export const getUsers = createAsyncThunk(
+  "/users/getUsers",
+  async (_, thunk) => {
+    try {
+      const res = await fetchUsersAPI();
+      return res;
+    } catch (err) {
+      thunk.rejectWithValue(
+        err.response?.data?.message || "Failed to retreive users data",
+      );
+    }
+  },
+);
 
 export const toggleUserStatusById = createAsyncThunk(
   "/users/toggleUserStatusById",
-  async ({ id, status }, thunk) => {
+  async ({ id, isActive }, thunk) => {
     try {
-      const res = await toggleUserStatusAPI(id, status);
+      const res = await toggleUserStatusAPI(id, isActive);
       return res;
     } catch (err) {
       thunk.rejectWithValue(
@@ -47,7 +50,7 @@ export const updateUserRoleById = createAsyncThunk(
       return res;
     } catch (err) {
       thunk.rejectWithValue(
-        err.response?.data?.message || "Failed to retreive user role",
+        err.response?.data?.message || "Failed to update role",
       );
     }
   },
@@ -77,7 +80,9 @@ const usersSlice = createSlice({
     });
     builder.addCase(toggleUserStatusById.fulfilled, (state, action) => {
       state.isUpdatingUserRole = false;
-      state.selectedUser = action.payload;
+      state.users = state.users.map((user) =>
+        user._id === action.payload._id ? action.payload : user,
+      );
       state.error = null;
     });
     builder.addCase(toggleUserStatusById.rejected, (state, action) => {
@@ -90,7 +95,9 @@ const usersSlice = createSlice({
     });
     builder.addCase(updateUserRoleById.fulfilled, (state, action) => {
       state.isUpdatingUserRole = false;
-      state.selectedUser = action.payload;
+      state.users = state.users.map((user) =>
+        user._id === action.payload._id ? action.payload : user,
+      );
       state.error = null;
     });
     builder.addCase(updateUserRoleById.rejected, (state, action) => {

@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUsers, toggleUserStatusById, updateUserRoleById } from "../features/users/userSlice";
+import {
+  getUsers,
+  toggleUserStatusById,
+  updateUserRoleById,
+} from "../features/users/userSlice";
 import DataTable from "../components/table/DataTable";
 import { ROLES } from "../utils/permissions";
 
@@ -13,12 +17,12 @@ function AdminUserPage() {
     dispatch(getUsers());
   }, [dispatch]);
 
-  async function handleChangeRole(e) {
-    await updateUserRoleById({id, role: e.target.value});
+  async function handleChangeRole(id, role) {
+    await dispatch(updateUserRoleById({ id, role }));
   }
 
-  function toggleUserStatus(isActive) {
-    await updateUserRoleById({id, isActive});
+  async function toggleUserStatus(id, isActive) {
+    await dispatch(toggleUserStatusById({ id, isActive }));
   }
 
   const columns = [
@@ -31,37 +35,49 @@ function AdminUserPage() {
       accessor: "email",
     },
     {
-      header: "Phone",
-      accessor: "phone",
-    },
-    {
       header: "Status",
       accessor: "status",
+      render: (row) => {
+        console.log(row.isActive)
+        return row.isActive ? "Active" : "Inactive";
+      },
     },
     {
-        header: 'role',
-        accessor: (row) => {
-            return (
-                <select onChange={handleChangeRole} value={row.role}>
-                    <option value="admin">Admin</option>
-                    <option value="manager">Manager</option>
-                    <option value="viewer">Viewer</option>
-                </select>
-            )
-        }
+      header: "role",
+      accessor: "role",
+      render: (row) => {
+        return (
+          <select
+            onChange={(e) => handleChangeRole(row._id, e.target.value)}
+            value={row.role}
+          >
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
+            <option value="viewer">Viewer</option>
+          </select>
+        );
+      },
     },
-     {
-        header: 'is Active',
-        accessor: (row) => {
-            return  <button disabled={isUpdatingUserRole} onClick={() => toggleUserStatus(!row.isActive)}>{row.isActive ? "Inactive":"Active"}</button>
-        }
-    }
+    {
+      header: "Action",
+       accessor: "action",
+      render: (row) => {
+        return (
+          <button
+            disabled={isUpdatingUserRole}
+            onClick={() => toggleUserStatus(row._id, !row.isActive)}
+          >
+            {row.isActive ? "Inactive" : "Active"}
+          </button>
+        );
+      },
+    },
   ];
 
   return (
-    <div>
+    <div style={{textAlign: 'center'}}>
       <DataTable
-        columns
+        columns={columns}
         data={users}
         loading={isFetchingUsers || isUpdatingUserRole || isUpdatingUserStatus}
         emptyMessage="Users not found"

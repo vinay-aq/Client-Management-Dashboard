@@ -2,11 +2,14 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { logout } from "../../features/auth/authSlice";
+import usePermission from "../../hooks/usePermission";
+import { PERMISSIONS } from "../../utils/permissions";
 
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth?.user);
+  const canManageUsers = usePermission(PERMISSIONS.MANAGER_USERS)
 
   function handleLogout() {
     dispatch(logout());
@@ -38,6 +41,7 @@ function Navbar() {
       >
         <Link to="/dashboard">Dashboard</Link>
         <Link to="/clients">Clients</Link>
+        {canManageUsers && <Link to="/admin/users">Users</Link>}
       </div>
       <div
         style={{
