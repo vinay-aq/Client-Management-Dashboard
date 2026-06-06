@@ -59,7 +59,7 @@ function ActivityFeed() {
     let timeoutId = null;
 
     async function startPolling() {
-      await loadActivityFeed(true);
+      await loadActivityFeed(false);
       timeoutId = setTimeout(startPolling, 5000);
     }
 

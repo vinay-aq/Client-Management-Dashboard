@@ -9,7 +9,7 @@ function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth?.user);
-  const canManageUsers = usePermission(PERMISSIONS.MANAGER_USERS)
+  const canManageUsers = usePermission(PERMISSIONS.MANAGER_USERS);
 
   function handleLogout() {
     dispatch(logout());
@@ -42,6 +42,8 @@ function Navbar() {
         <Link to="/dashboard">Dashboard</Link>
         <Link to="/clients">Clients</Link>
         <Link to="/activity/feed">Activity</Link>
+        <Link to="/activity/feed/realtime">Activity Realtime</Link>
+
         {canManageUsers && <Link to="/admin/users">Users</Link>}
       </div>
       <div
@@ -55,7 +57,9 @@ function Navbar() {
       >
         <span>{user?.email}</span>
         <span>{user?.role}</span>
-        <span onClick={handleLogout} style={{cursor:'pointer'}}>Logout</span>
+        <span onClick={handleLogout} style={{ cursor: "pointer" }}>
+          Logout
+        </span>
       </div>
     </nav>
   );

@@ -50,6 +50,7 @@ function AdminUserPage() {
           <select
             onChange={(e) => handleChangeRole(row._id, e.target.value)}
             value={row.role}
+            disabled={isUpdatingUserRole}
           >
             <option value="admin">Admin</option>
             <option value="manager">Manager</option>
@@ -64,7 +65,7 @@ function AdminUserPage() {
       render: (row) => {
         return (
           <button
-            disabled={isUpdatingUserRole}
+            disabled={isUpdatingUserStatus}
             onClick={() => toggleUserStatus(row._id, !row.isActive)}
           >
             {row.isActive ? "Inactive" : "Active"}
@@ -79,7 +80,7 @@ function AdminUserPage() {
       <DataTable
         columns={columns}
         data={users}
-        loading={isFetchingUsers || isUpdatingUserRole || isUpdatingUserStatus}
+        loading={isFetchingUsers }
         emptyMessage="Users not found"
       />
     </div>

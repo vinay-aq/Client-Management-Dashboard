@@ -11,7 +11,8 @@ import Navbar from "../components/layout/Navbar";
 import AppLayout from "../components/layout/AppLayout";
 import DashboardPage from "../pages/DashboardPage";
 import AdminUserPage from "../pages/AdminUserPage";
-import ActivityFeed from "../components/dashboard/ActivityFeed";
+import ActivityFeed from "../pages/activity/ActivityFeedPollingPage";
+import ActivityFeedRealTimePage from "../pages/activity/ActivityFeedRealtimePage";
 
 
 function AppRoutes() {
@@ -75,6 +76,14 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <ActivityFeed />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/activity/feed/realtime"
+            element={
+              <ProtectedRoute>
+                <ActivityFeedRealTimePage />
               </ProtectedRoute>
             }
           />

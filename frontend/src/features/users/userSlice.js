@@ -76,17 +76,17 @@ const usersSlice = createSlice({
     });
 
     builder.addCase(toggleUserStatusById.pending, (state, action) => {
-      state.isUpdatingUserRole = true;
+      state.isUpdatingUserStatus = true;
     });
     builder.addCase(toggleUserStatusById.fulfilled, (state, action) => {
-      state.isUpdatingUserRole = false;
+      state.isUpdatingUserStatus = false;
       state.users = state.users.map((user) =>
         user._id === action.payload._id ? action.payload : user,
       );
       state.error = null;
     });
     builder.addCase(toggleUserStatusById.rejected, (state, action) => {
-      state.isUpdatingUserRole = false;
+      state.isUpdatingUserStatus = false;
       state.error = action.payload;
     });
 

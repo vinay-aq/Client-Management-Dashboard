@@ -34,12 +34,6 @@ app.get("/test", (req, res) => {
   res.json({ success: true });
 });
 
-app.post("/simple-login", (req, res) => {
-  return res.json({
-    success: true,
-  });
-});
-
 app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/dashboard", dashboardRoutes);

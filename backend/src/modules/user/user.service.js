@@ -1,7 +1,7 @@
 const userModel = require("./user.model");
 const AppError = require("../../utils/AppError");
 const mongoose = require("mongoose");
-const { createActivityService } = require("../activity/acitvity.service");
+const { createActivityService } = require("../activity/activity.service");
 const { ROLE_VALUES } = require("../../constants/roles");
 
 async function fetchUsers() {
@@ -52,7 +52,7 @@ async function toggleUserStatusService(userId, isActive) {
   const updatedUser = await userModel
     .findByIdAndUpdate(userId, { isActive }, { new: true })
     .select("-password");
-    
+
   await createActivityService(
     `User ${updatedUser.name} is marked as ${isActive ? "active" : "inactive"}`,
   );

@@ -1,8 +1,7 @@
 const clientModel = require("./client.model");
 const AppError = require("../../utils/AppError");
 const mongoose = require("mongoose");
-const {createActivityService} = require("../activity/acitvity.service");
-
+const { createActivityService } = require("../activity/activity.service");
 
 async function testAbortController(search) {
   let delay = 1000;
@@ -158,13 +157,10 @@ async function deleteClientService(id) {
   return;
 }
 
-
-
 module.exports = {
   fetchClients,
   fetchClientsById,
   createClientService,
   updateClientService,
   deleteClientService,
-  
 };
