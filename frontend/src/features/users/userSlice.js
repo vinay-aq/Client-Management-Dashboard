@@ -21,7 +21,7 @@ export const getUsers = createAsyncThunk(
       const res = await fetchUsersAPI();
       return res;
     } catch (err) {
-      thunk.rejectWithValue(
+      return thunk.rejectWithValue(
         err.response?.data?.message || "Failed to retreive users data",
       );
     }
@@ -35,7 +35,7 @@ export const toggleUserStatusById = createAsyncThunk(
       const res = await toggleUserStatusAPI(id, isActive);
       return res;
     } catch (err) {
-      thunk.rejectWithValue(
+      return thunk.rejectWithValue(
         err.response?.data?.message || "Failed to update user status",
       );
     }
@@ -49,7 +49,7 @@ export const updateUserRoleById = createAsyncThunk(
       const res = await updateUserRoleByIdAPI(id, role);
       return res;
     } catch (err) {
-      thunk.rejectWithValue(
+      return thunk.rejectWithValue(
         err.response?.data?.message || "Failed to update role",
       );
     }
@@ -59,7 +59,12 @@ export const updateUserRoleById = createAsyncThunk(
 const usersSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {},
+  reducers: {
+    optimisticallyUpdateUserRole: (state, action) => {
+      const { role, id } = action.payload;
+      state.users = state.users.map((user) => (user._id === id ? { ...user, role } : user));
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getUsers.pending, (state, action) => {
       state.isFetchingUsers = true;
@@ -106,5 +111,7 @@ const usersSlice = createSlice({
     });
   },
 });
+
+export const { optimisticallyUpdateUserRole } = usersSlice.actions;
 
 export default usersSlice.reducer;

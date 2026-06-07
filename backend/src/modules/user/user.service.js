@@ -9,10 +9,14 @@ async function fetchUsers() {
   return users;
 }
 
-async function updateUserRoleService(userId, role) {
+async function updateUserRoleService(userId, role, authUser) {
   const isValid = mongoose.Types.ObjectId.isValid(userId);
   if (!isValid) {
     throw new AppError("Id is invalid", 400);
+  }
+
+  if (authUser.id === userId) {
+    throw new AppError("You cannot modify your own role", 400);
   }
 
   const user = await userModel.findById(userId);
@@ -33,11 +37,15 @@ async function updateUserRoleService(userId, role) {
   return updatedUser.toObject();
 }
 
-async function toggleUserStatusService(userId, isActive) {
+async function toggleUserStatusService(userId, isActive, authUser) {
   const isValid = mongoose.Types.ObjectId.isValid(userId);
 
   if (!isValid) {
     throw new AppError("Id is invalid", 400);
+  }
+
+  if (authUser.id === userId) {
+    throw new AppError("You cannot change your own status", 400);
   }
 
   const user = await userModel.findById(userId);
