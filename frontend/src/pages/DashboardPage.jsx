@@ -4,6 +4,7 @@ import StatsCard from "../components/dashboard/StatsCard";
 import { useEffect } from "react";
 import { fetchDashboardStats } from "../features/dashboard/dashboardSlice";
 import ClientsTable from "../components/clients/ClientsTable";
+import ClientStatusPieChart from "../components/dashboard/ClientStatusPieChart";
 
 function DashboardPage() {
   const dispatch = useDispatch();
@@ -12,10 +13,8 @@ function DashboardPage() {
   );
 
   useEffect(() => {
-    console.log('useEffeect run')
     dispatch(fetchDashboardStats());
   }, [dispatch]);
-
 
   if (isFetchingStats) {
     return <h3>Loading...</h3>;
@@ -28,6 +27,13 @@ function DashboardPage() {
   return (
     <>
       <h1>Dashboard</h1>
+      <div
+        style={{
+          marginBottom: "40px",
+        }}
+      >
+        <ClientStatusPieChart stats={stats} />
+      </div>
       <div
         style={{
           display: "flex",
