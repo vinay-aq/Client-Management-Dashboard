@@ -2,6 +2,7 @@ const clientModel = require("./client.model");
 const AppError = require("../../utils/AppError");
 const mongoose = require("mongoose");
 const { createActivityService } = require("../activity/activity.service");
+const { notifyDashboardDataChanged } = require("../dashboard/dashboard.events");
 
 async function testAbortController(search) {
   let delay = 1000;
@@ -94,6 +95,7 @@ async function createClientService(data) {
   });
 
   await createActivityService(`Client ${newClient.name} is created`);
+  notifyDashboardDataChanged();
   return newClient.toObject();
 }
 
@@ -133,6 +135,7 @@ async function updateClientService(id, data) {
   );
 
   await createActivityService(`Client ${updatedClient.name} is updated`);
+  notifyDashboardDataChanged();
   return updatedClient.toObject();
 }
 
@@ -154,6 +157,7 @@ async function deleteClientService(id) {
 
   const deletedClient = await clientModel.findByIdAndDelete(id);
   await createActivityService(`Client ${deletedClient.name} is deleted`);
+  notifyDashboardDataChanged();
   return;
 }
 

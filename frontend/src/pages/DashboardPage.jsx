@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { fetchDashboardStats } from "../features/dashboard/dashboardSlice";
 import ClientsTable from "../components/clients/ClientsTable";
 import ClientStatusPieChart from "../components/dashboard/ClientStatusPieChart";
+import socket from "../services/socket";
+import toast from "react-hot-toast";
 
 function DashboardPage() {
   const dispatch = useDispatch();
@@ -15,6 +17,19 @@ function DashboardPage() {
   useEffect(() => {
     dispatch(fetchDashboardStats());
   }, [dispatch]);
+
+  useEffect(() => {
+    async function handleRefetchDashboardData() {
+      await dispatch(fetchDashboardStats());
+      toast.success("Dashboard updated")
+    }
+
+    socket.on("dashboard_stats_updated", handleRefetchDashboardData);
+
+    return () => {
+      socket.off("dashboard_stats_updated");
+    };
+  });
 
   if (isFetchingStats) {
     return <h3>Loading...</h3>;
