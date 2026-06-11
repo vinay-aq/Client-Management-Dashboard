@@ -1,0 +1,15 @@
+const PERMISSIONS = {
+  CLIENT_CREATE: "client.create",
+  CLIENT_EDIT: "client.edit",
+  CLIENT_DELETE: "client.delete",
+  CLIENT_VIEW: "client.view",
+  USERS_VIEW: "user.view",
+  USER_ROLE_UPDATE: "user.role.update",
+  USER_STATUS_UPDATE: "user.status.update",
+  DASHBOARD_VIEW: "dashboard.view",
+  
+};
+
+module.exports = {
+  PERMISSIONS,
+};

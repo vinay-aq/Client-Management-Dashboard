@@ -14,11 +14,10 @@ async function loginUser(req, res, next) {
   const { email, password } = req.body;
   const userAgent = req.headers["user-agent"];
   const clientIp = req.ip;
+
   try {
-    const { accessToken, refreshToken, user } = await authService.loginUser(
-      email,
-      password,
-    );
+    const { accessToken, refreshToken, user, permissions } =
+      await authService.loginUser(email, password);
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -32,6 +31,7 @@ async function loginUser(req, res, next) {
         id: user._id,
         email: user.email,
         role: user.role,
+        permissions,
       },
     });
   } catch (err) {
@@ -51,11 +51,14 @@ async function refreshToken(req, res, next) {
       sameSite: "strict",
     });
 
-    res.send({ accessToken: newAccessToken, user: {
+    res.send({
+      accessToken: newAccessToken,
+      user: {
         id: user._id,
         email: user.email,
         role: user.role,
-      }, });
+      },
+    });
   } catch (err) {
     next(err);
   }

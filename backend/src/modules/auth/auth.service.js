@@ -6,6 +6,9 @@ const {
   generateRefreshToken,
   verifyRefreshToken,
 } = require("./auth.utils.js");
+
+const { ROLE_PERMISSIONS } = require("../../constants/rolePermissions");
+
 const AppError = require("../../utils/AppError");
 
 async function registerUser(email, password, name) {
@@ -40,7 +43,10 @@ async function loginUser(email, password) {
     throw new AppError("Password Incorrect. Please try again", 401);
   }
 
-  let accessToken = generateAccessToken(user);
+  const role = user?.role;
+  const permissions = ROLE_PERMISSIONS[role] || [];
+
+  let accessToken = generateAccessToken(user, permissions);
   let refreshToken = generateRefreshToken(user);
 
   await refreshTokenModel.create({
@@ -49,7 +55,7 @@ async function loginUser(email, password) {
     expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   });
 
-  return { accessToken, refreshToken, user };
+  return { accessToken, refreshToken, user, permissions };
 }
 
 async function handleRefreshToken(oldRefreshToken) {
