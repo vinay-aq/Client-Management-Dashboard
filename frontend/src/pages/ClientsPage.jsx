@@ -12,7 +12,7 @@ function ClientsPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const canCreateClient = usePermission(PERMISSIONS.CREATE_CLIENT);
+  const canCreateClient = usePermission(PERMISSIONS.CLIENT_CREATE);
 
   const page = Number(searchParams.get("page")) || 1;
   const limit = Number(searchParams.get("limit")) || 10;

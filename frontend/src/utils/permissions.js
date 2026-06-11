@@ -13,7 +13,7 @@
 
 // };
 
-const PERMISSIONS = {
+export const PERMISSIONS = {
   CLIENT_CREATE: "client.create",
   CLIENT_EDIT: "client.edit",
   CLIENT_DELETE: "client.delete",
@@ -23,5 +23,3 @@ const PERMISSIONS = {
   USER_STATUS_UPDATE: "user.status.update",
   DASHBOARD_VIEW: "dashboard.view",
 };
-
-export default PERMISSIONS;

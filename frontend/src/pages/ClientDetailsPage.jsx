@@ -14,8 +14,8 @@ function ClientDetailsPage() {
   const dispatch = useDispatch();
   const [iseDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { id } = useParams();
-  const canDeleteClient = usePermission(PERMISSIONS.DELETE_CLIENT);
-  const canEditClient = usePermission(PERMISSIONS.EDIT_CLIENT);
+  const canDeleteClient = usePermission(PERMISSIONS.CLIENT_DELETE);
+  const canEditClient = usePermission(PERMISSIONS.CLIENT_EDIT);
 
   const { selectedClient, error, isFetchingClientDetails, isDeletingClient } =
     useSelector((state) => state.clients);

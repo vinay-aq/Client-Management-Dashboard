@@ -8,7 +8,7 @@ function usePermission(allowedPermission) {
     return false;
   }
 
-  const userPermissions = user?.permissions;
+  const userPermissions = user?.permissions || [];
   return userPermissions.includes(allowedPermission);
 }
 
