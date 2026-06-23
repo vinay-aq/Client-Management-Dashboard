@@ -5,6 +5,7 @@ import {
   createClientAPI,
   updateClientAPI,
   deleteClientAPI,
+  updateClientWorkflowAPI,
 } from "./clientAPI";
 
 const initialState = {
@@ -24,6 +25,7 @@ const initialState = {
   isUpdatingClient: false,
 
   isDeletingClient: false,
+ 
 };
 
 export const fetchClients = createAsyncThunk(
@@ -33,8 +35,8 @@ export const fetchClients = createAsyncThunk(
       const res = await fetchClientsAPI(page, limit, search, thunkAPI.signal);
       return res;
     } catch (err) {
-      if(err.name=== "CanceledError") {
-        return ;
+      if (err.name === "CanceledError") {
+        return;
       }
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to fetch clients",
@@ -94,6 +96,21 @@ export const deleteClient = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to delete client",
+      );
+    }
+  },
+);
+
+export const updateClientWorkflow = createAsyncThunk(
+  "/clients/updateClientWorkflow",
+  async ({id, nextStatus}, thunkAPI) => {
+    try {
+      const res = await updateClientWorkflowAPI(id, nextStatus);
+      return res;
+    } catch (err) {
+      console.log(err)
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to update client",
       );
     }
   },
@@ -168,6 +185,11 @@ const clientsSlice = createSlice({
       state.isDeletingClient = false;
       state.error = action.payload;
     });
+
+    builder.addCase(updateClientWorkflow.fulfilled, (state, action) => {
+      state.selectedClient = action.payload;
+    });
+
   },
 });
 

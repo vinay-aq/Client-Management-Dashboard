@@ -27,3 +27,8 @@ export const deleteClientAPI = async (id) => {
   const res = await axiosInstance.delete(`/api/clients/${id}`);
   return res.data;
 };
+
+export const updateClientWorkflowAPI = async (id, nextStatus) => {
+  const res = await axiosInstance.post(`/${id}/workflow`, { nextStatus });
+  return res.data;
+};

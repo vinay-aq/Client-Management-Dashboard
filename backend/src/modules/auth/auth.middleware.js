@@ -31,7 +31,6 @@ function permissionAuthorize(requiredPermissions) {
   return (req, res, next) => {
     const rolePermissions = req?.user?.permissions || [];
     const hasPermission = rolePermissions.includes(requiredPermissions);
-
     if (!hasPermission) {
       next(new AppError("Forbidden", 403));
     }

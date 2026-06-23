@@ -3,6 +3,7 @@ const AppError = require("../../utils/AppError");
 const mongoose = require("mongoose");
 const { createActivityService } = require("../activity/activity.service");
 const { notifyDashboardDataChanged } = require("../dashboard/dashboard.events");
+const { isValidClientTransition } = require("../client/client.utils");
 
 async function testAbortController(search) {
   let delay = 1000;
@@ -161,10 +162,37 @@ async function deleteClientService(id) {
   return;
 }
 
+async function updateClientWorkflowService(clientId, nextStatus) {
+  const client = await clientModel.findById(clientId);
+  if (!client) {
+    throw new AppError("Client does not exist", 404);
+  }
+  console.log("client", client)
+  const currentStatus = client.status;
+
+  const isValidTransition = isValidClientTransition(currentStatus, nextStatus);
+  console.log('current status', currentStatus, 'nextStatus', nextStatus)
+  if (!isValidTransition) {
+    throw new AppError(
+      `Invalid client transition ${currentStatus} to ${nextStatus}`,
+      403,
+    );
+  }
+
+  const updatedClient = await clientModel.findByIdAndUpdate(
+    clientId,
+    { status: nextStatus },
+    { new: true },
+  );
+
+  return updatedClient;
+}
+
 module.exports = {
   fetchClients,
   fetchClientsById,
   createClientService,
   updateClientService,
   deleteClientService,
+  updateClientWorkflowService,
 };

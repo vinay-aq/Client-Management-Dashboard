@@ -95,7 +95,10 @@ async function handleRefreshToken(oldRefreshToken) {
     expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   });
 
-  let newAccessToken = generateAccessToken(user);
+  const role = user?.role;
+  const permissions = ROLE_PERMISSIONS[role] || [];
+
+  let newAccessToken = generateAccessToken(user, permissions);
   return { newAccessToken, newRefreshToken, user };
 }
 

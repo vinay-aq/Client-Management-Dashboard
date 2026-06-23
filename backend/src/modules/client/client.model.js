@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const {CLIENT_STATUS} = require("../../constants/clientStatus")
 const clientSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -8,8 +8,8 @@ const clientSchema = new mongoose.Schema(
     company: { type: String },
     status: {
       type: String,
-      enum: ["active", "inactive", "pending", "suspended"], // Restricts input to specific values
-      default: "pending",
+      enum: Object.values(CLIENT_STATUS),
+      default: CLIENT_STATUS.LEAD,
     },
     avatar: { type: String },
   },

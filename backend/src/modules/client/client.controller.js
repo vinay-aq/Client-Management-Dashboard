@@ -3,7 +3,8 @@ const {
   fetchClientsById,
   createClientService,
   updateClientService,
-  deleteClientService
+  deleteClientService,
+  updateClientWorkflowService,
 } = require("./client.service.js");
 
 async function getClients(req, res, next) {
@@ -63,10 +64,24 @@ async function deleteClient(req, res, next) {
   }
 }
 
+async function updateClientWorkflow(req, res, next) {
+  const { id } = req.params;
+  const { nextStatus } = req.body;
+  try {
+    await updateClientWorkflowService(id, nextStatus);
+    res
+      .status(200)
+      .json({ success: true, message: "Client status updated successfully" });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   getClients,
   getClientById,
   createClient,
   updateClient,
   deleteClient,
+  updateClientWorkflow
 };
