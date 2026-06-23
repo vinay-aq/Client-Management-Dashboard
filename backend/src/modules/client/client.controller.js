@@ -68,10 +68,10 @@ async function updateClientWorkflow(req, res, next) {
   const { id } = req.params;
   const { nextStatus } = req.body;
   try {
-    await updateClientWorkflowService(id, nextStatus);
+    const updatedClient = await updateClientWorkflowService(id, nextStatus);
     res
       .status(200)
-      .json({ success: true, message: "Client status updated successfully" });
+      .json({ success: true, message: "Client status updated successfully", client: updatedClient });
   } catch (err) {
     next(err);
   }

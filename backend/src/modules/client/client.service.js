@@ -167,11 +167,9 @@ async function updateClientWorkflowService(clientId, nextStatus) {
   if (!client) {
     throw new AppError("Client does not exist", 404);
   }
-  console.log("client", client)
   const currentStatus = client.status;
 
   const isValidTransition = isValidClientTransition(currentStatus, nextStatus);
-  console.log('current status', currentStatus, 'nextStatus', nextStatus)
   if (!isValidTransition) {
     throw new AppError(
       `Invalid client transition ${currentStatus} to ${nextStatus}`,

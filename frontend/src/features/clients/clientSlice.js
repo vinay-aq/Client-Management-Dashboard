@@ -108,7 +108,6 @@ export const updateClientWorkflow = createAsyncThunk(
       const res = await updateClientWorkflowAPI(id, nextStatus);
       return res;
     } catch (err) {
-      console.log(err)
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to update client",
       );
