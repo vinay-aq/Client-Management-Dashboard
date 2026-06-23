@@ -71,7 +71,6 @@ function ClientDetailsPage() {
       <p>Email: {selectedClient?.email}</p>
       <p>Phone: {selectedClient?.phone}</p>
       <p>Company: {selectedClient?.company}</p>
-      <p>Status: {selectedClient?.status}</p>
       {selectedClient?.avatar && (
         <p>
           <img

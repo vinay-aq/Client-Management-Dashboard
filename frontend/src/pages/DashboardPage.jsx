@@ -21,7 +21,7 @@ function DashboardPage() {
   useEffect(() => {
     async function handleRefetchDashboardData() {
       await dispatch(fetchDashboardStats());
-      toast.success("Dashboard updated")
+      toast.success("Dashboard updated");
     }
 
     socket.on("dashboard_stats_updated", handleRefetchDashboardData);
@@ -54,13 +54,21 @@ function DashboardPage() {
           display: "flex",
           gap: "16px",
           marginBottom: "24px",
+          flexWrap: 'wrap'
         }}
       >
         <StatsCard title="Total Clients" value={stats?.totalClients} />
-        <StatsCard title="Active Clients" value={stats?.activeClients} />
-        <StatsCard title="Inactive Clients" value={stats?.inactiveClients} />
-        <StatsCard title="Pending Clients" value={stats?.pendingClients} />
+        <StatsCard title="Lead Clients" value={stats?.leadClients} />
+        <StatsCard title="Contacted Clients" value={stats?.contactedClients} />
+        <StatsCard title="Qualified Clients" value={stats?.qualifiedClients} />
+        <StatsCard
+          title="Proposal sent Clients"
+          value={stats?.proposalSentClients}
+        />
+        <StatsCard title="Approved Clients" value={stats?.approvedClients} />
+        <StatsCard title="Onboarded Clients" value={stats?.onboardedClients} />
         <StatsCard title="Suspended Clients" value={stats?.suspendedClients} />
+        <StatsCard title="Archieved Clients" value={stats?.archievedClients} />
       </div>
       <div>
         <h3>Recent Clients</h3>

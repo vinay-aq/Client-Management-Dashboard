@@ -22,7 +22,7 @@ function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
         Current Status: <strong> {currentStatus}</strong>
       </p>
       {availableTransitions.length > 0 ? (
-        <select onChange={(e) => setNextStatus(e.currentTarget.value)}>
+        <select onChange={(e) => setNextStatus(e.currentTarget.value)} value={nextStatus}>
           <option value="">Select Transition</option>
 
           {availableTransitions.map((val) => (
@@ -32,7 +32,7 @@ function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
       ) : (
         "No available Transitions"
       )}
-      <button disabled={loading || !nextStatus} onClick={() => onUpdateStatus(nextStatus)}>
+      <button disabled={loading || !nextStatus} onClick={() => {onUpdateStatus(nextStatus); setNextStatus("") }}>
         {loading ? "Updating..." : "Update"}
       </button>
     </div>

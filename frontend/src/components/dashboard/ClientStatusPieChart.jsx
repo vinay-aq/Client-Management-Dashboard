@@ -9,14 +9,27 @@ import {
 } from "recharts";
 
 function ClientStatusPieChart({ stats }) {
-  const data = [
-    { name: "Active", value: stats?.activeClients || 0 },
-    { name: "Inactive", value: stats?.inactiveClients || 0 },
-    { name: "Pending", value: stats?.pendingClients || 0 },
-    { name: "Suspended", value: stats?.suspendedClients || 0 },
-  ];
+ const data = [
+  { name: "Lead", value: stats?.leadClients || 0 },
+  { name: "Contacted", value: stats?.contactedClients || 0 },
+  { name: "Qualified", value: stats?.qualifiedClients || 0 },
+  { name: "Proposal Sent", value: stats?.proposalSentClients || 0 },
+  { name: "Approved", value: stats?.approvedClients || 0 },
+  { name: "Onboarded", value: stats?.onboardedClients || 0 },
+  { name: "Suspended", value: stats?.suspendedClients || 0 },
+  { name: "Archived", value: stats?.archievedClients || 0 },
+];
 
-  const COLORS = ["#00C49F", "#FF8042", "#FFBB28", "#FF4D4F"];
+const COLORS = [
+  "#00C49F", // Lead
+  "#FF8042", // Contacted
+  "#FFBB28", // Qualified
+  "#0088FE", // Proposal Sent
+  "#8884D8", // Approved
+  "#82CA9D", // Onboarded
+  "#FF4D4F", // Suspended
+  "#A0AEC0", // Archived
+];
   return (
     <div
       style={{

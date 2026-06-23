@@ -186,7 +186,7 @@ const clientsSlice = createSlice({
     });
 
     builder.addCase(updateClientWorkflow.fulfilled, (state, action) => {
-      state.selectedClient = action.payload;
+      state.selectedClient = action.payload.client;
     });
 
   },
