@@ -32,9 +32,10 @@ async function getClientById(req, res, next) {
 
 async function createClient(req, res, next) {
   const avatar = req.file ? `/uploads/${req.file.filename}` : "";
+  const user = req.user;
 
   try {
-    const client = await createClientService({ ...req.body, avatar });
+    const client = await createClientService({ ...req.body, avatar, user });
     res.status(201).json({ ...client });
   } catch (err) {
     next(err);
@@ -44,8 +45,9 @@ async function createClient(req, res, next) {
 async function updateClient(req, res, next) {
   const avatar = req.file ? `/uploads/${req.file.filename}` : "";
   const { id } = req.params;
+  const user = req.user;
   try {
-    const client = await updateClientService(id, { ...req.body, avatar });
+    const client = await updateClientService(id, { ...req.body, avatar, user });
     res.status(200).json({ ...client });
   } catch (err) {
     next(err);

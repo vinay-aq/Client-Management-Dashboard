@@ -20,7 +20,7 @@ async function updateUserRole(req, res, next) {
   const role = req.body.role;
   const authUser = req.user;
   try {
-    const updatedUser = await updateUserRoleService(userId, role, authUser);
+    const updatedUser = await updateUserRoleService(userId, role, authUser,);
     res.status(200).json(updatedUser);
   } catch (err) {
     next(err);

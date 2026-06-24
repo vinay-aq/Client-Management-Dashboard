@@ -77,7 +77,7 @@ async function fetchClientsById(id) {
 }
 
 async function createClientService(data) {
-  const { name, email, phone, company, status, avatar } = data;
+  const { name, email, phone, company, status, avatar, user } = data;
   if (!name || !company || !phone || !email || !status) {
     throw new AppError("One or more fields are missing", 404);
   }
@@ -95,13 +95,22 @@ async function createClientService(data) {
     avatar,
   });
 
-  await createActivityService(`Client ${newClient.name} is created`);
+  await createActivityService({
+    message: `Client ${newClient.name} is created`,
+    entityType: "client",
+    entityId: newClient._id,
+    action: "client_created",
+    actorId: user.id,
+    actorName: user.name,
+    oldValue: null,
+    newValue: null,
+  });
   notifyDashboardDataChanged();
   return newClient.toObject();
 }
 
 async function updateClientService(id, data) {
-  const { name, email, phone, company, status, avatar } = data;
+  const { name, email, phone, company, status, avatar, user } = data;
   const isValid = mongoose.Types.ObjectId.isValid(id);
   if (!isValid) {
     throw new AppError("Id is invalid", 400);
@@ -135,7 +144,17 @@ async function updateClientService(id, data) {
     { new: true },
   );
 
-  await createActivityService(`Client ${updatedClient.name} is updated`);
+  await createActivityService({
+    message: `Client ${newClient.name} is updated`,
+    entityType: "client",
+    entityId: newClient._id,
+    action: "client_updated",
+    actorId: user.id,
+    actorName: user.name,
+    oldValue: null,
+    newValue: null,
+  });
+
   notifyDashboardDataChanged();
   return updatedClient.toObject();
 }
@@ -157,7 +176,17 @@ async function deleteClientService(id) {
   }
 
   const deletedClient = await clientModel.findByIdAndDelete(id);
-  await createActivityService(`Client ${deletedClient.name} is deleted`);
+  await createActivityService({
+    message: `Client ${newClient.name} is deleted`,
+    entityType: "client",
+    entityId: newClient._id,
+    action: "client_deleted",
+    actorId: user.id,
+    actorName: user.name,
+    oldValue: null,
+    newValue: null,
+  });
+
   notifyDashboardDataChanged();
   return;
 }

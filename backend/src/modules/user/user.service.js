@@ -31,9 +31,16 @@ async function updateUserRoleService(userId, role, authUser) {
     .findByIdAndUpdate(userId, { role }, { new: true })
     .select("-password");
 
-  await createActivityService(
-    `User ${updatedUser.name} role updated to ${updatedUser.role}`,
-  );
+  await createActivityService({
+    message: `User ${updatedUser.name} role updated to ${updatedUser.role}`,
+    entityType: "user",
+    entityId: updatedUser._id,
+    action: "role_updated",
+    actorId: authUser.id,
+    actorName: authUser.name,
+    oldValue: null,
+    newValue: null,
+  });
   return updatedUser.toObject();
 }
 
@@ -61,9 +68,16 @@ async function toggleUserStatusService(userId, isActive, authUser) {
     .findByIdAndUpdate(userId, { isActive }, { new: true })
     .select("-password");
 
-  await createActivityService(
-    `User ${updatedUser.name} is marked as ${isActive ? "active" : "inactive"}`,
-  );
+  await createActivityService({
+    message: `User ${updatedUser.name} is marked as ${isActive ? "active" : "inactive"}`,
+    entityType: "user",
+    entityId: updatedUser._id,
+    action: "status_updated",
+    actorId: authUser.id,
+    actorName: authUser.name,
+    oldValue: null,
+    newValue: null,
+  });
 
   return updatedUser.toObject();
 }
