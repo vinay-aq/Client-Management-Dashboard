@@ -34,7 +34,16 @@ async function fetchActivityService() {
   return activities;
 }
 
+async function fetchActivityByEntityService({entityType,entityId }) {
+  const activities = await activityModel
+    .find({entityType, entityId})
+    .sort({ createdAt: -1 })
+    .limit(20);
+  return activities;
+}
+
 module.exports = {
   fetchActivityService,
   createActivityService,
+  fetchActivityByEntityService
 };

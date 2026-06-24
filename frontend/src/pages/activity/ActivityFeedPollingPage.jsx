@@ -57,10 +57,11 @@ function ActivityFeed() {
 
   useEffect(() => {
     let timeoutId = null;
-
+    let firstCall = true;
     async function startPolling() {
-      await loadActivityFeed(false);
-      timeoutId = setTimeout(startPolling, 5000);
+      await loadActivityFeed(firstCall ? false : true);
+      if(firstCall) firstCall = false;
+      timeoutId = setTimeout( startPolling, 5000);
     }
 
     startPolling();

@@ -191,7 +191,7 @@ async function deleteClientService(id) {
   return;
 }
 
-async function updateClientWorkflowService(clientId, nextStatus) {
+async function updateClientWorkflowService({ clientId, nextStatus, user }) {
   const client = await clientModel.findById(clientId);
   if (!client) {
     throw new AppError("Client does not exist", 404);
@@ -211,6 +211,21 @@ async function updateClientWorkflowService(clientId, nextStatus) {
     { status: nextStatus },
     { new: true },
   );
+
+  await createActivityService({
+    message: `Client ${client.name} is status updated to ${nextStatus}`,
+    entityType: "client",
+    entityId: client._id,
+    action: "status_updated",
+    actorId: user.id,
+    actorName: user.name,
+    oldValue: {
+      status: currentStatus,
+    },
+    newValue: {
+      status: nextStatus,
+    },
+  });
 
   return updatedClient;
 }

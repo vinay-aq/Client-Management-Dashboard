@@ -38,8 +38,12 @@ async function updateUserRoleService(userId, role, authUser) {
     action: "role_updated",
     actorId: authUser.id,
     actorName: authUser.name,
-    oldValue: null,
-    newValue: null,
+    oldValue: {
+      status: user.role
+    },
+    newValue: {
+      status: updatedUser.role,
+    },
   });
   return updatedUser.toObject();
 }
@@ -75,8 +79,12 @@ async function toggleUserStatusService(userId, isActive, authUser) {
     action: "status_updated",
     actorId: authUser.id,
     actorName: authUser.name,
-    oldValue: null,
-    newValue: null,
+    oldValue: {
+      status: isActive ? "inactive":"active"
+    },
+    newValue: {
+      status: isActive ? "active":"inactive"
+    },
   });
 
   return updatedUser.toObject();

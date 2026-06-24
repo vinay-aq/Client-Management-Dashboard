@@ -67,10 +67,11 @@ async function deleteClient(req, res, next) {
 }
 
 async function updateClientWorkflow(req, res, next) {
-  const { id } = req.params;
+  const { id : clientId } = req.params;
   const { nextStatus } = req.body;
+  const user = req.user;
   try {
-    const updatedClient = await updateClientWorkflowService(id, nextStatus);
+    const updatedClient = await updateClientWorkflowService({clientId, nextStatus, user});
     res
       .status(200)
       .json({ success: true, message: "Client status updated successfully", client: updatedClient });

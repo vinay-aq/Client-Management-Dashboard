@@ -6,7 +6,6 @@ const {
 } = require("./user.service");
 
 async function getUsers(req, res, next) {
-  console.log("get users controller called");
   try {
     const users = await fetchUsers();
     return res.status(200).json({ success: true, users: users });
