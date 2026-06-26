@@ -4,3 +4,10 @@ export const getActivities = async () => {
   const res = await axiosInstance.get("/api/activities");
   return res.data;
 };
+
+export const getActivitiesByEntity = async ({entityType, entityId }) => {
+  const res = await axiosInstance.get(`/api/activities/${entityType}/${entityId}`);
+  return res.data;
+};
+
+

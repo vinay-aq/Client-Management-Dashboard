@@ -11,6 +11,8 @@ import ConfirmModal from "../components/ui/ConfirmModal";
 import usePermission from "../hooks/usePermission";
 import { PERMISSIONS } from "../utils/permissions";
 import ClientWorkflowSection from "../components/clients/ClientWorkflowSection";
+import ActivityTimeline from "../components/activity/ActivityTimeline";
+import { fetchClientTimeline } from "../features/clients/clientAPI";
 import toast from "react-hot-toast";
 
 function ClientDetailsPage() {
@@ -18,6 +20,9 @@ function ClientDetailsPage() {
   const dispatch = useDispatch();
   const [iseDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdatingWorkflow, setIsUpdatingWorkflow] = useState(false);
+  const [activities, setActivities] = useState([]);
+  const [isFetchingClientTimeline, setIsFetchingClientTimeline] =
+    useState(null);
   const { id } = useParams();
   const canDeleteClient = usePermission(PERMISSIONS.CLIENT_DELETE);
   const canEditClient = usePermission(PERMISSIONS.CLIENT_EDIT);
@@ -25,8 +30,22 @@ function ClientDetailsPage() {
   const { selectedClient, error, isFetchingClientDetails, isDeletingClient } =
     useSelector((state) => state.clients);
 
+  async function getClientTimeline() {
+    setIsFetchingClientTimeline(true);
+
+    try {
+      const res = await fetchClientTimeline(id);
+      setActivities(res.activities);
+    } catch (err) {
+      toast.error(err || "Unable to fetch client timeline");
+    } finally {
+      setIsFetchingClientTimeline(false);
+    }
+  }
+
   useEffect(() => {
     dispatch(fetchClientById(id));
+    getClientTimeline();
   }, [dispatch, id]);
 
   if (isFetchingClientDetails) {
@@ -54,11 +73,12 @@ function ClientDetailsPage() {
   async function handleUpdateStatus(nextStatus) {
     try {
       setIsUpdatingWorkflow(true);
-      console.log({id, nextStatus})
-      await dispatch(updateClientWorkflow({id, nextStatus})).unwrap();
+      console.log({ id, nextStatus });
+      await dispatch(updateClientWorkflow({ id, nextStatus })).unwrap();
+      await getClientTimeline();
       toast.success("Workflow updated");
     } catch (err) {
-      console.log({err})
+      console.log({ err });
       toast.error(err || "Failed to updated workflow");
     } finally {
       setIsUpdatingWorkflow(false);
@@ -91,6 +111,8 @@ function ClientDetailsPage() {
         currentStatus={selectedClient?.status}
         onUpdateStatus={handleUpdateStatus}
       />
+
+      {activities.length > 0 && <ActivityTimeline activities={activities} />}
 
       {canEditClient && <button onClick={handleEditClient}>Edit client</button>}
       {canDeleteClient && (

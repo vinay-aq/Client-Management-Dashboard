@@ -213,7 +213,7 @@ async function updateClientWorkflowService({ clientId, nextStatus, user }) {
   );
 
   await createActivityService({
-    message: `Client ${client.name} is status updated to ${nextStatus}`,
+    message: `Client ${client.name} status updated to ${nextStatus}`,
     entityType: "client",
     entityId: client._id,
     action: "status_updated",
