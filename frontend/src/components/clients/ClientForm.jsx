@@ -27,7 +27,7 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
     },
   });
 
-  
+
 
   useEffect(() => {
     reset({
@@ -52,7 +52,7 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-    
+
       <label>Name: </label>
       <input type="text" {...register("name")} placeholder="Name" />
       {touchedFields.name && errors.name && <p>{errors.name.message}</p>}
@@ -77,15 +77,6 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       <input type="text" {...register("phone")} placeholder="Phone" />
       {touchedFields.phone && errors.phone && <p>{errors.phone.message}</p>}
 
-      <br />
-      <br />
-      <label>Status: </label>
-      <select {...register("status")}>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-        <option value="pending">Pending</option>
-        <option value="suspended">Suspended</option>
-      </select>
       <br />
       <br />
       <input
