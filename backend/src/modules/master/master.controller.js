@@ -1,5 +1,5 @@
 
-const {fetchMasterService, createMasterService, updateMasterService, deleteMasterService} = require("./master.service");
+const { fetchMasterService, createMasterService, updateMasterService, deleteMasterService } = require("./master.service");
 
 
 async function getMasters(req, res, next) {
@@ -25,8 +25,10 @@ async function createMaster(req, res, next) {
 
 
 async function updateMaster(req, res, next) {
+    const { id: masterId } = req.params;
+
     try {
-        const master = await updateMasterService(req.body);
+        const master = await updateMasterService(masterId);
         res.status(200).json({ success: true, message: "Master updated successfuly", master })
     } catch (err) {
         next(err)
