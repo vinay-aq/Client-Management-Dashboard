@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { MASTER_TYPES } = require("../../constants/master");
+const { MASTER_TYPES } = require("../../constants/masterTypes");
 const masterSchema = new mongoose.Schema(
     {
         type: { type: String, required: true, index: true },
