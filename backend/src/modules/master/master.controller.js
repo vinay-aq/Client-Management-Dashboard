@@ -26,9 +26,10 @@ async function createMaster(req, res, next) {
 
 async function updateMaster(req, res, next) {
     const { id: masterId } = req.params;
+    const {masterData} =  req.body;
 
     try {
-        const master = await updateMasterService(masterId);
+        const master = await updateMasterService(masterId, masterData);
         res.status(200).json({ success: true, message: "Master updated successfuly", master })
     } catch (err) {
         next(err)
