@@ -40,7 +40,7 @@ function AppRoutes() {
           <Route
             path="/clients/createClient"
             element={
-              <ProtectedRoute allowedRoles={PERMISSIONS.CREATE_CLIENT}>
+              <ProtectedRoute allowedPermissions={PERMISSIONS.CREATE_CLIENT}>
                 <CreateClientPage />
               </ProtectedRoute>
             }
@@ -49,7 +49,7 @@ function AppRoutes() {
           <Route
             path="/clients/:id/edit"
             element={
-              <ProtectedRoute allowedRoles={PERMISSIONS.EDIT_CLIENT}>
+              <ProtectedRoute allowedPermissions={PERMISSIONS.EDIT_CLIENT}>
                 <EditClientPage />
               </ProtectedRoute>
             }
@@ -57,7 +57,7 @@ function AppRoutes() {
           <Route
             path="/admin/users"
             element={
-              <ProtectedRoute allowedRoles={PERMISSIONS.MANAGER_USERS}>
+              <ProtectedRoute allowedPermissions={[PERMISSIONS.USER_ROLE_UPDATE, PERMISSIONS.USER_STATUS_UPDATE, PERMISSIONS.USERS_VIEW]}>
                 <AdminUserPage />
               </ProtectedRoute>
             }

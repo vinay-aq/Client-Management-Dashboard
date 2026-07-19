@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-function ProtectedRoute({ children, allowedRoles }) {
+function ProtectedRoute({ children, allowedPermissions }) {
   const { isAuthenticated, authInitialized, user } = useSelector(
     (state) => state.auth,
   );
@@ -9,9 +9,19 @@ function ProtectedRoute({ children, allowedRoles }) {
   if (!authInitialized) {
     return <h2>Initializing...</h2>;
   }
+  const userPermissions = user?.permissions;
+  const permissionGranted = allowedPermissions && userPermissions 
+    ? allowedPermissions?.every((perm) => userPermissions.includes(perm))
+    : true;
 
-  const userRole = user?.role;
-  if (allowedRoles && allowedRoles.length && !allowedRoles.includes(userRole)) {
+  console.log(
+    "userPermissions",
+    userPermissions,
+    "permissionGranted",
+    allowedPermissions,
+  );
+
+  if (!permissionGranted) {
     return <Navigate to="/unauthorized" replace />;
   }
 
