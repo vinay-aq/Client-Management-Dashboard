@@ -1,6 +1,6 @@
 const AppError = require("../../utils/AppError");
 const masterModel = require("./master.model");
-const masterTypes = require("../../constants/masterTypes");
+const {masterTypes} = require("../../constants/masterTypes");
 const mongoose = require("mongoose");
 
 async function fetchMasterService(type) {
@@ -9,6 +9,7 @@ async function fetchMasterService(type) {
   }
 
   const validMasterType = masterTypes.includes(type);
+  console.log(masterTypes, type)
   if (!validMasterType) {
     throw new AppError("Invalid master type");
   }

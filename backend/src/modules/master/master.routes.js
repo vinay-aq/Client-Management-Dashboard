@@ -7,10 +7,15 @@ const {
 } = require("../auth/auth.middleware");
 const { PERMISSIONS } = require("../../constants/permissions");
 
+// router.get(
+//   "/",
+//   authMiddleware,
+//   permissionAuthorize(PERMISSIONS.MASTER_VIEW),
+//   masterController.getMasters,
+// );
+
 router.get(
   "/",
-  authMiddleware,
-  permissionAuthorize(PERMISSIONS.MASTER_VIEW),
   masterController.getMasters,
 );
 router.post(
