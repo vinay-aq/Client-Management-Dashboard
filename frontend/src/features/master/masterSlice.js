@@ -72,7 +72,7 @@ const dashboardSlice = createSlice({
       state.isFetchingStats = true;
     });
     builder.addCase(fetchMastersData.fulfilled, (state, action) => {
-      state.masters = action.payload;
+      state.masters = action.payload.masters;
       state.isFetchingStats = false;
     });
     builder.addCase(fetchMastersData.rejected, (state, action) => {
@@ -83,7 +83,7 @@ const dashboardSlice = createSlice({
       state.isFetchingStats = true;
     });
     builder.addCase(createMasterAPI.fulfilled, (state, action) => {
-      const master = action.payload;
+      const master = action.payload.master;
       state.masters = { ...state.masters, master };
       state.error = false;
     });
@@ -111,6 +111,7 @@ const dashboardSlice = createSlice({
     });
     builder.addCase(deleteMasterAPI.fulfilled, (state, action) => {
       state.isDeletingMaster = false;
+      state.masters = state.masters.filter((m) => m._id !== action.payload.id);
     });
     builder.addCase(deleteMasterAPI.rejected, (state, action) => {
       state.isDeletingMaster = false;

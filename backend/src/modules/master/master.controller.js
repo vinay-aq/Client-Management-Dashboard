@@ -41,7 +41,7 @@ async function deleteMaster(req, res, next) {
     const { id: masterId } = req.params;
     try {
         await deleteMasterService(masterId);
-        res.status(200).json({ success: true, message: "Master deleted successfuly" })
+        res.status(200).json({ success: true, message: "Master deleted successfuly", id: masterId })
     } catch (err) {
         next(err)
     }
