@@ -7,8 +7,8 @@ const PERMISSIONS = {
   USER_ROLE_UPDATE: "user.role.update",
   USER_STATUS_UPDATE: "user.status.update",
   DASHBOARD_VIEW: "dashboard.view",
-  MASTER_MANAGE: "master.manage"
-  
+  MASTER_VIEW: "master.view",
+  MASTER_MANAGE: "master.manage",
 };
 
 module.exports = {

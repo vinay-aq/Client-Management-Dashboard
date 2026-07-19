@@ -10,7 +10,7 @@ const { PERMISSIONS } = require("../../constants/permissions");
 router.get(
   "/",
   authMiddleware,
-  permissionAuthorize(PERMISSIONS.MASTER_MANAGE),
+  permissionAuthorize(PERMISSIONS.MASTER_VIEW),
   masterController.getMasters,
 );
 router.post(
