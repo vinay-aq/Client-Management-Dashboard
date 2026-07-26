@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  fetchMastersAPI,
+  fetchMastersDataAPI,
   createMasterAPI,
   updateMasterAPI,
   deleteMasterAPI,
@@ -16,10 +16,11 @@ const initialState = {
 };
 
 export const fetchMastersData = createAsyncThunk(
-  "/master/fetchMasters",
-  async (_, thunk) => {
+  "/master/fetchMaster",
+  async (type, thunk) => {
+
     try {
-      const res = await fetchMastersDataAPI();
+      const res = await fetchMastersDataAPI(type);
       return res;
     } catch (err) {
       thunk.rejectWithValue(err || "Unable to fetch master data");
@@ -28,7 +29,7 @@ export const fetchMastersData = createAsyncThunk(
 );
 
 export const createMaster = createAsyncThunk(
-  "/master/fetchMasters",
+  "/master/createMaster",
   async (_, thunk) => {
     try {
       const res = await createMasterAPI();
@@ -40,7 +41,7 @@ export const createMaster = createAsyncThunk(
 );
 
 export const updateMaster = createAsyncThunk(
-  "/master/fetchMasters",
+  "/master/updateMaster",
   async (_, thunk) => {
     try {
       const res = await updateMasterAPI();
@@ -52,7 +53,7 @@ export const updateMaster = createAsyncThunk(
 );
 
 export const deleteMaster = createAsyncThunk(
-  "/master/fetchMasters",
+  "/master/deleteMaster",
   async (_, thunk) => {
     try {
       const res = await deleteMasterAPI();
@@ -79,41 +80,41 @@ const dashboardSlice = createSlice({
       state.isFetchingStats = false;
       state.error = action.payload;
     });
-    builder.addCase(createMasterAPI.pending, (state, action) => {
+    builder.addCase(createMaster.pending, (state, action) => {
       state.isFetchingStats = true;
     });
-    builder.addCase(createMasterAPI.fulfilled, (state, action) => {
+    builder.addCase(createMaster.fulfilled, (state, action) => {
       const master = action.payload.master;
       state.masters = { ...state.masters, master };
       state.error = false;
     });
-    builder.addCase(createMasterAPI.rejected, (state, action) => {
+    builder.addCase(createMaster.rejected, (state, action) => {
       state.isCreatingMaster = false;
       state.error = action.payload;
     });
 
-    builder.addCase(updateMasterAPI.pending, (state, action) => {
+    builder.addCase(updateMaster.pending, (state, action) => {
       state.isUpdatingMaster = true;
     });
-    builder.addCase(updateMasterAPI.fulfilled, (state, action) => {
+    builder.addCase(updateMaster.fulfilled, (state, action) => {
       state.masters = state.masters.map((m) =>
         m._id === action.payload._id ? action.paylod : m,
       );
       state.isUpdatingMaster = false;
     });
-    builder.addCase(updateMasterAPI.rejected, (state, action) => {
+    builder.addCase(updateMaster.rejected, (state, action) => {
       state.isUpdatingMaster = false;
       state.error = action.payload;
     });
 
-    builder.addCase(deleteMasterAPI.pending, (state, action) => {
+    builder.addCase(deleteMaster.pending, (state, action) => {
       state.isDeletingMaster = true;
     });
-    builder.addCase(deleteMasterAPI.fulfilled, (state, action) => {
+    builder.addCase(deleteMaster.fulfilled, (state, action) => {
       state.isDeletingMaster = false;
       state.masters = state.masters.filter((m) => m._id !== action.payload.id);
     });
-    builder.addCase(deleteMasterAPI.rejected, (state, action) => {
+    builder.addCase(deleteMaster.rejected, (state, action) => {
       state.isDeletingMaster = false;
       state.error = action.payload;
     });

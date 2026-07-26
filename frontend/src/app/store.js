@@ -3,13 +3,14 @@ import authReducer from "../features/auth/authSlice";
 import clientReducer from "../features/clients/clientSlice";
 import dashboardReducer from "../features/dashboard/dashboardSlice";
 import usersReducer from "../features/users/userSlice";
-
+import masterReducer from "../features/master/masterSlice"
 const store = configureStore({
     reducer: {
         auth: authReducer,
         clients: clientReducer,
         dashboard: dashboardReducer,
-        users: usersReducer
+        users: usersReducer,
+        masters: masterReducer,
     }
 })
 

@@ -13,7 +13,7 @@ import DashboardPage from "../pages/DashboardPage";
 import AdminUserPage from "../pages/AdminUserPage";
 import ActivityFeed from "../pages/activity/ActivityFeedPollingPage";
 import ActivityFeedRealTimePage from "../pages/activity/ActivityFeedRealtimePage";
-
+import MastersPage from "../pages/MastersPage";
 
 function AppRoutes() {
   return (
@@ -57,7 +57,13 @@ function AppRoutes() {
           <Route
             path="/admin/users"
             element={
-              <ProtectedRoute allowedPermissions={[PERMISSIONS.USER_ROLE_UPDATE, PERMISSIONS.USER_STATUS_UPDATE, PERMISSIONS.USERS_VIEW]}>
+              <ProtectedRoute
+                allowedPermissions={[
+                  PERMISSIONS.USER_ROLE_UPDATE,
+                  PERMISSIONS.USER_STATUS_UPDATE,
+                  PERMISSIONS.USERS_VIEW,
+                ]}
+              >
                 <AdminUserPage />
               </ProtectedRoute>
             }
@@ -84,6 +90,14 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <ActivityFeedRealTimePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/masters"
+            element={
+              <ProtectedRoute>
+                <MastersPage />
               </ProtectedRoute>
             }
           />
