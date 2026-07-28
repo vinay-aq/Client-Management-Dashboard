@@ -14,13 +14,6 @@ function ProtectedRoute({ children, allowedPermissions }) {
     ? allowedPermissions?.every((perm) => userPermissions.includes(perm))
     : true;
 
-  console.log(
-    "userPermissions",
-    userPermissions,
-    "permissionGranted",
-    allowedPermissions,
-  );
-
   if (!permissionGranted) {
     return <Navigate to="/unauthorized" replace />;
   }

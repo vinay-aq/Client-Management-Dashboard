@@ -9,6 +9,7 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       ? `http://localhost:8000${initialFormData?.avatar}`
       : "",
   );
+  
   const {
     register,
     handleSubmit,
@@ -26,8 +27,6 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       avatar: null,
     },
   });
-
-
 
   useEffect(() => {
     reset({
@@ -49,10 +48,8 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
     setPreviewImage(imageURL);
   }
 
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-
       <label>Name: </label>
       <input type="text" {...register("name")} placeholder="Name" />
       {touchedFields.name && errors.name && <p>{errors.name.message}</p>}
@@ -89,7 +86,9 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       {(previewImage || initialFormData?.avatar) && (
         <div>
           <img
-            src={previewImage || `http://localhost:8000${initialFormData?.avatar}`}
+            src={
+              previewImage || `http://localhost:8000${initialFormData?.avatar}`
+            }
             alt="avatar"
             width="120"
             height="120"

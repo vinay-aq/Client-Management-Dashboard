@@ -1,9 +1,20 @@
-import React from 'react'
+import React from "react";
 
-function FormField() {
+function FormField({ label, required = false, error, children }) {
   return (
-    <div>FormField</div>
-  )
+    <div className="mb-5">
+      <div>
+        {label && (
+          <label className="block mb-2 font-medium">
+            {label}
+            {required && <span className="text-red-500 ml-1" style={{color: 'red'}}>*</span>}
+          </label>
+        )}
+      </div>
+      {children}
+      {error && <div className="mt-1 text-red-500 text-sm">{error}</div>}
+    </div>
+  );
 }
 
-export default FormField
+export default FormField;

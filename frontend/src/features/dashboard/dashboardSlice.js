@@ -14,7 +14,7 @@ export const fetchDashboardStats = createAsyncThunk(
       const res = await fetchDashboardStatsAPI();
       return res;
     } catch (err) {
-      thunk.rejectWithValue(err || "Unable to fetch dashboard data");
+      return thunk.rejectWithValue(err || "Unable to fetch dashboard data");
     }
   },
 );

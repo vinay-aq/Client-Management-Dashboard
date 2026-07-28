@@ -73,12 +73,10 @@ function ClientDetailsPage() {
   async function handleUpdateStatus(nextStatus) {
     try {
       setIsUpdatingWorkflow(true);
-      console.log({ id, nextStatus });
       await dispatch(updateClientWorkflow({ id, nextStatus })).unwrap();
       await getClientTimeline();
       toast.success("Workflow updated");
     } catch (err) {
-      console.log({ err });
       toast.error(err || "Failed to updated workflow");
     } finally {
       setIsUpdatingWorkflow(false);

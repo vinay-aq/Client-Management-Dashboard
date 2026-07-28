@@ -18,48 +18,47 @@ const initialState = {
 export const fetchMastersData = createAsyncThunk(
   "/master/fetchMaster",
   async (type, thunk) => {
-
     try {
       const res = await fetchMastersDataAPI(type);
       return res;
     } catch (err) {
-      thunk.rejectWithValue(err || "Unable to fetch master data");
+      return thunk.rejectWithValue(err || "Unable to fetch master data");
     }
   },
 );
 
 export const createMaster = createAsyncThunk(
   "/master/createMaster",
-  async (_, thunk) => {
+  async (master, thunk) => {
     try {
-      const res = await createMasterAPI();
+      const res = await createMasterAPI(master);
       return res;
     } catch (err) {
-      thunk.rejectWithValue(err || "Unable to create Master");
+      return thunk.rejectWithValue(err || "Unable to create Master");
     }
   },
 );
 
 export const updateMaster = createAsyncThunk(
   "/master/updateMaster",
-  async (_, thunk) => {
+  async (master, thunk) => {
     try {
-      const res = await updateMasterAPI();
+      const res = await updateMasterAPI(master);
       return res;
     } catch (err) {
-      thunk.rejectWithValue(err || "Unable to update Master");
+      return thunk.rejectWithValue(err || "Unable to update Master");
     }
   },
 );
 
 export const deleteMaster = createAsyncThunk(
   "/master/deleteMaster",
-  async (_, thunk) => {
+  async (id, thunk) => {
     try {
-      const res = await deleteMasterAPI();
+      const res = await deleteMasterAPI(id);
       return res;
     } catch (err) {
-      thunk.rejectWithValue(err || "Unable to delete Master");
+      return thunk.rejectWithValue(err || "Unable to delete Master");
     }
   },
 );
@@ -70,23 +69,21 @@ const dashboardSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchMastersData.pending, (state, action) => {
-      state.isFetchingStats = true;
+      state.isFetchingMasters = true;
     });
     builder.addCase(fetchMastersData.fulfilled, (state, action) => {
       state.masters = action.payload.masters;
-      state.isFetchingStats = false;
+      state.isFetchingMasters = false;
     });
     builder.addCase(fetchMastersData.rejected, (state, action) => {
-      state.isFetchingStats = false;
+      state.isFetchingMasters = false;
       state.error = action.payload;
     });
     builder.addCase(createMaster.pending, (state, action) => {
-      state.isFetchingStats = true;
+      state.isCreatingMaster = true;
     });
     builder.addCase(createMaster.fulfilled, (state, action) => {
-      const master = action.payload.master;
-      state.masters = { ...state.masters, master };
-      state.error = false;
+      state.isCreatingMaster = false;
     });
     builder.addCase(createMaster.rejected, (state, action) => {
       state.isCreatingMaster = false;
@@ -97,9 +94,6 @@ const dashboardSlice = createSlice({
       state.isUpdatingMaster = true;
     });
     builder.addCase(updateMaster.fulfilled, (state, action) => {
-      state.masters = state.masters.map((m) =>
-        m._id === action.payload._id ? action.paylod : m,
-      );
       state.isUpdatingMaster = false;
     });
     builder.addCase(updateMaster.rejected, (state, action) => {
@@ -112,7 +106,6 @@ const dashboardSlice = createSlice({
     });
     builder.addCase(deleteMaster.fulfilled, (state, action) => {
       state.isDeletingMaster = false;
-      state.masters = state.masters.filter((m) => m._id !== action.payload.id);
     });
     builder.addCase(deleteMaster.rejected, (state, action) => {
       state.isDeletingMaster = false;

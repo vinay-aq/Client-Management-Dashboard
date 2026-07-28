@@ -1,6 +1,6 @@
 const AppError = require("../../utils/AppError");
 const masterModel = require("./master.model");
-const {masterTypes} = require("../../constants/masterTypes");
+const { masterTypes } = require("../../constants/masterTypes");
 const mongoose = require("mongoose");
 
 async function fetchMasterService(type) {
@@ -9,7 +9,7 @@ async function fetchMasterService(type) {
   }
 
   const validMasterType = masterTypes.includes(type);
-  console.log(masterTypes, type)
+  console.log(masterTypes, type);
   if (!validMasterType) {
     throw new AppError("Invalid master type");
   }
@@ -18,7 +18,7 @@ async function fetchMasterService(type) {
   return masters;
 }
 
-async function createMasterService(master) {
+async function createMasterService({ master }) {
   if (!master) {
     throw new AppError("Please provide master details");
   }
@@ -31,12 +31,16 @@ async function createMasterService(master) {
     throw new AppError("Master value is required");
   }
 
-  const duplicateMaster = await masterModel.findOne({ type, value });
+  const duplicateMaster = await masterModel.findOne({
+    type: master?.type,
+    value: master?.value,
+  });
+
   if (duplicateMaster) {
     throw new AppError("Master already exist", 400);
   }
 
-  return await masterModel.create({...master, isActive: true});
+  return await masterModel.create({ ...master, isActive: true });
 }
 
 async function updateMasterService(masterId, masterData) {
@@ -57,7 +61,11 @@ async function updateMasterService(masterId, masterData) {
     throw new AppError("Master value is required");
   }
 
-  const updatedDoc = await masterModel.findByIdAndUpdate(masterId, { $set: masterData },{new: true});
+  const updatedDoc = await masterModel.findByIdAndUpdate(
+    masterId,
+    { $set: masterData },
+    { new: true },
+  );
   return updatedDoc;
 }
 

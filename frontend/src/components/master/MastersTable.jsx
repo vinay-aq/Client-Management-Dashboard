@@ -1,17 +1,7 @@
 import React from "react";
 import DataTable from "../table/DataTable";
-import { useSelector } from "react-redux";
 
-function MastersTable() {
-  
-  const { masters, isFetchingMasters } = useSelector((state) => state?.masters);
-
-  function onEdit(id) {
-    console.log(id);
-  }
-
-  function onDelete(id) {}
-
+function MastersTable({ onEdit, onDelete, masters, loading }) {
   const columns = [
     {
       header: "Type",
@@ -40,13 +30,13 @@ function MastersTable() {
           <>
             <button
               style={{ cursor: "pointer", margin: "auto", display: "flex" }}
-              onClick={() => onEdit(row._id)}
+              onClick={() => onEdit(row)}
             >
               Edit
             </button>
             <button
               style={{ cursor: "pointer", margin: "auto", display: "flex" }}
-              onClick={() => onDelete(row._id)}
+              onClick={() => onDelete(row)}
             >
               Delete
             </button>
@@ -61,7 +51,7 @@ function MastersTable() {
       <DataTable
         columns={columns}
         data={masters}
-        loading={isFetchingMasters}
+        loading={loading}
         emptyMessage="Masters not found"
       />
     </div>
