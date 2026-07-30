@@ -9,6 +9,7 @@ import {
 } from "../features/master/masterSlice";
 import MastersForm from "../components/master/MastersForm";
 import { masterTypes, MASTER_TYPES } from "../ constants/masterTypes";
+import toast from "react-hot-toast";
 
 function MastersPage() {
   const [selectedType, setSelectedType] = useState(MASTER_TYPES.INDUSTRY);
@@ -27,27 +28,35 @@ function MastersPage() {
     dispatch(fetchMastersData(selectedType));
   }, [dispatch, selectedType]);
 
+/** the function of handle master is variied based on the hosting and closure and tempo.    */
+ 
   async function handleMasterForm(data) {
-    let master = {
-      type: selectedType,
-      value: data.value,
-      description: data.description,
-    };
-    if (editingMaster) {
-      master = {
-        ...master,
-        id: editingMaster._id,
+    try {
+      let master = {
+        type: selectedType,
+        value: data.value,
+        description: data.description,
       };
-      await dispatch(updateMaster(master));
-    } else {
-      await dispatch(createMaster(master));
+      if (editingMaster) {
+        master = {
+          ...master,
+          id: editingMaster._id,
+        };
+        await dispatch(updateMaster(master)).unwrap();
+        toast.success("Master updated successfully");
+      } else {
+        await dispatch(createMaster(master)).unwrap();
+        toast.success("Master created successfully");
+      }
+
+      setEditingMaster(null);
+
+      await dispatch(
+        fetchMastersData(selectedType || MASTER_TYPES.CLIENT_STATUS),
+      ).unwrap();
+    } catch (err) {
+      toast.error(err || "Something went wrong");
     }
-
-    setEditingMaster(null);
-
-    await dispatch(
-      fetchMastersData(selectedType || MASTER_TYPES.CLIENT_STATUS),
-    );
   }
 
   function handleEdit(value) {
@@ -57,10 +66,14 @@ function MastersPage() {
   async function handleDelete(data) {
     const resp = window.confirm("Confirm delete master");
     if (resp) {
-      await dispatch(deleteMaster(data._id));
-      await dispatch(
-        fetchMastersData(selectedType || MASTER_TYPES.CLIENT_STATUS),
-      );
+      try {
+        await dispatch(deleteMaster(data._id)).unwrap();
+        await dispatch(
+          fetchMastersData(selectedType || MASTER_TYPES.CLIENT_STATUS),
+        ).unwrap();
+      } catch (err) {
+        toast.error(err || "Something went wrong");
+      }
     }
   }
 
