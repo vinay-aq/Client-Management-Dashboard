@@ -1,18 +1,3 @@
-// export const ROLES = {
-//   ADMIN: "admin",
-//   MANAGER: "manager",
-//   VIEWER: "viewer",
-// };
-
-// export const PERMISSIONS = {
-//   CREATE_CLIENT: [ROLES.ADMIN, ROLES.MANAGER],
-//   EDIT_CLIENT: [ROLES.ADMIN, ROLES.MANAGER],
-//   DELETE_CLIENT: [ROLES.ADMIN],
-//   VIEW_CLIENTS: [ROLES.ADMIN, ROLES.MANAGER, ROLES.VIEWER],
-//   MANAGER_USERS: [ROLES.ADMIN]
-
-// };
-
 export const PERMISSIONS = {
   CLIENT_CREATE: "client.create",
   CLIENT_EDIT: "client.edit",
@@ -24,5 +9,4 @@ export const PERMISSIONS = {
   DASHBOARD_VIEW: "dashboard.view",
   MASTER_VIEW: "master.view",
   MASTER_MANAGE: "master.manage",
-  MASTER_VIEW: "master.view"
 };

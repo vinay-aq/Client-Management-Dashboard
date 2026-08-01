@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import MastersTable from "../components/master/MastersTable";
 import {
@@ -24,12 +24,20 @@ function MastersPage() {
     isFetchingMasters = null,
   } = useSelector((state) => state.masters);
 
-  useEffect(() => {
-    dispatch(fetchMastersData(selectedType));
-  }, [dispatch, selectedType]);
+  const refreshMasters = useCallback(async () => {
+    try {
+      await dispatch(fetchMastersData(selectedType)).unwrap();
+    } catch (err) {
+      toast.error(err || "Could not fetch Masters list");
+    }
+  }, [selectedType, dispatch]);
 
-/** the function of handle master is variied based on the hosting and closure and tempo.    */
- 
+  useEffect(() => {
+    refreshMasters();
+  }, [refreshMasters]);
+
+  /** the function of handle master is variied based on the hosting and closure and tempo.    */
+
   async function handleMasterForm(data) {
     try {
       let master = {
@@ -50,13 +58,11 @@ function MastersPage() {
       }
 
       setEditingMaster(null);
-
-      await dispatch(
-        fetchMastersData(selectedType || MASTER_TYPES.CLIENT_STATUS),
-      ).unwrap();
     } catch (err) {
       toast.error(err || "Something went wrong");
     }
+
+    await refreshMasters();
   }
 
   function handleEdit(value) {
@@ -68,12 +74,10 @@ function MastersPage() {
     if (resp) {
       try {
         await dispatch(deleteMaster(data._id)).unwrap();
-        await dispatch(
-          fetchMastersData(selectedType || MASTER_TYPES.CLIENT_STATUS),
-        ).unwrap();
       } catch (err) {
         toast.error(err || "Something went wrong");
       }
+      await refreshMasters();
     }
   }
 
