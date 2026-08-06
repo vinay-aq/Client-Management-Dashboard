@@ -1,5 +1,5 @@
 import React from "react";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/lab/LoadingButton";
 
 function FormButton({
   loading,
@@ -10,7 +10,7 @@ function FormButton({
   ...props
 }) {
   return (
-    <LoadingButton
+    <Button
       type={type}
       variant={variant}
       color={color}
@@ -23,7 +23,7 @@ function FormButton({
       {...props}
     >
       {children}
-    </LoadingButton>
+    </Button>
   );
 }
 

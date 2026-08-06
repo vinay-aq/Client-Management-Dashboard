@@ -11,15 +11,18 @@ import MastersForm from "../components/master/MastersForm";
 import { masterTypes, MASTER_TYPES } from "../ constants/masterTypes";
 import toast from "react-hot-toast";
 import AppSelect from "../components/common/AppSelect";
+import ConfirmDialog from "../components/common/ConfirmDialog";
 
 function MastersPage() {
   const [selectedType, setSelectedType] = useState(MASTER_TYPES.INDUSTRY);
   const [editingMaster, setEditingMaster] = useState(null);
+  const [masterToDelete, setMasterToDelete] = useState(null);
   const dispatch = useDispatch();
 
   const {
     isCreatingMaster,
     isUpdatingMaster,
+    isDeletingMaster,
     masters = [],
     isFetchingMasters = null,
   } = useSelector((state) => state.masters);
@@ -69,16 +72,17 @@ function MastersPage() {
     setEditingMaster(value);
   }
 
-  async function handleDelete(data) {
-    const resp = window.confirm("Confirm delete master");
-    if (resp) {
-      try {
-        await dispatch(deleteMaster(data._id)).unwrap();
-      } catch (err) {
-        toast.error(err || "Something went wrong");
-      }
-      await refreshMasters();
+  async function handleDelete() {
+    if (!masterToDelete) return;
+
+    try {
+      await dispatch(deleteMaster(masterToDelete._id)).unwrap();
+      toast.success("Master deleted successfully");
+      setMasterToDelete(null);
+    } catch (err) {
+      toast.error(err || "Something went wrong");
     }
+    await refreshMasters();
   }
 
   async function handleChangeMasterType(value) {
@@ -107,11 +111,25 @@ function MastersPage() {
       ) : (
         <MastersTable
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={(data) => setMasterToDelete(data)}
           masters={masters}
           loading={isFetchingMasters}
         />
       )}
+      <ConfirmDialog
+        open={!!masterToDelete}
+        title="Confirm Action"
+        message={
+          masterToDelete
+            ? `Are you sure you want to delete master ${masterToDelete?.value} ? The action could not be undone`
+            : ""
+        }
+        confirmText="Confirm"
+        cancelText="Cancel"
+        loading={isDeletingMaster}
+        onConfirm={handleDelete}
+        onClose={() => setMasterToDelete(null)}
+      />
     </div>
   );
 }
