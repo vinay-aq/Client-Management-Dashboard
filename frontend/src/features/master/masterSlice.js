@@ -22,7 +22,7 @@ export const fetchMastersData = createAsyncThunk(
       const res = await fetchMastersDataAPI(type);
       return res;
     } catch (err) {
-      return thunk.rejectWithValue(err || "Unable to fetch master data");
+        return thunk.rejectWithValue(err?.response?.data?.error?.message || "Unable to fetch master data");
     }
   },
 );
@@ -34,7 +34,10 @@ export const createMaster = createAsyncThunk(
       const res = await createMasterAPI(master);
       return res;
     } catch (err) {
-      return thunk.rejectWithValue(err || "Unable to create Master");
+      console.dir(err);
+      return thunk.rejectWithValue(
+        err?.response?.data?.error?.message || "Unable to create Master",
+      );
     }
   },
 );
@@ -46,7 +49,7 @@ export const updateMaster = createAsyncThunk(
       const res = await updateMasterAPI(master);
       return res;
     } catch (err) {
-      return thunk.rejectWithValue(err || "Unable to update Master");
+      return  thunk.rejectWithValue(err?.response?.data?.error?.message || "Unable to update Master");
     }
   },
 );
@@ -58,7 +61,7 @@ export const deleteMaster = createAsyncThunk(
       const res = await deleteMasterAPI(id);
       return res;
     } catch (err) {
-      return thunk.rejectWithValue(err || "Unable to delete Master");
+      return  thunk.rejectWithValue(err?.response?.data?.error?.message || "Unable to delete Master");
     }
   },
 );

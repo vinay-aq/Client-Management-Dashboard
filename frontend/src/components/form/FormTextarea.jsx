@@ -1,20 +1,38 @@
 import React from "react";
-import FormField from "./FormField";
-import { Form, useFormContext } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
+import { TextField } from "@mui/material";
 
-function FormTextarea({ name, rules, label, required, ...props }) {
+function FormTextarea({
+  name,
+  rules,
+  label,
+  required = false,
+  disabled = false,
+  ...props
+}) {
   const {
-    register,
+    control,
     formState: { errors },
   } = useFormContext();
   return (
-    <FormField label={label} required error={errors?.[name]?.message}>
-      <textarea
-        className="w-full rounded border p-2"
-        {...register(name, rules)}
-        {...props}
-      ></textarea>
-    </FormField>
+    <Controller
+      name={name}
+      control={control}
+      rules={rules}
+      render={({ field }) => (
+        <TextField
+          {...field}
+          label={label}
+          required={required}
+          error={!!errors[name]}
+          disabled={disabled}
+          multiline
+          helperText={errors[name]?.message}
+          className="w-full rounded border p-2"
+          {...props}
+        />
+      )}
+    ></Controller>
   );
 }
 

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchDashboardStatsAPI } from "./dashboardAPI";
 
 const initialState = {
-  stats : null,
+  stats: null,
   isFetchingStats: null,
   error: null,
 };
@@ -14,7 +14,9 @@ export const fetchDashboardStats = createAsyncThunk(
       const res = await fetchDashboardStatsAPI();
       return res;
     } catch (err) {
-      return thunk.rejectWithValue(err || "Unable to fetch dashboard data");
+      return thunk.rejectWithValue(
+        err?.response?.data?.error?.message || "Unable to fetch dashboard data",
+      );
     }
   },
 );

@@ -1,25 +1,27 @@
 import React from "react";
-import FormField from "./FormField";
-import { useFormContext } from "react-hook-form";
-
-function FormInput({ name, label, required, rules, ...props }) {
+import { useFormContext, Controller } from "react-hook-form";
+import { TextField } from "@mui/material";
+function FormInput({ name, label, required = false, rules, ...props }) {
   const {
-    register,
+    control,
     formState: { errors },
   } = useFormContext();
   return (
-    <FormField
+    <Controller
       name={name}
-      label={label}
-      required
-      error={errors?.[name]?.message}
-    >
-      <input
-        {...register(name, rules)}
-        className="w-full rounded border p-2"
-        {...props}
-      ></input>
-    </FormField>
+      control={control}
+      rules={rules}
+      render={({ field }) => (
+        <TextField
+          {...field}
+          label={label}
+          required={required}
+          error={!!errors?.[name]}
+          helperText={errors[name]?.message}
+          {...props}
+        />
+      )}
+    ></Controller>
   );
 }
 

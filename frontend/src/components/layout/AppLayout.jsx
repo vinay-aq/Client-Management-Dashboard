@@ -6,7 +6,7 @@ function AppLayout() {
   return (
     <div>
       <Navbar />
-      <main>
+      <main style={{padding: '1rem'}}>
         <Outlet />
       </main>
     </div>

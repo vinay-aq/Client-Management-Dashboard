@@ -1,23 +1,56 @@
 import React from "react";
-import FormField from "./FormField";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
-function FormSelect({ name, label, options, rules, required, ...props }) {
+function FormSelect({
+  name,
+  label,
+  options,
+  disabled,
+  rules,
+  required,
+  ...props
+}) {
   const {
-    register,
+    control,
     formState: { errors },
   } = useFormContext();
 
   return (
-    <FormField name={name} error={errors?.[name]?.message} required>
-      <select {...register(name, rules)} className="w-full rounded border p-2" {...props}>
-        {options.map((op) => (
-          <option index={op.value} value={op.value}>
-            {op.label}
-          </option>
-        ))}
-      </select>
-    </FormField>
+    <Controller
+      name={name}
+      control={control}
+      rules={rules}
+      render={(field) => (
+        <FormControl
+          fullWidth
+          margin="normal"
+          error={!!errors[name]}
+          disabled={disabled}
+        >
+          <InputLabel required={required}>{label}</InputLabel>
+          <Select
+            {...field}
+            label={label}
+            className="w-full rounded border p-2"
+            {...props}
+          >
+            {options.map((op) => (
+              <MenuItem index={op.value} value={op.value}>
+                {op.label}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>{errors?.[name].message}</FormHelperText>
+        </FormControl>
+      )}
+    />
   );
 }
 

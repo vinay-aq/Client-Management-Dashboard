@@ -10,6 +10,7 @@ import {
 import MastersForm from "../components/master/MastersForm";
 import { masterTypes, MASTER_TYPES } from "../ constants/masterTypes";
 import toast from "react-hot-toast";
+import AppSelect from "../components/common/AppSelect";
 
 function MastersPage() {
   const [selectedType, setSelectedType] = useState(MASTER_TYPES.INDUSTRY);
@@ -19,7 +20,6 @@ function MastersPage() {
   const {
     isCreatingMaster,
     isUpdatingMaster,
-    error,
     masters = [],
     isFetchingMasters = null,
   } = useSelector((state) => state.masters);
@@ -87,26 +87,21 @@ function MastersPage() {
 
   return (
     <div style={{ textAlign: "left" }}>
-      <select
+      <AppSelect
+        label="Master Type"
         value={selectedType}
+        options={masterTypes.map((m) => ({ label: m, value: m }))}
         onChange={(e) => {
           handleChangeMasterType(e.target.value);
           setEditingMaster(null);
         }}
-      >
-        {masterTypes.map((master) => (
-          <option key={master} value={master}>
-            {master}
-          </option>
-        ))}
-      </select>
+      />
       <MastersForm
         isLoading={isCreatingMaster || isUpdatingMaster}
         onSubmit={handleMasterForm}
         editingMaster={editingMaster}
         onClickReset={() => setEditingMaster(null)}
       />
-      {error && <span className="text-red-500">{error}</span>}
       {isFetchingMasters ? (
         "Loading..."
       ) : (

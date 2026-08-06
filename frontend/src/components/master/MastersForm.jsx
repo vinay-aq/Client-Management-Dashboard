@@ -26,15 +26,18 @@ function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
     }
   }, [editingMaster, reset]);
 
+  console.log('methods', methods)
+
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
+      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <FormInput
           name="value"
           label="Value"
           required
           rules={{ required: "value is required" }}
           disabled={isLoading}
+          sx={{my:1}}
         />
         <FormTextarea
           name="description"
