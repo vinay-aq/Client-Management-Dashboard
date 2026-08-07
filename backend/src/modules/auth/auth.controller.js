@@ -42,7 +42,7 @@ async function loginUser(req, res, next) {
 async function refreshToken(req, res, next) {
   const oldRefreshToken = req.cookies?.refreshToken;
   try {
-    let { newAccessToken, newRefreshToken, user } =
+    let { newAccessToken, newRefreshToken, user, permissions } =
       await authService.handleRefreshToken(oldRefreshToken);
 
     res.cookie("refreshToken", newRefreshToken, {
@@ -57,6 +57,7 @@ async function refreshToken(req, res, next) {
         id: user._id,
         email: user.email,
         role: user.role,
+        permissions
       },
     });
   } catch (err) {

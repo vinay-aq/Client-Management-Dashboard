@@ -99,7 +99,7 @@ async function handleRefreshToken(oldRefreshToken) {
   const permissions = ROLE_PERMISSIONS[role] || [];
 
   let newAccessToken = generateAccessToken(user, permissions);
-  return { newAccessToken, newRefreshToken, user };
+  return { newAccessToken, newRefreshToken, user, permissions };
 }
 
 async function handleLogout(userId) {

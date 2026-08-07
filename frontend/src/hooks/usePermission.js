@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 function usePermission(allowedPermission) {
   const user = useSelector((state) => state.auth.user);
+  console.log("user allowed permissions", allowedPermission, user);
 
   if (!user) {
     return false;

@@ -12,6 +12,7 @@ import { masterTypes, MASTER_TYPES } from "../ constants/masterTypes";
 import toast from "react-hot-toast";
 import AppSelect from "../components/common/AppSelect";
 import ConfirmDialog from "../components/common/ConfirmDialog";
+import PageHeader from "../components/common/PageHeader";
 
 function MastersPage() {
   const [selectedType, setSelectedType] = useState(MASTER_TYPES.INDUSTRY);
@@ -91,6 +92,10 @@ function MastersPage() {
 
   return (
     <div style={{ textAlign: "left" }}>
+      <PageHeader
+        title="Masters"
+        subtitle="Manage all the configrable masters data, used throughout the application"
+      />
       <AppSelect
         label="Master Type"
         value={selectedType}

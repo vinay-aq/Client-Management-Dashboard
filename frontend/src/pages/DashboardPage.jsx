@@ -7,6 +7,7 @@ import ClientsTable from "../components/clients/ClientsTable";
 import ClientStatusPieChart from "../components/dashboard/ClientStatusPieChart";
 import socket from "../services/socket";
 import toast from "react-hot-toast";
+import PageHeader from "../components/common/PageHeader";
 
 function DashboardPage() {
   const dispatch = useDispatch();
@@ -41,12 +42,8 @@ function DashboardPage() {
 
   return (
     <>
-      <h1>Dashboard</h1>
-      <div
-        style={{
-          marginBottom: "40px",
-        }}
-      >
+      <PageHeader title="Dashboard" subtitle="Overview of the platform." />
+      <div>
         <ClientStatusPieChart stats={stats} />
       </div>
       <div
@@ -54,7 +51,7 @@ function DashboardPage() {
           display: "flex",
           gap: "16px",
           marginBottom: "24px",
-          flexWrap: 'wrap'
+          flexWrap: "wrap",
         }}
       >
         <StatsCard title="Total Clients" value={stats?.totalClients} />

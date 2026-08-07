@@ -1,9 +1,9 @@
 import React from "react";
 import { getActivities } from "../../features/activity/activityAPI";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import _ from "lodash";
 import socket from "../../services/socket";
+import PageHeader from "../../components/common/PageHeader";
 
 function ActivityFeedRealTimePage() {
   const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ function ActivityFeedRealTimePage() {
       const result = await getActivities();
       setActivities(result.activities);
     } catch (err) {
-        toast.error("Notifications could not be fetched")
+      toast.error("Notifications could not be fetched");
     } finally {
       setLoading(false);
     }
@@ -27,12 +27,11 @@ function ActivityFeedRealTimePage() {
 
   useEffect(() => {
     const handleNewActivity = (activity) => {
-      setActivities(prev => ([activity, ...prev]));
+      setActivities((prev) => [activity, ...prev]);
       toast.success("New activity received");
     };
 
     socket.on("new_activity", handleNewActivity);
-    
 
     return () => {
       socket.off("new_activity", handleNewActivity);
@@ -45,6 +44,7 @@ function ActivityFeedRealTimePage() {
 
   return (
     <div>
+      <PageHeader title="Activities" subtitle="Track every important action." />
       {activities &&
         activities.map((activity) => (
           <div

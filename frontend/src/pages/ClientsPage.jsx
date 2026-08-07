@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import usePermission from "../hooks/usePermission";
 import { PERMISSIONS } from "../utils/permissions";
+import PageHeader from "../components/common/PageHeader";
 
 function ClientsPage() {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ function ClientsPage() {
 
   return (
     <div>
-      <h2>Clients</h2>
+      <PageHeader title="Clients" subtitle="Manage all registered clients" />
       <input
         type="text"
         placeholder="search name or email"

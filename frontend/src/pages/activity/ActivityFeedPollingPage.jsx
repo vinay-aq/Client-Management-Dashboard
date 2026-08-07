@@ -3,6 +3,7 @@ import { getActivities } from "../../features/activity/activityAPI";
 import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import _ from "lodash";
+import PageHeader from "../../components/common/PageHeader";
 
 function ActivityFeed() {
   const [initialLoading, setInitialLoading] = useState(false);
@@ -60,8 +61,8 @@ function ActivityFeed() {
     let firstCall = true;
     async function startPolling() {
       await loadActivityFeed(firstCall ? false : true);
-      if(firstCall) firstCall = false;
-      timeoutId = setTimeout( startPolling, 5000);
+      if (firstCall) firstCall = false;
+      timeoutId = setTimeout(startPolling, 5000);
     }
 
     startPolling();
@@ -77,6 +78,7 @@ function ActivityFeed() {
 
   return (
     <div>
+      <PageHeader title="Activities" subtitle="Track every important action." />
       {activities &&
         activities.map((activity) => (
           <div
