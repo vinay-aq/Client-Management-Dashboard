@@ -1,5 +1,6 @@
 import React from "react";
 import DataTable from "../table/DataTable";
+import { AppButton } from "../common";
 
 function MastersTable({ onEdit, onDelete, masters, loading }) {
   const columns = [
@@ -28,18 +29,18 @@ function MastersTable({ onEdit, onDelete, masters, loading }) {
       render: (row) => {
         return (
           <>
-            <button
-              style={{ cursor: "pointer", margin: "auto", display: "flex" }}
+            <AppButton
+              sx={{ cursor: "pointer", mb: 1, mx: "auto", display: "flex" }}
               onClick={() => onEdit(row)}
             >
               Edit
-            </button>
-            <button
+            </AppButton>
+            <AppButton
               style={{ cursor: "pointer", margin: "auto", display: "flex" }}
               onClick={() => onDelete(row)}
             >
               Delete
-            </button>
+            </AppButton>
           </>
         );
       },

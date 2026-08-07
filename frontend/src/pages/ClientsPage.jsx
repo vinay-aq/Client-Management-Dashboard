@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import usePermission from "../hooks/usePermission";
 import { PERMISSIONS } from "../utils/permissions";
 import PageHeader from "../components/common/PageHeader";
+import { AppInput, AppButton } from "../components/common";
+import Box from "@mui/material/Box";
 
 function ClientsPage() {
   const dispatch = useDispatch();
@@ -54,17 +56,24 @@ function ClientsPage() {
   return (
     <div>
       <PageHeader title="Clients" subtitle="Manage all registered clients" />
-      <input
-        type="text"
-        placeholder="search name or email"
-        onChange={(e) => setSearchInput(e.target.value)}
-        value={searchInput}
-      />
+      <Box>
+        <AppInput
+          type="text"
+          placeholder="search name or email"
+          onChange={(e) => setSearchInput(e.target.value)}
+          value={searchInput}
+          sx={{ mb: 1 }}
+          fullWidth={false}
+        />
+      </Box>
 
       {canCreateClient && (
-        <button onClick={() => navigate("/clients/createClient")}>
+        <AppButton
+          onClick={() => navigate("/clients/createClient")}
+          sx={{ my: 1 }}
+        >
           Create Client
-        </button>
+        </AppButton>
       )}
       {error && <h2>{error}</h2>}
 

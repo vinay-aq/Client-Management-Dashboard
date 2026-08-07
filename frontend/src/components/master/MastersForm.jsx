@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { FormInput, FormTextarea, FormButton } from "../form";
+import { FormInput, FormTextarea } from "../form";
+import AppButton from "../common/AppButton";
 
 function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
   const methods = useForm({
@@ -26,7 +27,7 @@ function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
     }
   }, [editingMaster, reset]);
 
-  console.log('methods', methods)
+  console.log("methods", methods);
 
   return (
     <FormProvider {...methods}>
@@ -37,20 +38,20 @@ function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
           required
           rules={{ required: "value is required" }}
           disabled={isLoading}
-          sx={{my:1}}
+          sx={{ my: 1 }}
         />
         <FormTextarea
           name="description"
           label="Description"
           disabled={isLoading}
         />
-        <FormButton loading={isLoading}>
+        <AppButton loading={isLoading} type="submit" sx={{ my: 1 }}>
           {editingMaster ? "Update" : "Create"}
-        </FormButton>
+        </AppButton>
         {editingMaster && (
-          <FormButton type="button" onClick={onClickReset}>
+          <AppButton type="button" onClick={onClickReset}>
             Cancel
-          </FormButton>
+          </AppButton>
         )}
       </form>
     </FormProvider>
