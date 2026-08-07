@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import DataTable from "../table/DataTable";
 import StatusBadge from "../table/StatusBadge";
+import { AppTable, AppButton } from "../common";
 
-function ClientsTable({ clients }) {
+function ClientsTable({ clients, loading}) {
   const navigate = useNavigate();
 
   const columns = [
@@ -23,7 +24,7 @@ function ClientsTable({ clients }) {
       accessor: "status",
       render: (row) => {
         return (
-          <div style={{textAlign: 'center'}}>
+          <div>
              <StatusBadge status={row.status}/>
           </div>
          
@@ -35,22 +36,23 @@ function ClientsTable({ clients }) {
       accessor: "action",
       render: (row) => {
         return (
-          <button
-            style={{ cursor: "pointer", margin: 'auto', display:'flex' }}
+          <AppButton
+            style={{ cursor: "pointer", display:'flex' }}
             onClick={() => navigate(`/clients/${row._id}`)}
           >
             View
-          </button>
+          </AppButton>
         );
       },
     },
   ];
 
   return (
-    <DataTable
+    <AppTable
       columns={columns}
-      data={clients}
+      rows={clients}
       emptyMessage={"No clients data"}
+      loading={loading}
     />
   );
 }

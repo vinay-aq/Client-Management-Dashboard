@@ -10,7 +10,6 @@ import { PERMISSIONS } from "../utils/permissions";
 import PageHeader from "../components/common/PageHeader";
 import { AppInput, AppButton } from "../components/common";
 import Box from "@mui/material/Box";
-
 function ClientsPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -81,7 +80,7 @@ function ClientsPage() {
         <h2>Loading...</h2>
       ) : (
         <>
-          <ClientsTable clients={clients} />
+          <ClientsTable clients={clients} loading={isFetchingClients}/>
           <Pagination
             page={page}
             limit={limit}

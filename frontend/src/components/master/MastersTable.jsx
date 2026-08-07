@@ -1,5 +1,5 @@
 import React from "react";
-import DataTable from "../table/DataTable";
+import {AppTable} from "../common";
 import { AppButton } from "../common";
 
 function MastersTable({ onEdit, onDelete, masters, loading }) {
@@ -30,13 +30,12 @@ function MastersTable({ onEdit, onDelete, masters, loading }) {
         return (
           <>
             <AppButton
-              sx={{ cursor: "pointer", mb: 1, mx: "auto", display: "flex" }}
+              sx={{ cursor: "pointer", mb: 1, mr: "1", display: "flex" }}
               onClick={() => onEdit(row)}
             >
               Edit
             </AppButton>
             <AppButton
-              style={{ cursor: "pointer", margin: "auto", display: "flex" }}
               onClick={() => onDelete(row)}
             >
               Delete
@@ -49,9 +48,9 @@ function MastersTable({ onEdit, onDelete, masters, loading }) {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <DataTable
+      <AppTable
         columns={columns}
-        data={masters}
+        rows={masters ? masters : []}
         loading={loading}
         emptyMessage="Masters not found"
       />

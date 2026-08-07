@@ -44,6 +44,7 @@ function AdminUserPage() {
     try {
       setUpdatingUserStatusId(id);
       await dispatch(toggleUserStatusById({ id, isActive })).unwrap();
+      toast.success("User status updated")
     } catch (err) {
       toast.error("Failed to update status");
     } finally {
