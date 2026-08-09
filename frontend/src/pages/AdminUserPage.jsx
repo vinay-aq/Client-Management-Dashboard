@@ -6,15 +6,15 @@ import {
   updateUserRoleById,
   optimisticallyUpdateUserRole,
 } from "../features/users/userSlice";
-import DataTable from "../components/table/DataTable";
-import { ROLES } from "../utils/permissions";
 import toast from "react-hot-toast";
+import { AppTable, AppSelect, AppButton } from "../components/common";
+import { ROLE_VALUES } from "../ constants/roles";
 
 function AdminUserPage() {
   const dispatch = useDispatch();
   const { users, isFetchingUsers, isUpdatingUserRole, isUpdatingUserStatus } =
     useSelector((state) => state.users);
-  const {user: authUser} =   useSelector((state) => state.auth);
+  const { user: authUser } = useSelector((state) => state.auth);
 
   const [updatingUserStatusId, setUpdatingUserStatusId] = useState(null);
   const [updatingUserRoleById, setUpdatingUserRoleById] = useState(null);
@@ -44,7 +44,7 @@ function AdminUserPage() {
     try {
       setUpdatingUserStatusId(id);
       await dispatch(toggleUserStatusById({ id, isActive })).unwrap();
-      toast.success("User status updated")
+      toast.success("User status updated");
     } catch (err) {
       toast.error("Failed to update status");
     } finally {
@@ -73,15 +73,18 @@ function AdminUserPage() {
       accessor: "role",
       render: (row) => {
         return (
-          <select
+          <AppSelect
             onChange={(e) => handleChangeRole(row._id, e.target.value)}
             value={row.role}
-            disabled={row._id === updatingUserRoleById || row._id===authUser.id}
+            disabled={
+              row._id === updatingUserRoleById || row._id === authUser.id
+            }
+            options={ROLE_VALUES.map((role) => ({ value: role, label: role }))}
           >
             <option value="admin">Admin</option>
             <option value="manager">Manager</option>
             <option value="viewer">Viewer</option>
-          </select>
+          </AppSelect>
         );
       },
     },
@@ -90,12 +93,14 @@ function AdminUserPage() {
       accessor: "action",
       render: (row) => {
         return (
-          <button
-            disabled={updatingUserStatusId === row._id || row._id===authUser.id}
+          <AppButton
+            disabled={
+              updatingUserStatusId === row._id || row._id === authUser.id
+            }
             onClick={() => toggleUserStatus(row._id, !row.isActive)}
           >
             {row.isActive ? "Inactive" : "Active"}
-          </button>
+          </AppButton>
         );
       },
     },
@@ -103,9 +108,9 @@ function AdminUserPage() {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <DataTable
+      <AppTable
         columns={columns}
-        data={users}
+        rows={users ? users : []}
         loading={isFetchingUsers}
         emptyMessage="Users not found"
       />

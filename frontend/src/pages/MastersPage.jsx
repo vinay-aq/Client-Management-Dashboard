@@ -10,8 +10,7 @@ import {
 import MastersForm from "../components/master/MastersForm";
 import { masterTypes, MASTER_TYPES } from "../ constants/masterTypes";
 import toast from "react-hot-toast";
-import AppSelect from "../components/common/AppSelect";
-import ConfirmDialog from "../components/common/ConfirmDialog";
+import {ConfirmDialog, AppTabs} from "../components/common";
 import PageHeader from "../components/common/PageHeader";
 
 function MastersPage() {
@@ -96,14 +95,13 @@ function MastersPage() {
         title="Masters"
         subtitle="Manage all the configrable masters data, used throughout the application"
       />
-      <AppSelect
-        label="Master Type"
+      <AppTabs
         value={selectedType}
-        options={masterTypes.map((m) => ({ label: m, value: m }))}
-        onChange={(e) => {
-          handleChangeMasterType(e.target.value);
+        onChange={(value) => {
+          handleChangeMasterType(value);
           setEditingMaster(null);
         }}
+        tabs={masterTypes.map((m) => ({ label: m, value: m }))}
       />
       <MastersForm
         isLoading={isCreatingMaster || isUpdatingMaster}
