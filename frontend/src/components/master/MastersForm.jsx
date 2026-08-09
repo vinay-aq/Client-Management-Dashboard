@@ -27,7 +27,6 @@ function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
     }
   }, [editingMaster, reset]);
 
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>

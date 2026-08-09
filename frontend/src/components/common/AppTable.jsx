@@ -6,13 +6,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
+import EmptyState from "./EmptyState";
 
 function AppTable({
   columns = [],
   rows = [],
   emptyMessage = "No Records found",
+  emptyMessageDesc = "There are no records to display.",
   loading = false,
 }) {
   return (
@@ -53,7 +54,10 @@ function AppTable({
             {rows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length} color="text.secondary">
-                  <Typography color="text.secondary">{emptyMessage}</Typography>
+                  <EmptyState
+                    title={emptyMessage}
+                    description={emptyMessageDesc}
+                  />
                 </TableCell>
               </TableRow>
             ) : (

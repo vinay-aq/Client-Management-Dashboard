@@ -8,6 +8,7 @@ import ClientStatusPieChart from "../components/dashboard/ClientStatusPieChart";
 import socket from "../services/socket";
 import toast from "react-hot-toast";
 import PageHeader from "../components/common/PageHeader";
+import { AppCard } from "../components/common";
 
 function DashboardPage() {
   const dispatch = useDispatch();
@@ -52,20 +53,22 @@ function DashboardPage() {
           gap: "16px",
           marginBottom: "24px",
           flexWrap: "wrap",
+          marginTop:'1rem'
         }}
       >
-        <StatsCard title="Total Clients" value={stats?.totalClients} />
-        <StatsCard title="Lead Clients" value={stats?.leadClients} />
-        <StatsCard title="Contacted Clients" value={stats?.contactedClients} />
-        <StatsCard title="Qualified Clients" value={stats?.qualifiedClients} />
-        <StatsCard
+
+        <AppCard title="Total Clients" value={stats?.totalClients} />
+        <AppCard title="Lead Clients" value={stats?.leadClients} />
+        <AppCard title="Contacted Clients" value={stats?.contactedClients} />
+        <AppCard title="Qualified Clients" value={stats?.qualifiedClients} />
+        <AppCard
           title="Proposal sent Clients"
           value={stats?.proposalSentClients}
         />
-        <StatsCard title="Approved Clients" value={stats?.approvedClients} />
-        <StatsCard title="Onboarded Clients" value={stats?.onboardedClients} />
-        <StatsCard title="Suspended Clients" value={stats?.suspendedClients} />
-        <StatsCard title="Archieved Clients" value={stats?.archievedClients} />
+        <AppCard title="Approved Clients" value={stats?.approvedClients} />
+        <AppCard title="Onboarded Clients" value={stats?.onboardedClients} />
+        <AppCard title="Suspended Clients" value={stats?.suspendedClients} />
+        <AppCard title="Archieved Clients" value={stats?.archievedClients} />
       </div>
       <div>
         <h3>Recent Clients</h3>

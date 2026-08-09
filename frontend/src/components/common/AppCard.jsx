@@ -1,6 +1,6 @@
-import { Card, CardContent } from "@mui/material";
+import { Card, CardContent, Typography } from "@mui/material";
 
-function AppCard({ title, children, action, sx = {}, contentSx = {} }) {
+function AppCard({ title, children, value, action, sx = {}, contentSx = {} }) {
   return (
     <Card
       elevation={1}
@@ -18,11 +18,23 @@ function AppCard({ title, children, action, sx = {}, contentSx = {} }) {
             alignItems: "center",
           }}
         >
-          {title && <div>{title}</div>}
+          {title && (
+            <Typography variant="body2" color="text.secondary" fontWeight={600}>
+              {title}
+            </Typography>
+          )}
           {action}
         </CardContent>
       )}
-      <CardContent sx={{ ...contentSx }}>{children}</CardContent>
+      <CardContent sx={{ ...contentSx }}>
+        {value !== undefined ? (
+          <Typography variant="h4" fontWeight={700} lineHeight={1.2}>
+            {value}
+          </Typography>
+        ) : (
+          children
+        )}
+      </CardContent>
     </Card>
   );
 }
