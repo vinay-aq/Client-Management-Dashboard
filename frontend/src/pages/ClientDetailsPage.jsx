@@ -13,6 +13,8 @@ import { PERMISSIONS } from "../utils/permissions";
 import ClientWorkflowSection from "../components/clients/ClientWorkflowSection";
 import ActivityTimeline from "../components/activity/ActivityTimeline";
 import { fetchClientTimeline } from "../features/clients/clientAPI";
+import { AppCard } from "../components/common";
+import { Typography } from "@mui/material";
 import toast from "react-hot-toast";
 
 function ClientDetailsPage() {
@@ -85,24 +87,29 @@ function ClientDetailsPage() {
 
   return (
     <div>
-      <p>Name: {selectedClient?.name}</p>
-      <p>Email: {selectedClient?.email}</p>
-      <p>Phone: {selectedClient?.phone}</p>
-      <p>Company: {selectedClient?.company}</p>
-      {selectedClient?.avatar && (
-        <p>
-          <img
-            src={`http://localhost:8000${selectedClient?.avatar}`}
-            alt="avatar"
-            width="120"
-            height="120"
-            style={{
-              objectFit: "cover",
-              borderRadius: "8px",
-            }}
-          />
-        </p>
-      )}
+      <AppCard
+        title={<Typography variant={"h3"}>Client Details</Typography>}
+        contentSx={{ pt: 0 }}
+      >
+        <p>Name: {selectedClient?.name}</p>
+        <p>Email: {selectedClient?.email}</p>
+        <p>Phone: {selectedClient?.phone}</p>
+        <p>Company: {selectedClient?.company}</p>
+        {selectedClient?.avatar && (
+          <p>
+            <img
+              src={`http://localhost:8000${selectedClient?.avatar}`}
+              alt="avatar"
+              width="120"
+              height="120"
+              style={{
+                objectFit: "cover",
+                borderRadius: "8px",
+              }}
+            />
+          </p>
+        )}
+      </AppCard>
 
       <ClientWorkflowSection
         loading={isUpdatingWorkflow}

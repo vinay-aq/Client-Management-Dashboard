@@ -27,7 +27,6 @@ function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
     }
   }, [editingMaster, reset]);
 
-  console.log("methods", methods);
 
   return (
     <FormProvider {...methods}>

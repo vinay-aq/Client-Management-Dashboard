@@ -1,12 +1,18 @@
 import React from "react";
 import { useState } from "react";
 import CLIENT_WORKFLOW from "../../ constants/clientWorkflow";
-import { current } from "@reduxjs/toolkit";
+import { AppSelect, AppButton} from "../common";
 
 function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
-  const [isUpdatingClientWorkflow, setIsUpdatingClientWorkflow] = useState("");
-  const [nextStatus, setNextStatus] = useState("");
+  const [nextStatus, setNextStatus] = useState("select");
   const availableTransitions = CLIENT_WORKFLOW[currentStatus] || [];
+
+  function handleChangeTransition(e) {
+    const value = e.target?.value;
+    if (value === "select") return;
+    setNextStatus(value);
+  }
+
   return (
     <div
       style={{
@@ -21,20 +27,29 @@ function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
       <p>
         Current Status: <strong> {currentStatus}</strong>
       </p>
-      {availableTransitions.length > 0 ? (
-        <select onChange={(e) => setNextStatus(e.currentTarget.value)} value={nextStatus}>
-          <option value="">Select Transition</option>
 
-          {availableTransitions.map((val) => (
-            <option value={val}>{val}</option>
-          ))}
-        </select>
+      {availableTransitions.length > 0 ? (
+        <AppSelect
+          onChange={handleChangeTransition}
+          value={nextStatus}
+          options={[
+            { label: "Select Transition", value: "select" },
+            ...availableTransitions.map((tx) => ({ label: tx, value: tx })),
+          ]}
+        ></AppSelect>
       ) : (
         "No available Transitions"
       )}
-      <button disabled={loading || !nextStatus} onClick={() => {onUpdateStatus(nextStatus); setNextStatus("") }}>
+      <AppButton
+        disabled={loading || !nextStatus}
+        onClick={() => {
+          onUpdateStatus(nextStatus);
+          setNextStatus("select");
+        }}
+        sx={{ml:2}}
+      >
         {loading ? "Updating..." : "Update"}
-      </button>
+      </AppButton>
     </div>
   );
 }

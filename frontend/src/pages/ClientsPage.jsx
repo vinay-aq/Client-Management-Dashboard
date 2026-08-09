@@ -10,6 +10,7 @@ import { PERMISSIONS } from "../utils/permissions";
 import PageHeader from "../components/common/PageHeader";
 import { AppInput, AppButton } from "../components/common";
 import Box from "@mui/material/Box";
+
 function ClientsPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();

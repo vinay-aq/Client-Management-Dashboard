@@ -12,8 +12,9 @@ import { ROLE_VALUES } from "../ constants/roles";
 
 function AdminUserPage() {
   const dispatch = useDispatch();
-  const { users, isFetchingUsers, isUpdatingUserRole, isUpdatingUserStatus } =
-    useSelector((state) => state.users);
+  const { users, isFetchingUsers, isUpdatingUserStatus } = useSelector(
+    (state) => state.users,
+  );
   const { user: authUser } = useSelector((state) => state.auth);
 
   const [updatingUserStatusId, setUpdatingUserStatusId] = useState(null);
@@ -97,6 +98,7 @@ function AdminUserPage() {
             disabled={
               updatingUserStatusId === row._id || row._id === authUser.id
             }
+            loading={isUpdatingUserStatus}
             onClick={() => toggleUserStatus(row._id, !row.isActive)}
           >
             {row.isActive ? "Inactive" : "Active"}

@@ -9,7 +9,6 @@ async function fetchMasterService(type) {
   }
 
   const validMasterType = masterTypes.includes(type);
-  console.log(masterTypes, type);
   if (!validMasterType) {
     throw new AppError("Invalid master type");
   }

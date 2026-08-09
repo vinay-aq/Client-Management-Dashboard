@@ -5,6 +5,7 @@ import PageHeader from "./PageHeader";
 import AppButton from "./AppButton";
 import AppTable from "./AppTable";
 import AppTabs from "./AppTabs";
+import AppCard from "./AppCard";
 
 export {
   AppSelect,
@@ -14,4 +15,5 @@ export {
   AppButton,
   AppTable,
   AppTabs,
+  AppCard
 };
