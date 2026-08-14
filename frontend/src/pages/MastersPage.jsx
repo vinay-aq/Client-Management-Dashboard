@@ -10,7 +10,7 @@ import {
 import MastersForm from "../components/master/MastersForm";
 import { masterTypes, MASTER_TYPES } from "../ constants/masterTypes";
 import toast from "react-hot-toast";
-import {ConfirmDialog, AppTabs} from "../components/common";
+import { ConfirmDialog, AppTabs, LoadingOverlay } from "../components/common";
 import PageHeader from "../components/common/PageHeader";
 
 function MastersPage() {
@@ -109,16 +109,15 @@ function MastersPage() {
         editingMaster={editingMaster}
         onClickReset={() => setEditingMaster(null)}
       />
-      {isFetchingMasters ? (
-        "Loading..."
-      ) : (
+
+      <LoadingOverlay loading={isFetchingMasters} message="Loading masters">
         <MastersTable
           onEdit={handleEdit}
           onDelete={(data) => setMasterToDelete(data)}
           masters={masters}
-          loading={isFetchingMasters}
         />
-      )}
+      </LoadingOverlay>
+
       <ConfirmDialog
         open={!!masterToDelete}
         title="Confirm Action"

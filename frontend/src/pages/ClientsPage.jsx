@@ -10,6 +10,7 @@ import { PERMISSIONS } from "../utils/permissions";
 import PageHeader from "../components/common/PageHeader";
 import { AppInput, AppButton } from "../components/common";
 import Box from "@mui/material/Box";
+import toast from "react-hot-toast";
 
 function ClientsPage() {
   const dispatch = useDispatch();
@@ -43,6 +44,15 @@ function ClientsPage() {
 
   useEffect(() => {
     const promise = dispatch(fetchClients({ page, limit, search }));
+    const handleError = async () => {
+      try {
+        await promise.unwrap();
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+
+    handleError();
 
     return () => {
       promise.abort();
@@ -75,13 +85,12 @@ function ClientsPage() {
           Create Client
         </AppButton>
       )}
-      {error && <h2>{error}</h2>}
 
       {isFetchingClients ? (
         <h2>Loading...</h2>
       ) : (
         <>
-          <ClientsTable clients={clients} loading={isFetchingClients}/>
+          <ClientsTable clients={clients} loading={isFetchingClients} />
           <Pagination
             page={page}
             limit={limit}

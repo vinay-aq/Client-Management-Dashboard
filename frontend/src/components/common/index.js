@@ -6,7 +6,8 @@ import AppButton from "./AppButton";
 import AppTable from "./AppTable";
 import AppTabs from "./AppTabs";
 import AppCard from "./AppCard";
-import EmptyState from "./EmptyState"
+import EmptyState from "./EmptyState";
+import LoadingOverlay from "./LoadingOverlay";
 
 export {
   AppSelect,
@@ -17,5 +18,6 @@ export {
   AppTable,
   AppTabs,
   AppCard,
-  EmptyState
+  EmptyState,
+  LoadingOverlay,
 };
