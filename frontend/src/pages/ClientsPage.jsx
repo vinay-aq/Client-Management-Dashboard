@@ -9,10 +9,10 @@ import usePermission from "../hooks/usePermission";
 import { PERMISSIONS } from "../utils/permissions";
 import PageHeader from "../components/common/PageHeader";
 import {
-  AppInput,
   AppButton,
   LoadingOverlay,
   TableSkeleton,
+  SearchBar
 } from "../components/common";
 import Box from "@mui/material/Box";
 import toast from "react-hot-toast";
@@ -71,10 +71,10 @@ function ClientsPage() {
     <div>
       <PageHeader title="Clients" subtitle="Manage all registered clients" />
       <Box>
-        <AppInput
+        <SearchBar
           type="text"
           placeholder="search name or email"
-          onChange={(e) => setSearchInput(e.target.value)}
+          onChange={(value) => setSearchInput(value)}
           value={searchInput}
           sx={{ mb: 1 }}
           fullWidth={false}
