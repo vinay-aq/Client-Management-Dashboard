@@ -8,6 +8,8 @@ import AppTabs from "./AppTabs";
 import AppCard from "./AppCard";
 import EmptyState from "./EmptyState";
 import LoadingOverlay from "./LoadingOverlay";
+import TableSkeleton from "./TableSkeleton";
+
 
 export {
   AppSelect,
@@ -20,4 +22,5 @@ export {
   AppCard,
   EmptyState,
   LoadingOverlay,
+  TableSkeleton
 };

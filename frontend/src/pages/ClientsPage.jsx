@@ -8,7 +8,12 @@ import { useNavigate } from "react-router-dom";
 import usePermission from "../hooks/usePermission";
 import { PERMISSIONS } from "../utils/permissions";
 import PageHeader from "../components/common/PageHeader";
-import { AppInput, AppButton } from "../components/common";
+import {
+  AppInput,
+  AppButton,
+  LoadingOverlay,
+  TableSkeleton,
+} from "../components/common";
 import Box from "@mui/material/Box";
 import toast from "react-hot-toast";
 
@@ -24,9 +29,8 @@ function ClientsPage() {
 
   const [searchInput, setSearchInput] = useState(search);
 
-  const { clients, isFetchingClients, error, totalCount } = useSelector(
-    (state) => state.clients,
-  );
+  let { clients, isFetchingClients, error, totalCount, hasFetchedClients } =
+    useSelector((state) => state.clients);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -86,18 +90,18 @@ function ClientsPage() {
         </AppButton>
       )}
 
-      {isFetchingClients ? (
-        <h2>Loading...</h2>
+      {!hasFetchedClients ? (
+        <TableSkeleton columns={5} rows={limit}/>
       ) : (
-        <>
-          <ClientsTable clients={clients} loading={isFetchingClients} />
+        <LoadingOverlay loading={isFetchingClients} message="Loading Clients...">
+          <ClientsTable clients={clients} />
           <Pagination
             page={page}
             limit={limit}
             totalCount={totalCount}
             onPageChange={handlePageChange}
           />
-        </>
+        </LoadingOverlay>
       )}
     </div>
   );

@@ -17,6 +17,7 @@ const initialState = {
   totalCount: 0,
   selectedClient: null,
   isFetchingClients: false,
+  hasFetchedClients: false,
 
   isFetchingClientDetails: false,
 
@@ -25,7 +26,6 @@ const initialState = {
   isUpdatingClient: false,
 
   isDeletingClient: false,
- 
 };
 
 export const fetchClients = createAsyncThunk(
@@ -103,7 +103,7 @@ export const deleteClient = createAsyncThunk(
 
 export const updateClientWorkflow = createAsyncThunk(
   "/clients/updateClientWorkflow",
-  async ({id, nextStatus}, thunkAPI) => {
+  async ({ id, nextStatus }, thunkAPI) => {
     try {
       const res = await updateClientWorkflowAPI(id, nextStatus);
       return res;
@@ -125,6 +125,7 @@ const clientsSlice = createSlice({
     });
     builder.addCase(fetchClients.fulfilled, (state, action) => {
       state.isFetchingClients = false;
+      state.hasFetchedClients = true;
       state.clients = action.payload.clients;
       state.page = action.payload.page;
       state.limit = action.payload.limit;
@@ -188,7 +189,6 @@ const clientsSlice = createSlice({
     builder.addCase(updateClientWorkflow.fulfilled, (state, action) => {
       state.selectedClient = action.payload.client;
     });
-
   },
 });
 
