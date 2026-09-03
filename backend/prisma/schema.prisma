@@ -91,9 +91,9 @@ model Client {
     company String  @db.VarChar(255)
     avatar  String? @db.VarChar(500)
 
-    clientTypeId   Int?
-    clientStatusId Int
-    industryId     Int?
+    clientTypeId   Int? @map("client_type_id")
+    clientStatusId Int  @map("client_status_id")
+    industryId     Int? @map("industry_id")
 
     createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
     updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz

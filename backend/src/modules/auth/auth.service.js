@@ -40,6 +40,7 @@ async function loginUser(email, password) {
       role: true,
     },
   });
+
   if (!user) {
     throw new AppError(
       "Email id not present. Please register with email id, then retry again",
@@ -47,7 +48,8 @@ async function loginUser(email, password) {
     );
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.passwordHash);
+  console.log(user)
   if (!isMatch) {
     throw new AppError("Password Incorrect. Please try again", 401);
   }
@@ -60,7 +62,7 @@ async function loginUser(email, password) {
 
   await prisma.refreshToken.create({
     data: {
-      user: user.id,
+      userId: user.id,
       refreshTokenHash: refreshToken,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },

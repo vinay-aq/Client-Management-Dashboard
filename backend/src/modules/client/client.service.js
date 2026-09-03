@@ -39,28 +39,28 @@ async function fetchClients(page, limit, search) {
         phone: true,
         company: true,
         createdAt: true,
-        orderBy: {
-          createdAt: "desc",
-        },
-        skip,
-        take: limit,
-      },
 
-      ClientType: {
-        select: {
-          name: true,
+        clientType: {
+          select: {
+            name: true,
+          },
+        },
+        clientStatus: {
+          select: {
+            name: true,
+          },
+        },
+        industry: {
+          select: {
+            name: true,
+          },
         },
       },
-      clientStatus: {
-        select: {
-          name: true,
-        },
+      orderBy: {
+        createdAt: "desc",
       },
-      industry: {
-        select: {
-          name: true,
-        },
-      },
+      skip,
+      take: limit,
     }),
     prisma.client.count({
       where,
@@ -175,10 +175,10 @@ async function updateClientService(id, data) {
     entityId: id,
     actorId: user.id,
     oldValue: {
-      name: client.name
+      name: client.name,
     },
     newValue: {
-      name: updatedClient.name
+      name: updatedClient.name,
     },
   });
 
