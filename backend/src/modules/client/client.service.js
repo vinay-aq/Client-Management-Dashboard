@@ -64,6 +64,8 @@ async function fetchClients(page, limit, search) {
     }),
     prisma.client.count({
       where,
+      skip,
+      take: limit
     }),
   ]);
 
