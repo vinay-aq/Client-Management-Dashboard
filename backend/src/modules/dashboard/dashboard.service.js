@@ -1,5 +1,7 @@
 const clientModel = require("../client/client.model");
-const { CLIENT_STATUS } = require("../../constants/clientStatus");
+// const { CLIENT_STATUS } = require("../../constants/clientStatus");
+const prisma = require("../../db/prisma");
+
 async function fetchDashboardStats() {
   const [
     totalClients,
@@ -13,16 +15,21 @@ async function fetchDashboardStats() {
     suspendedClients,
     archievedClients,
   ] = await Promise.all([
-    clientModel.countDocuments(),
-    clientModel.find().sort({ createdAt: -1 }).limit(5),
-    clientModel.countDocuments({ status: "lead" }),
-    clientModel.countDocuments({ status: "contacted" }),
-    clientModel.countDocuments({ status: "qualified" }),
-    clientModel.countDocuments({ status: "proposal sent" }),
-    clientModel.countDocuments({ status: "approved" }),
-    clientModel.countDocuments({ status: "onboarded" }),
-    clientModel.countDocuments({ status: "suspended" }),
-    clientModel.countDocuments({ status: "archived" }),
+    prisma.client.count(),
+    prisma.client.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
+    }),
+    prisma.client.count({ where: { status: "lead" } }),
+    prisma.client.count({ where: { status: "contacted" } }),
+    prisma.client.count({ where: { status: "qualified" } }),
+    prisma.client.count({ where: { status: "proposal sent" } }),
+    prisma.client.count({ where: { status: "approved" } }),
+    prisma.client.count({ where: { status: "onboarded" } }),
+    prisma.client.count({ where: { status: "suspended" } }),
+    prisma.client.count({ where: { status: "archived" } }),
   ]);
 
   return {

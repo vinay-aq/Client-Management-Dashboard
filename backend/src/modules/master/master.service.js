@@ -1,7 +1,9 @@
 const AppError = require("../../utils/AppError");
 const masterModel = require("./master.model");
+
 const { masterTypes } = require("../../constants/masterTypes");
 const mongoose = require("mongoose");
+const prisma = require("../../db/prisma");
 
 async function fetchMasterService(type) {
   if (!type) {
