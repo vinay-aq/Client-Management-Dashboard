@@ -5,6 +5,7 @@ const {initSocket} = require("./src/socket/socket")
 
 connectDB();
 
+
 const port =  process.env.PORT || 8000;
 
 const httpServer = app.listen(port, () => console.log(`Node server listening to port ${port}`));

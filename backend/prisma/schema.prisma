@@ -115,8 +115,8 @@ model Activity {
     actorId    Int                @map("actor_id")
     code       String
 
-    oldValue String? @map("old_value")
-    newValue String? @map("new_value")
+    oldValue Json? @map("old_value")
+    newValue Json? @map("new_value")
 
     createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 

@@ -5,26 +5,7 @@ const { isValidClientTransition } = require("../client/client.utils");
 const prisma = require("../../db/prisma");
 const { ActivityEntityType } = require("../../generated/prisma");
 
-// async function testAbortController(search) {
-//   let delay = 1000;
-
-//   if (search.length === 1) {
-//     delay = 4000;
-//   }
-
-//   if (search.length === 2) {
-//     delay = 2000;
-//   }
-
-//   if (search.length >= 3) {
-//     delay = 500;
-//   }
-
-//   await new Promise((resolve) => setTimeout(resolve, delay));
-// }
-
 async function fetchClients(page, limit, search) {
-  // await testAbortController(search);
   let skip = limit * (page - 1);
 
   let where = {};
@@ -193,8 +174,12 @@ async function updateClientService(id, data) {
     entityType: ActivityEntityType.client,
     entityId: id,
     actorId: user.id,
-    oldValue: null,
-    newValue: null,
+    oldValue: {
+      name: client.name
+    },
+    newValue: {
+      name: updatedClient.name
+    },
   });
 
   notifyDashboardDataChanged();
@@ -269,7 +254,7 @@ async function updateClientWorkflowService({ clientId, nextStatusId, user }) {
   await createActivityService({
     message: `Client ${client.clientStatus.name} status updated to ${nextStatus.name}`,
     entityType: ActivityEntityType.client,
-    entityId: client._id,
+    entityId: client.id,
     actorId: user.id,
     oldValue: {
       status: client.clientStatus.name,

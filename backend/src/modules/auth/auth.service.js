@@ -1,18 +1,18 @@
 const bcrypt = require("bcryptjs");
-const userModel = require("../user/user.model");
-const refreshTokenModel = require("./auth.model");
 const {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
 } = require("./auth.utils.js");
 
+const prisma = require("../../db/prisma");
+
 const { ROLE_PERMISSIONS } = require("../../constants/rolePermissions");
 
 const AppError = require("../../utils/AppError");
 
 async function registerUser(email, password, name) {
-  const existingUser = await userModel.findOne({ email });
+  const existingUser = await prisma.user.findUnique({ where: { email } });
 
   if (existingUser) {
     throw new AppError("User already exist", 400);
@@ -20,17 +20,26 @@ async function registerUser(email, password, name) {
 
   const hashedPass = await bcrypt.hash(password, 10);
 
-  const user = await userModel.create({
-    email,
-    password: hashedPass,
-    name,
+  const user = await prisma.user.create({
+    data: {
+      email,
+      passwordHash: hashedPass,
+      name,
+      roleId: 9,
+      isActive: true,
+    },
   });
 
   return user;
 }
 
 async function loginUser(email, password) {
-  let user = await userModel.findOne({ email });
+  let user = await prisma.user.findUnique({
+    where: { email },
+    include: {
+      role: true,
+    },
+  });
   if (!user) {
     throw new AppError(
       "Email id not present. Please register with email id, then retry again",
@@ -43,16 +52,18 @@ async function loginUser(email, password) {
     throw new AppError("Password Incorrect. Please try again", 401);
   }
 
-  const role = user?.role;
+  const role = user?.role?.name;
   const permissions = ROLE_PERMISSIONS[role] || [];
 
   let accessToken = generateAccessToken(user, permissions);
   let refreshToken = generateRefreshToken(user);
 
-  await refreshTokenModel.create({
-    user: user.id,
-    refreshToken: refreshToken,
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  await prisma.refreshToken.create({
+    data: {
+      user: user.id,
+      refreshTokenHash: refreshToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
   });
 
   return { accessToken, refreshToken, user, permissions };
@@ -63,11 +74,14 @@ async function handleRefreshToken(oldRefreshToken) {
     throw new AppError("No refresh token found!", 401);
   }
   let decodedUser = verifyRefreshToken(oldRefreshToken);
-  let refreshToken = await refreshTokenModel.findOne({
-    refreshToken: oldRefreshToken,
+  let refreshToken = await prisma.refreshToken.findUnique({
+    where: {
+      refreshTokenHash: oldRefreshToken,
+    },
   });
+
   if (!refreshToken) {
-    await refreshTokenModel.deleteMany({ user: decodedUser.id });
+    await prisma.refreshToken.deleteMany({ where: { userId: decodedUser.id } });
     throw new AppError(
       "Refresh token reuse detected. All sessions are revoked",
       401,
@@ -78,21 +92,22 @@ async function handleRefreshToken(oldRefreshToken) {
     throw new AppError("Refresh token is exired.", 403);
   }
 
-  let user = await userModel.findOne({ _id: decodedUser.id });
+  let user = await prisma.user.findUnique({ where: { id: decodedUser.id } });
   if (!user) {
     throw new AppError("User does not exist", 400);
   }
 
   let newRefreshToken = generateRefreshToken(user);
 
-  // await refreshTokenModel.deleteOne({ refreshToken: oldRefreshToken });
-  await refreshTokenModel.deleteMany({ user: user._id });
+  await prisma.refreshToken.deleteMany({ where: { user: user.id } });
   //here all the sessions of the user are revoked instead of the particular session which is requested to be refreshed.
 
-  await refreshTokenModel.create({
-    user: user.id,
-    refreshToken: newRefreshToken,
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  await prisma.refreshToken.create({
+    data: {
+      user: user.id,
+      refreshTokenHash: newRefreshToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
   });
 
   const role = user?.role;
@@ -103,11 +118,11 @@ async function handleRefreshToken(oldRefreshToken) {
 }
 
 async function handleLogout(userId) {
-  await refreshTokenModel.deleteOne({ user: userId });
+  await prisma.refreshToken.deleteOne({ where: { userId } });
 }
 
 async function handleLogoutAll(userId) {
-  await refreshTokenModel.deleteMany({ user: userId });
+  await prisma.refreshToken.deleteMany({ where: { userId } });
 }
 
 module.exports = {
