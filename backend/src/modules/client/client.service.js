@@ -1,61 +1,89 @@
-const clientModel = require("./client.model");
 const AppError = require("../../utils/AppError");
-const mongoose = require("mongoose");
 const { createActivityService } = require("../activity/activity.service");
 const { notifyDashboardDataChanged } = require("../dashboard/dashboard.events");
 const { isValidClientTransition } = require("../client/client.utils");
+const prisma = require("../../db/prisma");
+const { ActivityEntityType } = require("../../generated/prisma");
 
-async function testAbortController(search) {
-  let delay = 1000;
+// async function testAbortController(search) {
+//   let delay = 1000;
 
-  if (search.length === 1) {
-    delay = 4000;
-  }
+//   if (search.length === 1) {
+//     delay = 4000;
+//   }
 
-  if (search.length === 2) {
-    delay = 2000;
-  }
+//   if (search.length === 2) {
+//     delay = 2000;
+//   }
 
-  if (search.length >= 3) {
-    delay = 500;
-  }
+//   if (search.length >= 3) {
+//     delay = 500;
+//   }
 
-  await new Promise((resolve) => setTimeout(resolve, delay));
-}
+//   await new Promise((resolve) => setTimeout(resolve, delay));
+// }
+
 async function fetchClients(page, limit, search) {
   // await testAbortController(search);
+  let skip = limit * (page - 1);
 
-  let query = {};
+  let where = {};
 
   if (search) {
-    query = {
-      $or: [
+    where = {
+      OR: [
         {
           name: {
-            $regex: search,
-            $options: "i",
+            contains: search,
+            mode: "insensitive",
           },
         },
         {
           email: {
-            $regex: search,
-            $options: "i",
+            contains: search,
+            mode: "insensitive",
           },
         },
       ],
     };
   }
 
-  let skip = limit * (page - 1);
-
   let [clients, totalCount] = await Promise.all([
-    clientModel
-      .find(query)
-      .select("_id name email phone company status createdAt")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
-    clientModel.countDocuments(query),
+    prisma.client.findMany({
+      where,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        company: true,
+        createdAt: true,
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip,
+        take: limit,
+      },
+
+      ClientType: {
+        select: {
+          name: true,
+        },
+      },
+      clientStatus: {
+        select: {
+          name: true,
+        },
+      },
+      industry: {
+        select: {
+          name: true,
+        },
+      },
+    }),
+    prisma.client.count({
+      where,
+    }),
   ]);
 
   return {
@@ -69,7 +97,14 @@ async function fetchClients(page, limit, search) {
 }
 
 async function fetchClientsById(id) {
-  let clientData = await clientModel.findById(id).lean();
+  let clientData = await prisma.client.findUnique({
+    where: { id: id },
+    include: {
+      clientStatus: true,
+      clientType: true,
+      industry: true,
+    },
+  });
   if (!clientData) {
     throw new AppError("Client not found", 404);
   }
@@ -81,18 +116,22 @@ async function createClientService(data) {
   if (!name || !company || !phone || !email || !status) {
     throw new AppError("One or more fields are missing", 404);
   }
-  const existingClient = await clientModel.find({ email });
+  const existingClient = await prisma.client.findUnique({
+    where: { email: email },
+  });
   if (existingClient.length) {
     throw new AppError("Email already in use", 409);
   }
 
-  const newClient = await clientModel.create({
-    name,
-    email,
-    phone,
-    company,
-    status,
-    avatar,
+  const newClient = await prisma.client.create({
+    data: {
+      name,
+      email,
+      phone,
+      company,
+      status,
+      avatar,
+    },
   });
 
   await createActivityService({
@@ -105,82 +144,80 @@ async function createClientService(data) {
     oldValue: null,
     newValue: null,
   });
+
   notifyDashboardDataChanged();
-  return newClient.toObject();
+  return newClient;
 }
 
 async function updateClientService(id, data) {
-  const { name, email, phone, company, status, avatar, user } = data;
-  const isValid = mongoose.Types.ObjectId.isValid(id);
-  if (!isValid) {
-    throw new AppError("Id is invalid", 400);
-  }
-
+  const {
+    name,
+    email,
+    phone,
+    company,
+    status_id,
+    type_id,
+    industry_id,
+    avatar,
+    user,
+  } = data;
   if (!id) {
     throw new AppError("Id is missing", 400);
   }
 
-  if (!name || !company || !phone || !email || !status) {
+  if (
+    !name ||
+    !company ||
+    !phone ||
+    !email ||
+    !status_id ||
+    !type_id ||
+    !industry_id
+  ) {
     throw new AppError("One or more fields are missing", 400);
   }
 
-  const client = await clientModel.findById(id);
+  const client = await prisma.client.findUnique({ where: { id: id } });
 
   if (!client) {
     throw new AppError("Client does not exist", 404);
   }
 
-  const duplicateClient = await clientModel.findOne({
-    email: email,
-    _id: { $ne: id },
+  const updatedClient = await prisma.client.update({
+    where: { id: id },
+    data: { name, email, phone, company, status_id, avatar },
   });
-  if (duplicateClient) {
-    throw new AppError("Email already exist", 400);
-  }
-
-  const updatedClient = await clientModel.findByIdAndUpdate(
-    id,
-    { name, email, phone, company, status, avatar },
-    { new: true },
-  );
 
   await createActivityService({
-    message: `Client ${newClient.name} is updated`,
-    entityType: "client",
-    entityId: newClient._id,
-    action: "client_updated",
+    message: `Client ${client.name} is updated to ${updatedClient.name}`,
+    entityType: ActivityEntityType.client,
+    entityId: id,
     actorId: user.id,
-    actorName: user.name,
     oldValue: null,
     newValue: null,
   });
 
   notifyDashboardDataChanged();
-  return updatedClient.toObject();
+  return updatedClient;
 }
 
-async function deleteClientService(id) {
-  const isValid = mongoose.Types.ObjectId.isValid(id);
-  if (!isValid) {
-    throw new AppError("Id is invalid", 400);
-  }
-
+async function deleteClientService(id, user) {
   if (!id) {
     throw new AppError("Id is missing", 400);
   }
 
-  const client = await clientModel.findById(id);
+  const client = await prisma.client.findUnique({ where: { id: id } });
 
   if (!client) {
     throw new AppError("Client does not exist", 404);
   }
 
-  const deletedClient = await clientModel.findByIdAndDelete(id);
+  const deletedClient = await prisma.client.delete({ where: { id: id } });
+
   await createActivityService({
-    message: `Client ${newClient.name} is deleted`,
-    entityType: "client",
-    entityId: newClient._id,
-    action: "client_deleted",
+    message: `Client ${client.name} is deleted`,
+    entityType: prisma.activity.clien,
+    entityId: client.id,
     actorId: user.id,
     actorName: user.name,
     oldValue: null,
@@ -188,42 +225,57 @@ async function deleteClientService(id) {
   });
 
   notifyDashboardDataChanged();
-  return;
+  return deletedClient;
 }
 
-async function updateClientWorkflowService({ clientId, nextStatus, user }) {
-  const client = await clientModel.findById(clientId);
+async function updateClientWorkflowService({ clientId, nextStatusId, user }) {
+  if (!nextStatusId) {
+    throw new AppError("Status id for next status does not exist", 404);
+  }
+
+  const client = await prisma.client.findUnique({
+    where: { id: clientId },
+  });
+
   if (!client) {
     throw new AppError("Client does not exist", 404);
   }
-  const currentStatus = client.status;
 
-  const isValidTransition = isValidClientTransition(currentStatus, nextStatus);
+  const clientStatus = client.clientStatus;
+
+  const nextStatus = prisma.client.findUnique({
+    where: { id: nextStatusId },
+  });
+
+  const isValidTransition = isValidClientTransition(
+    clientStatus.code,
+    nextStatus.code,
+  );
+
   if (!isValidTransition) {
     throw new AppError(
-      `Invalid client transition ${currentStatus} to ${nextStatus}`,
+      `Invalid client transition ${client.clientStatus.name} to ${nextStatus.name}`,
       403,
     );
   }
 
-  const updatedClient = await clientModel.findByIdAndUpdate(
-    clientId,
-    { status: nextStatus },
-    { new: true },
-  );
+  const updatedClient = await prisma.client.update({
+    where: {
+      id: clientId,
+    },
+    data: { client_status_id: nextStatusId },
+  });
 
   await createActivityService({
-    message: `Client ${client.name} status updated to ${nextStatus}`,
-    entityType: "client",
+    message: `Client ${client.clientStatus.name} status updated to ${nextStatus.name}`,
+    entityType: ActivityEntityType.client,
     entityId: client._id,
-    action: "status_updated",
     actorId: user.id,
-    actorName: user.name,
     oldValue: {
-      status: currentStatus,
+      status: client.clientStatus.name,
     },
     newValue: {
-      status: nextStatus,
+      status: nextStatus.name,
     },
   });
 

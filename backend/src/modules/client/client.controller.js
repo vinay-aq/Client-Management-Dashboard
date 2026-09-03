@@ -56,8 +56,9 @@ async function updateClient(req, res, next) {
 
 async function deleteClient(req, res, next) {
   const { id } = req.params;
+  const user = req.user;
   try {
-    await deleteClientService(id);
+    await deleteClientService(id, user);
     res
       .status(200)
       .json({ success: true, message: "Client deleted successfully" });

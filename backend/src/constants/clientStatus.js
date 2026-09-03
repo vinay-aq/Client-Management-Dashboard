@@ -1,12 +1,12 @@
 const CLIENT_STATUS = {
-  LEAD: "lead",
-  CONTACTED: "contacted",
-  QUALIFIED: "qualified",
-  PROPOSAL_SENT: "proposal sent",
-  APPROVED: "approved",
-  ONBOARDED: "onboarded",
-  SUSPENDED: "suspended",
-  ARCHIVED: "archived",
+  LEAD: "LEAD",
+  CONTACTED: "CONTACTED",
+  QUALIFIED: "QUALIFIED",
+  PROPOSAL_SENT: "PROPOSAL_SENT",
+  APPROVED: "APPROVED",
+  ONBOARDED: "ONBOARDED",
+  SUSPENDED: "SUSPENDED",
+  ARCHIVED: "ARCHIVED",
 };
 
 module.exports = {

@@ -13,7 +13,7 @@ async function authMiddleware(req, res, next) {
     req.user = decodedUser;
     next();
   } catch (err) {
-    next(new AppError("Invalid token", 401));
+    next(new AppError(err || "Invalid token", 401));
   }
 }
 

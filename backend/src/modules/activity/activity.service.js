@@ -1,23 +1,19 @@
-const activityModel = require("./activity.model");
+const prisma = require("../../db/prisma");
 const { getIO } = require("../../socket/socket");
 
 async function createActivityService({
   message,
   entityType = null,
   entityId = null,
-  action = null,
-  actorId = null,
-  actorName = null,
+  userId = null,
   oldValue = {},
   newValue = {},
 }) {
-  const activity = await activityModel.create({
+  const activity = await prisma.activity.create({
     message,
     entityType,
     entityId,
-    action,
-    actorId,
-    actorName,
+    userId,
     oldValue,
     newValue,
   });
@@ -27,23 +23,28 @@ async function createActivityService({
 }
 
 async function fetchActivityService() {
-  const activities = await activityModel
-    .find()
-    .sort({ createdAt: -1 })
-    .limit(20);
+  const activities = await prisma.activity.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 20,
+  });
+
   return activities;
 }
 
-async function fetchActivityByEntityService({entityType,entityId }) {
-  const activities = await activityModel
-    .find({entityType, entityId})
-    .sort({ createdAt: -1 })
-    .limit(20);
+async function fetchActivityByEntityService({ entityType, entityId }) {
+  const activities = await prisma.activity.findMany({
+    where: { entityType, entityId },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+  });
+
   return activities;
 }
 
 module.exports = {
   fetchActivityService,
   createActivityService,
-  fetchActivityByEntityService
+  fetchActivityByEntityService,
 };

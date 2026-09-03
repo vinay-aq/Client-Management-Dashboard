@@ -1,5 +1,7 @@
 generator client {
-    provider = "prisma-client-js"
+    provider     = "prisma-client-js"
+    output       = "../src/generated/prisma"
+    moduleFormat = "cjs"
 }
 
 datasource db {
@@ -7,7 +9,7 @@ datasource db {
 }
 
 model UserRole {
-    id          BigInt  @id @default(autoincrement())
+    id          Int     @id @default(autoincrement())
     name        String  @unique @db.VarChar(255)
     description String?
     isActive    Boolean @default(true) @map("is_active")
@@ -21,12 +23,12 @@ model UserRole {
 }
 
 model User {
-    id           BigInt @id @default(autoincrement())
+    id           Int    @id @default(autoincrement())
     name         String @db.VarChar(255)
     email        String @unique @db.VarChar(255)
     passwordHash String @map("password_hash") @db.VarChar(255)
 
-    roleId   BigInt
+    roleId   Int     @map("role_id")
     isActive Boolean @default(true) @map("is_active")
 
     createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
@@ -40,7 +42,7 @@ model User {
 }
 
 model Industry {
-    id          BigInt  @id @default(autoincrement())
+    id          Int     @id @default(autoincrement())
     name        String  @unique @db.VarChar(255)
     description String?
     isActive    Boolean @default(true) @map("is_active")
@@ -54,7 +56,7 @@ model Industry {
 }
 
 model ClientType {
-    id          BigInt  @id @default(autoincrement())
+    id          Int     @id @default(autoincrement())
     name        String  @unique @db.VarChar(255)
     description String?
     isActive    Boolean @default(true) @map("is_active")
@@ -68,7 +70,7 @@ model ClientType {
 }
 
 model ClientStatus {
-    id          BigInt  @id @default(autoincrement())
+    id          Int     @id @default(autoincrement())
     name        String  @unique @db.VarChar(255)
     description String?
     isActive    Boolean @default(true) @map("is_active")
@@ -82,15 +84,16 @@ model ClientStatus {
 }
 
 model Client {
-    id      BigInt @id @default(autoincrement())
-    name    String @db.VarChar(255)
-    email   String @unique @db.VarChar(255)
-    phone   String @db.VarChar(50)
-    company String @db.VarChar(255)
+    id      Int     @id @default(autoincrement())
+    name    String  @db.VarChar(255)
+    email   String  @unique @db.VarChar(255)
+    phone   String  @db.VarChar(50)
+    company String  @db.VarChar(255)
+    avatar  String? @db.VarChar(500)
 
-    clientTypeId   BigInt?
-    clientStatusId BigInt
-    industryId     BigInt
+    clientTypeId   Int?
+    clientStatusId Int
+    industryId     Int?
 
     createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
     updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
@@ -99,37 +102,41 @@ model Client {
 
     clientStatus ClientStatus @relation(fields: [clientStatusId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
-    industry Industry @relation(fields: [industryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-
-    activities Activity[]
+    industry Industry? @relation(fields: [industryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
     @@map("clients")
 }
 
 model Activity {
-    id      BigInt @id @default(autoincrement())
-    message String
-
-    clientId BigInt @map("client_id")
-    actorId  BigInt @map("actor_id")
+    id         Int                @id @default(autoincrement())
+    message    String
+    entityId   Int                @map("entity_id")
+    entityType ActivityEntityType @map("entity_type")
+    actorId    Int                @map("actor_id")
+    code       String
 
     oldValue String? @map("old_value")
     newValue String? @map("new_value")
 
     createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-    client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    actor User @relation(fields: [actorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-    actor User @relation(fields: [actorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-
+    @@index([entityId, entityType])
+    @@index([actorId])
     @@map("activities")
 }
 
+enum ActivityEntityType {
+    user
+    client
+}
+
 model RefreshToken {
-    id               BigInt @id @default(autoincrement())
+    id               Int    @id @default(autoincrement())
     refreshTokenHash String @map("refresh_token_hash")
 
-    userId BigInt @map("user_id")
+    userId Int @map("user_id")
 
     createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
     updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
