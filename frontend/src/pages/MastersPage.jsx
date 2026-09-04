@@ -14,7 +14,7 @@ import { ConfirmDialog, AppTabs, LoadingOverlay } from "../components/common";
 import PageHeader from "../components/common/PageHeader";
 
 function MastersPage() {
-  const [selectedType, setSelectedType] = useState(MASTER_TYPES.INDUSTRY);
+  const [selectedType, setSelectedType] = useState(MASTER_TYPES.USER_ROLE);
   const [editingMaster, setEditingMaster] = useState(null);
   const [masterToDelete, setMasterToDelete] = useState(null);
   const dispatch = useDispatch();
@@ -45,7 +45,7 @@ function MastersPage() {
     try {
       let master = {
         type: selectedType,
-        value: data.value,
+        name: data.name,
         description: data.description,
       };
       if (editingMaster) {
@@ -68,8 +68,8 @@ function MastersPage() {
     await refreshMasters();
   }
 
-  function handleEdit(value) {
-    setEditingMaster(value);
+  function handleEdit(editedMaster) {
+    setEditingMaster(editedMaster);
   }
 
   async function handleDelete() {
@@ -88,6 +88,8 @@ function MastersPage() {
   async function handleChangeMasterType(value) {
     setSelectedType(value);
   }
+
+  console.log(editingMaster)
 
   return (
     <div style={{ textAlign: "left" }}>

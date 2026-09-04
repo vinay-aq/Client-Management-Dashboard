@@ -49,7 +49,6 @@ async function loginUser(email, password) {
   }
 
   const isMatch = await bcrypt.compare(password, user.passwordHash);
-  console.log(user)
   if (!isMatch) {
     throw new AppError("Password Incorrect. Please try again", 401);
   }
@@ -76,7 +75,7 @@ async function handleRefreshToken(oldRefreshToken) {
     throw new AppError("No refresh token found!", 401);
   }
   let decodedUser = verifyRefreshToken(oldRefreshToken);
-  let refreshToken = await prisma.refreshToken.findUnique({
+  let refreshToken = await prisma.refreshToken.findFirst({
     where: {
       refreshTokenHash: oldRefreshToken,
     },
@@ -94,19 +93,20 @@ async function handleRefreshToken(oldRefreshToken) {
     throw new AppError("Refresh token is exired.", 403);
   }
 
-  let user = await prisma.user.findUnique({ where: { id: decodedUser.id } });
+
+  let user = await prisma.user.findUnique({ where: { email: decodedUser.email } });
   if (!user) {
     throw new AppError("User does not exist", 400);
   }
 
   let newRefreshToken = generateRefreshToken(user);
 
-  await prisma.refreshToken.deleteMany({ where: { user: user.id } });
+  await prisma.refreshToken.deleteMany({ where: { userId: Number(user.id )} });
   //here all the sessions of the user are revoked instead of the particular session which is requested to be refreshed.
 
   await prisma.refreshToken.create({
     data: {
-      user: user.id,
+      userId: Number(user.id),
       refreshTokenHash: newRefreshToken,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },

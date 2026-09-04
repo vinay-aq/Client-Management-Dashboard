@@ -4,13 +4,10 @@ import { AppButton } from "../common";
 
 function MastersTable({ onEdit, onDelete, masters, loading }) {
   const columns = [
+    
     {
-      header: "Type",
-      accessor: "type",
-    },
-    {
-      header: "Value",
-      accessor: "value",
+      header: "Name",
+      accessor: "name",
     },
     {
       header: "Description",

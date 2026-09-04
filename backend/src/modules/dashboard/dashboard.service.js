@@ -1,4 +1,3 @@
-const clientModel = require("../client/client.model");
 // const { CLIENT_STATUS } = require("../../constants/clientStatus");
 const prisma = require("../../db/prisma");
 

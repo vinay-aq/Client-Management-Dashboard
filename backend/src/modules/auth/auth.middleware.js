@@ -6,7 +6,6 @@ async function authMiddleware(req, res, next) {
   let accessToken = req.headers?.authorization?.split(" ")[1] ?? "";
   try {
     const decodedUser = jwt.verify(accessToken, process.env.JWT_SECRET);
-    console.log({ decodedUser });
     let user = await prisma.user.findUnique({ where: { id: decodedUser.id } });
     if (!user) {
       next(new AppError("User does not exist", 400));

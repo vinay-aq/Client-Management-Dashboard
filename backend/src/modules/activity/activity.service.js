@@ -3,19 +3,22 @@ const { getIO } = require("../../socket/socket");
 
 async function createActivityService({
   message,
-  entityType = null,
+  entityType,
   entityId = null,
-  userId = null,
+  actorId = null,
   oldValue = {},
   newValue = {},
 }) {
+  console.log(message, entityType, entityId, (oldValue = {}), newValue);
   const activity = await prisma.activity.create({
-    message,
-    entityType,
-    entityId,
-    userId,
-    oldValue,
-    newValue,
+    data: {
+      message,
+      entityType,
+      entityId,
+      actorId,
+      oldValue,
+      newValue,
+    },
   });
   const io = getIO();
   io.emit("new_activity", activity);

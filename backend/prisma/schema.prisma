@@ -76,7 +76,7 @@ model ClientStatus {
     isActive    Boolean @default(true) @map("is_active")
 
     createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-    updatedAt DateTime @updatedAt @db.Timestamptz
+    updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
     clients Client[]
 
@@ -108,12 +108,11 @@ model Client {
 }
 
 model Activity {
-    id         Int                @id @default(autoincrement())
+    id         Int    @id @default(autoincrement())
     message    String
-    entityId   Int                @map("entity_id")
-    entityType ActivityEntityType @map("entity_type")
-    actorId    Int                @map("actor_id")
-    code       String
+    entityId   Int    @map("entity_id")
+    entityType String @map("entity_type")
+    actorId    Int    @map("actor_id")
 
     oldValue Json? @map("old_value")
     newValue Json? @map("new_value")

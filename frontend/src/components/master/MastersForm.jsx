@@ -6,7 +6,7 @@ import AppButton from "../common/AppButton";
 function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
   const methods = useForm({
     defaultValues: {
-      value: "",
+      name: "",
       description: "",
     },
   });
@@ -16,12 +16,12 @@ function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
   useEffect(() => {
     if (editingMaster) {
       reset({
-        value: editingMaster.value,
+        name: editingMaster.name,
         description: editingMaster.description,
       });
     } else {
       reset({
-        value: "",
+        name: "",
         description: "",
       });
     }
@@ -31,8 +31,8 @@ function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <FormInput
-          name="value"
-          label="Value"
+          name="name"
+          label="Name"
           required
           rules={{ required: "value is required" }}
           disabled={isLoading}

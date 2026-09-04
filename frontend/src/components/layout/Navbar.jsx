@@ -57,7 +57,7 @@ function Navbar() {
         }}
       >
         <span>{user?.email}</span>
-        <span>{user?.role}</span>
+      <span>{user?.role?.nameactivi}</span>
         <span onClick={handleLogout} style={{ cursor: "pointer" }}>
           Logout
         </span>

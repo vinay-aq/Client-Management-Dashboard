@@ -30,6 +30,7 @@ router.put(
   permissionAuthorize(PERMISSIONS.MASTER_MANAGE),
   masterController.updateMaster,
 );
+
 router.delete(
   "/:id",
   authMiddleware,

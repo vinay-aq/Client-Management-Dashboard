@@ -1,8 +1,6 @@
 const AppError = require("../../utils/AppError");
 const masterModel = require("./master.model");
-
-const { masterTypes } = require("../../constants/masterTypes");
-const mongoose = require("mongoose");
+const { masterTypes, MASTER_TYPES } = require("../../constants/masterTypes");
 const prisma = require("../../db/prisma");
 
 async function fetchMasterService(type) {
@@ -15,68 +13,284 @@ async function fetchMasterService(type) {
     throw new AppError("Invalid master type");
   }
 
-  const masters = await masterModel.find({ type });
+  let masters;
+
+  switch (type) {
+    case MASTER_TYPES.USER_ROLE:
+      masters = await fetchUserRoles();
+      break;
+    case MASTER_TYPES.CLIENT_TYPE:
+      masters = await fetchClientTypes();
+      break;
+    case MASTER_TYPES.CLIENT_STATUS:
+      masters = await fetchClientStatuses();
+      break;
+    case MASTER_TYPES.CLIENT_INDUSTRY:
+      masters = await fetchClientIndustries();
+      break;
+
+    default:
+      throw new AppError("Invalid master type", 400);
+  }
+
   return masters;
 }
 
+async function fetchUserRoles() {
+  return await prisma.userRole.findMany();
+}
+
+async function fetchClientTypes() {
+  return await prisma.clientType.findMany();
+}
+
+async function fetchClientStatuses() {
+  return await prisma.clientStatus.findMany();
+}
+
+async function fetchClientIndustries() {
+  return await prisma.industry.findMany();
+}
+
 async function createMasterService({ master }) {
-  if (!master) {
-    throw new AppError("Please provide master details");
+  validateMasterData(master);
+  let createdMaster;
+  switch (master?.type) {
+    case MASTER_TYPES.USER_ROLE:
+      createdMaster = await createUserRole(master);
+      break;
+    case MASTER_TYPES.CLIENT_TYPE:
+      createdMaster = await createClientTypes(master);
+      break;
+    case MASTER_TYPES.CLIENT_STATUS:
+      createdMaster = await createClientStatuses(master);
+      break;
+    case MASTER_TYPES.CLIENT_INDUSTRY:
+      createdMaster = await createClientIndustries(master);
+      break;
+
+    default:
+      throw new AppError("Invalid master type", 400);
   }
 
-  if (!master?.type) {
-    throw new AppError("Master type is required");
-  }
+  return createdMaster;
+}
 
-  if (!master.value) {
-    throw new AppError("Master value is required");
-  }
-
-  const duplicateMaster = await masterModel.findOne({
-    type: master?.type,
-    value: master?.value,
+async function createUserRole(master) {
+  const duplicateMaster = await prisma.userRole.findFirst({
+    where: {
+      name: master?.name,
+    },
   });
-
   if (duplicateMaster) {
     throw new AppError("Master already exist", 400);
   }
 
-  return await masterModel.create({ ...master, isActive: true });
+  return await prisma.userRole.create({
+    data: {
+      name: master?.name,
+      description: master?.description,
+      isActive: true,
+    },
+  });
 }
 
-async function updateMasterService(masterId, masterData) {
-  const isIdValid = mongoose.Types.ObjectId.isValid(masterId);
-  if (!isIdValid) {
-    throw new AppError("Invalid id");
+async function createClientTypes(master) {
+  const duplicateMaster = await prisma.clientType.findFirst({
+    where: {
+      name: master?.name,
+    },
+  });
+  if (duplicateMaster) {
+    throw new AppError("Master already exist", 400);
   }
 
-  if (!masterData) {
+  return await prisma.clientType.create({
+    data: {
+      name: master?.name,
+      description: master?.description,
+      isActive: true,
+    },
+  });
+}
+
+async function createClientStatuses(master) {
+  const duplicateMaster = await prisma.clientStatus.findFirst({
+    where: {
+      name: master?.name,
+    },
+  });
+  if (duplicateMaster) {
+    throw new AppError("Master already exist", 400);
+  }
+
+  return await prisma.clientStatus.create({
+    data: {
+      name: master?.name,
+      description: master?.description,
+      isActive: true,
+    },
+  });
+}
+
+async function createClientIndustries(master) {
+  const duplicateMaster = await prisma.industry.findFirst({
+    where: {
+      name: master?.name,
+    },
+  });
+  if (duplicateMaster) {
+    throw new AppError("Master already exist", 400);
+  }
+
+  return await prisma.industry.create({
+    data: {
+      name: master?.name,
+      description: master?.description,
+      isActive: true,
+    },
+  });
+}
+
+function validateMasterData(master) {
+  if (!master) {
     throw new AppError("Please provide master details");
   }
 
-  if (!masterData?.type) {
+  if (!master.type) {
     throw new AppError("Master type is required");
   }
 
-  if (!masterData.value) {
-    throw new AppError("Master value is required");
+  if (!master.name) {
+    throw new AppError("Master name is required");
   }
-
-  const updatedDoc = await masterModel.findByIdAndUpdate(
-    masterId,
-    { $set: masterData },
-    { new: true },
-  );
-  return updatedDoc;
 }
 
-async function deleteMasterService(masterId) {
-  const isIdValid = mongoose.Types.ObjectId.isValid(masterId);
-  if (!isIdValid) {
-    throw new AppError("Invalid id");
+async function updateMasterService(masterId, master) {
+  validateMasterData(master);
+  let updatedMaster;
+  switch (master?.type) {
+    case MASTER_TYPES.USER_ROLE:
+      updatedMaster = await updateUserRole(masterId, master);
+      break;
+    case MASTER_TYPES.CLIENT_TYPE:
+      updatedMaster = await updateClientTypes(masterId, master);
+      break;
+    case MASTER_TYPES.CLIENT_STATUS:
+      updatedMaster = await updateClientStatuses(masterId, master);
+      break;
+    case MASTER_TYPES.CLIENT_INDUSTRY:
+      updatedMaster = await updateClientIndustries(masterId, master);
+      break;
+
+    default:
+      throw new AppError("Invalid master type", 400);
+  }
+
+  return updatedMaster;
+}
+
+async function updateUserRole(masterId, master) {
+  const existingMaster = await prisma.userRole.findFirst({
+    where: { id: masterId },
+  });
+  if (!existingMaster) {
+    throw AppError("Invalid master id", 400);
+  }
+  return await prisma.userRole.update({
+    where: { id: masterId },
+    data: { ...master },
+  });
+}
+async function updateClientTypes(masterId, master) {
+  const existingMaster = await prisma.clientType.findFirst({
+    where: { id: masterId },
+  });
+  if (!existingMaster) {
+    throw AppError("Invalid master id", 400);
+  }
+  return await prisma.userRole.update({
+    where: { id: masterId },
+    data: { ...master },
+  });
+}
+async function updateClientStatuses(masterId, master) {
+  const existingMaster = await prisma.clientStatus.findFirst({
+    where: { id: masterId },
+  });
+  if (!existingMaster) {
+    throw AppError("Invalid master id", 400);
+  }
+  return await prisma.userRole.update({
+    where: { id: masterId },
+    data: { ...master },
+  });
+}
+async function updateClientIndustries(masterId, master) {
+  const existingMaster = await prisma.industry.findFirst({
+    where: { id: masterId },
+  });
+  if (!existingMaster) {
+    throw AppError("Invalid master id", 400);
+  }
+  return await prisma.userRole.update({
+    where: { id: masterId },
+    data: { ...master },
+  });
+}
+
+async function deleteMasterService(masterId, masterType) {
+  let deletedMaster;
+  switch (masterType) {
+    case MASTER_TYPES.USER_ROLE:
+      deletedMaster = await deleteUserRole(masterId, deletedMaster);
+      break;
+    case MASTER_TYPES.CLIENT_TYPE:
+      deletedMaster = await deleteClientTypes(masterId, deletedMaster);
+      break;
+    case MASTER_TYPES.CLIENT_STATUS:
+      deletedMaster = await deleteClientStatuses(masterId, deletedMaster);
+      break;
+    case MASTER_TYPES.CLIENT_INDUSTRY:
+      deletedMaster = await deleteClientIndustries(masterId, deletedMaster);
+      break;
+
+    default:
+      throw new AppError("Invalid master type", 400);
   }
 
   await masterModel.deleteOne({ _id: masterId });
+
+  return deletedMaster;
+}
+
+async function deleteUserRole(masterId) {
+  return await prisma.userRole.delete({
+    where: {
+      id: masterId,
+    },
+  });
+}
+async function deleteClientTypes(masterId) {
+  return await prisma.clientType.delete({
+    where: {
+      id: masterId,
+    },
+  });
+}
+async function deleteClientStatuses(masterId) {
+  return await prisma.clientStatus.delete({
+    where: {
+      id: masterId,
+    },
+  });
+}
+async function deleteClientIndustries(masterId) {
+  return await prisma.industry.delete({
+    where: {
+      id: masterId,
+    },
+  });
 }
 
 module.exports = {

@@ -1,10 +1,8 @@
 const MASTER_TYPES = {
-  INDUSTRY: "industry",
+  USER_ROLE: "role",
   CLIENT_TYPE: "clientType",
-  DEPARTMENT: "department",
-  PAYMENT_METHOD: "paymentMethod",
-  ROLE: "role",
   CLIENT_STATUS: "clientStatus",
+  CLIENT_INDUSTRY: "industry",
 };
 
 const masterTypes = Object.values(MASTER_TYPES);
