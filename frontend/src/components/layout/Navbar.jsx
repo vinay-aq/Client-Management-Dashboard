@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { logout } from "../../features/auth/authSlice";
 import usePermission from "../../hooks/usePermission";
-import  {PERMISSIONS}  from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/permissions";
 
 function Navbar() {
   const dispatch = useDispatch();
@@ -15,6 +15,8 @@ function Navbar() {
     dispatch(logout());
     navigate("/login");
   }
+
+  console.log({user})
 
   return (
     <nav
@@ -56,8 +58,9 @@ function Navbar() {
           gap: "12px",
         }}
       >
+
         <span>{user?.email}</span>
-      <span>{user?.role?.nameactivi}</span>
+        <span>{user?.role?.name}</span>
         <span onClick={handleLogout} style={{ cursor: "pointer" }}>
           Logout
         </span>

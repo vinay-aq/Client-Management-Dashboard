@@ -52,7 +52,7 @@ async function loginUser(email, password) {
   if (!isMatch) {
     throw new AppError("Password Incorrect. Please try again", 401);
   }
-
+  console.log('user', user)
   const role = user?.role?.name;
   const permissions = ROLE_PERMISSIONS[role] || [];
 

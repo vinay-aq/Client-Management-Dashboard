@@ -26,7 +26,7 @@ async function loginUser(req, res, next) {
     res.send({
       accessToken,
       user: {
-        id: user._id,
+        id: user.id,
         email: user.email,
         role: user.role,
         permissions,

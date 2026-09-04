@@ -76,7 +76,7 @@ function MastersPage() {
     if (!masterToDelete) return;
 
     try {
-      await dispatch(deleteMaster(masterToDelete._id)).unwrap();
+      await dispatch(deleteMaster({id: masterToDelete.id, type: selectedType})).unwrap();
       toast.success("Master deleted successfully");
       setMasterToDelete(null);
     } catch (err) {
@@ -89,7 +89,7 @@ function MastersPage() {
     setSelectedType(value);
   }
 
-  console.log(editingMaster)
+  console.log({editingMaster, masterToDelete})
 
   return (
     <div style={{ textAlign: "left" }}>
@@ -125,7 +125,7 @@ function MastersPage() {
         title="Confirm Action"
         message={
           masterToDelete
-            ? `Are you sure you want to delete master ${masterToDelete?.value} ? The action could not be undone`
+            ? `Are you sure you want to delete master ${masterToDelete?.name} ? The action could not be undone`
             : ""
         }
         confirmText="Confirm"

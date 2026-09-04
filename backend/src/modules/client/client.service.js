@@ -81,7 +81,7 @@ async function fetchClients(page, limit, search) {
 
 async function fetchClientsById(id) {
   let clientData = await prisma.client.findUnique({
-    where: { id: id },
+    where: { id: Number(id) },
     include: {
       clientStatus: true,
       clientType: true,

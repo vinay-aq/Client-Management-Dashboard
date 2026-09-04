@@ -74,6 +74,7 @@ model ClientStatus {
     name        String  @unique @db.VarChar(255)
     description String?
     isActive    Boolean @default(true) @map("is_active")
+    code        String
 
     createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
     updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz

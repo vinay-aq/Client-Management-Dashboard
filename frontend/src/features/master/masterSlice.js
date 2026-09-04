@@ -56,9 +56,9 @@ export const updateMaster = createAsyncThunk(
 
 export const deleteMaster = createAsyncThunk(
   "/master/deleteMaster",
-  async (id, thunk) => {
+  async ({id, type}, thunk) => {
     try {
-      const res = await deleteMasterAPI(id);
+      const res = await deleteMasterAPI(id, type);
       return res;
     } catch (err) {
       return  thunk.rejectWithValue(err?.response?.data?.error?.message || "Unable to delete Master");

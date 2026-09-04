@@ -38,7 +38,7 @@ function ClientsTable({ clients, loading}) {
         return (
           <AppButton
             style={{ cursor: "pointer", display:'flex' }}
-            onClick={() => navigate(`/clients/${row._id}`)}
+            onClick={() => navigate(`/clients/${row.id}`)}
           >
             View
           </AppButton>

@@ -15,7 +15,7 @@ export const updateMasterAPI = async (master) => {
   return res.data;
 };
 
-export const deleteMasterAPI = async (id) => {
-  const res = await axiosInstance.delete(`/api/masters/${id}`);
+export const deleteMasterAPI = async (id, type) => {
+  const res = await axiosInstance.delete(`/api/masters/${id}?type=${type}`);
   return res.data;
 };

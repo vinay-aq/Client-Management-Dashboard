@@ -1,6 +1,4 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import StatsCard from "../components/dashboard/StatsCard";
 import { useEffect } from "react";
 import { fetchDashboardStats } from "../features/dashboard/dashboardSlice";
 import ClientsTable from "../components/clients/ClientsTable";
@@ -20,6 +18,8 @@ function DashboardPage() {
   const { stats, isFetchingStats, error } = useSelector(
     (state) => state.dashboard,
   );
+
+  console.log("stats", stats);
 
   useEffect(() => {
     dispatch(fetchDashboardStats());
@@ -42,7 +42,6 @@ function DashboardPage() {
     return <h3>{error}</h3>;
   }
 
-
   return (
     <>
       <PageHeader title="Dashboard" subtitle="Overview of the platform." />
@@ -61,7 +60,7 @@ function DashboardPage() {
             {Array.from({ length: 7 }).map((__dirname, index) => (
               <CardSkeleton key={index} />
             ))}
-            <TableSkeleton/>
+            <TableSkeleton />
           </div>
         </>
       ) : (
@@ -79,33 +78,10 @@ function DashboardPage() {
               marginTop: "1rem",
             }}
           >
-            <AppCard title="Total Clients" value={stats?.totalClients} />
-            <AppCard title="Lead Clients" value={stats?.leadClients} />
-            <AppCard
-              title="Contacted Clients"
-              value={stats?.contactedClients}
-            />
-            <AppCard
-              title="Qualified Clients"
-              value={stats?.qualifiedClients}
-            />
-            <AppCard
-              title="Proposal sent Clients"
-              value={stats?.proposalSentClients}
-            />
-            <AppCard title="Approved Clients" value={stats?.approvedClients} />
-            <AppCard
-              title="Onboarded Clients"
-              value={stats?.onboardedClients}
-            />
-            <AppCard
-              title="Suspended Clients"
-              value={stats?.suspendedClients}
-            />
-            <AppCard
-              title="Archieved Clients"
-              value={stats?.archievedClients}
-            />
+            {stats &&
+              stats.map((s) => (
+                <AppCard title={s.label} value={s.count} sx={{ flex: 1 }} />
+              ))}
           </div>
           <div>
             <h3>Recent Clients</h3>

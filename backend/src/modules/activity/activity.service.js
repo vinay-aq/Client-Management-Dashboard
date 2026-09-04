@@ -38,7 +38,7 @@ async function fetchActivityService() {
 
 async function fetchActivityByEntityService({ entityType, entityId }) {
   const activities = await prisma.activity.findMany({
-    where: { entityType, entityId },
+    where: { entityType, entityId: Number(entityId) },
     orderBy: { createdAt: "desc" },
     take: 20,
   });

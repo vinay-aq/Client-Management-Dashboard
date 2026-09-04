@@ -1,48 +1,36 @@
-// const { CLIENT_STATUS } = require("../../constants/clientStatus");
 const prisma = require("../../db/prisma");
 
 async function fetchDashboardStats() {
-  const [
-    totalClients,
-    recentClients,
-    leadClients,
-    contactedClients,
-    qualifiedClients,
-    proposalSentClients,
-    approvedClients,
-    onboardedClients,
-    suspendedClients,
-    archievedClients,
-  ] = await Promise.all([
-    prisma.client.count(),
-    prisma.client.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: 5,
+  const [statusCount, clientStatuses] = await Promise.all([
+    prisma.client.groupBy({
+      by: ["clientStatusId"],
+      _count: { _all: true },
     }),
-    prisma.client.count({ where: { status: "lead" } }),
-    prisma.client.count({ where: { status: "contacted" } }),
-    prisma.client.count({ where: { status: "qualified" } }),
-    prisma.client.count({ where: { status: "proposal sent" } }),
-    prisma.client.count({ where: { status: "approved" } }),
-    prisma.client.count({ where: { status: "onboarded" } }),
-    prisma.client.count({ where: { status: "suspended" } }),
-    prisma.client.count({ where: { status: "archived" } }),
+    prisma.clientStatus.findMany({
+      select: {
+        id: true,
+        name: true,
+        code: true,
+      },
+    }),
   ]);
 
-  return {
-    totalClients,
-    recentClients,
-    leadClients,
-    contactedClients,
-    qualifiedClients,
-    proposalSentClients,
-    approvedClients,
-    onboardedClients,
-    suspendedClients,
-    archievedClients,
-  };
+  const statusCountLookup = Object.fromEntries(
+    statusCount.map((item) => {
+      const clientStatusId = item.clientStatusId;
+      const count = item._count._all;
+      return [clientStatusId, count];
+    }),
+  );
+
+  const clientStatusCounts = clientStatuses.map((item) => ({
+    id: item.id,
+    label: item.name,
+    code: item.code,
+    count: statusCountLookup[item.id] ? statusCountLookup[item.id] : 0,
+  }));
+
+  return clientStatusCounts;
 }
 
 module.exports = { fetchDashboardStats };

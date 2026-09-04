@@ -32,7 +32,11 @@ async function updateMaster(req, res, next) {
     const updatedMaster = await updateMasterService(masterId, master);
     res
       .status(200)
-      .json({ success: true, message: "Master updated successfuly", updatedMaster });
+      .json({
+        success: true,
+        message: "Master updated successfuly",
+        updatedMaster,
+      });
   } catch (err) {
     next(err);
   }
@@ -40,15 +44,14 @@ async function updateMaster(req, res, next) {
 
 async function deleteMaster(req, res, next) {
   const { id: masterId } = req.params;
+  const { type: masterType } = req.query;
   try {
-    await deleteMasterService(masterId);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Master deleted successfuly",
-        id: masterId,
-      });
+    await deleteMasterService(masterId, masterType);
+    res.status(200).json({
+      success: true,
+      message: "Master deleted successfuly",
+      id: masterId,
+    });
   } catch (err) {
     next(err);
   }
