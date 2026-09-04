@@ -51,7 +51,7 @@ function MastersPage() {
       if (editingMaster) {
         master = {
           ...master,
-          id: editingMaster._id,
+          id: editingMaster.id,
         };
         await dispatch(updateMaster(master)).unwrap();
         toast.success("Master updated successfully");
