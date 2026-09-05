@@ -8,7 +8,7 @@ import {
   deleteMaster,
 } from "../features/master/masterSlice";
 import MastersForm from "../components/master/MastersForm";
-import { masterTypes, MASTER_TYPES } from "../ constants/masterTypes";
+import { masterTypes, MASTER_TYPES } from "../constants/masterTypes";
 import toast from "react-hot-toast";
 import { ConfirmDialog, AppTabs, LoadingOverlay } from "../components/common";
 import PageHeader from "../components/common/PageHeader";

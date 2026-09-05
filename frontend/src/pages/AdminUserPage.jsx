@@ -8,7 +8,7 @@ import {
 } from "../features/users/userSlice";
 import toast from "react-hot-toast";
 import { AppTable, AppSelect, AppButton } from "../components/common";
-import { ROLE_VALUES } from "../ constants/roles";
+import { ROLE_VALUES } from "../constants/roles";
 
 function AdminUserPage() {
   const dispatch = useDispatch();

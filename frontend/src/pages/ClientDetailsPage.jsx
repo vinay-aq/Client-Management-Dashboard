@@ -31,6 +31,8 @@ function ClientDetailsPage() {
 
   const { selectedClient, error, isFetchingClientDetails, isDeletingClient } =
     useSelector((state) => state.clients);
+  
+    console.log('selectedClient', selectedClient)
 
   async function getClientTimeline() {
     setIsFetchingClientTimeline(true);
@@ -113,7 +115,7 @@ function ClientDetailsPage() {
 
       <ClientWorkflowSection
         loading={isUpdatingWorkflow}
-        currentStatus={selectedClient?.status}
+        currentStatus={selectedClient?.clientStatus?.code}
         onUpdateStatus={handleUpdateStatus}
       />
 

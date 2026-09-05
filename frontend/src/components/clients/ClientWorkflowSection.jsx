@@ -1,17 +1,25 @@
-import React from "react";
 import { useState } from "react";
-import CLIENT_WORKFLOW from "../../ constants/clientWorkflow";
-import { AppSelect, AppButton} from "../common";
+import CLIENT_WORKFLOW from "../../constants/clientWorkflow";
+import { AppSelect, AppButton } from "../common";
 
 function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
   const [nextStatus, setNextStatus] = useState("select");
-  const availableTransitions = CLIENT_WORKFLOW[currentStatus] || [];
+  console.log("currentStatus", currentStatus);
+
+  const availableTransitions = CLIENT_WORKFLOW["QUALIFIED"] || [];
 
   function handleChangeTransition(e) {
     const value = e.target?.value;
     if (value === "select") return;
     setNextStatus(value);
   }
+
+  console.log(
+    "availableTransitions: ",
+    availableTransitions,
+    "CLIENT_WORKFLOW",
+    CLIENT_WORKFLOW,
+  );
 
   return (
     <div
@@ -46,7 +54,7 @@ function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
           onUpdateStatus(nextStatus);
           setNextStatus("select");
         }}
-        sx={{ml:2}}
+        sx={{ ml: 2 }}
       >
         {loading ? "Updating..." : "Update"}
       </AppButton>
