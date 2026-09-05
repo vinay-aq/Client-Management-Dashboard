@@ -15,10 +15,9 @@ import {
 
 function DashboardPage() {
   const dispatch = useDispatch();
-  const { stats, isFetchingStats, error } = useSelector(
+  const { stats, isFetchingStats, error, recentClients } = useSelector(
     (state) => state.dashboard,
   );
-
 
   useEffect(() => {
     dispatch(fetchDashboardStats());
@@ -64,28 +63,33 @@ function DashboardPage() {
         </>
       ) : (
         <>
-          {" "}
-          <div>
-            <ClientStatusPieChart stats={stats} />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              marginBottom: "24px",
-              flexWrap: "wrap",
-              marginTop: "1rem",
-            }}
-          >
-            {stats &&
-              stats.map((s) => (
-                <AppCard title={s.label} value={s.count} sx={{ flex: 1 }} />
-              ))}
-          </div>
-          <div>
-            <h3>Recent Clients</h3>
-            <ClientsTable clients={stats?.recentClients} />
-          </div>
+          {stats && 
+            <>
+              {" "}
+              <div>
+                <ClientStatusPieChart stats={stats} />
+              </div>
+              
+              <div
+                style={{
+                  display: "flex",
+                  gap: "16px",
+                  marginBottom: "24px",
+                  flexWrap: "wrap",
+                  marginTop: "1rem",
+                }}
+              >
+                {stats.map((s) => (
+                  <AppCard title={s.label} value={s.count} sx={{ flex: 1 }} />
+                ))}
+              </div>
+              
+              <div>
+                <h3>Recent Clients</h3>
+                <ClientsTable clients={recentClients} />
+              </div>
+            </>
+          }
         </>
       )}
     </>

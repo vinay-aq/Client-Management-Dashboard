@@ -31,6 +31,7 @@ const dashboardSlice = createSlice({
     });
     builder.addCase(fetchDashboardStats.fulfilled, (state, action) => {
       state.stats = action.payload.dashboardStats;
+      state.recentClients = action.payload.recentClients;
       state.isFetchingStats = false;
       state.error = false;
     });

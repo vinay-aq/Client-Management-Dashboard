@@ -1,7 +1,7 @@
 const prisma = require("../../db/prisma");
 
 async function fetchDashboardStats() {
-  const [statusCount, clientStatuses] = await Promise.all([
+  const [statusCount, clientStatuses, recentClients] = await Promise.all([
     prisma.client.groupBy({
       by: ["clientStatusId"],
       _count: { _all: true },
@@ -12,6 +12,12 @@ async function fetchDashboardStats() {
         name: true,
         code: true,
       },
+    }),
+    prisma.client.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
     }),
   ]);
 
@@ -30,7 +36,7 @@ async function fetchDashboardStats() {
     count: statusCountLookup[item.id] ? statusCountLookup[item.id] : 0,
   }));
 
-  return clientStatusCounts;
+  return { clientStatusCounts, recentClients };
 }
 
 module.exports = { fetchDashboardStats };
