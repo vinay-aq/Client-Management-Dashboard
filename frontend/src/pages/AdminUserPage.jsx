@@ -30,15 +30,15 @@ function AdminUserPage() {
 
   async function handleChangeRole(id, role) {
     const previousUser = users.find((user) => user.id === id);
-    const previousUserRole = previousUser.role;
+    const previousUserRoleId = previousUser.roleId;
 
     try {
       dispatch(optimisticallyUpdateUserRole({ id, role }));
       setUpdatingUserRoleById(id);
-      await dispatch(updateUserRoleById({ id, role })).unwrap();
+      await dispatch(updateUserRoleById({ id, roleId: role })).unwrap();
       toast.success("Role updated successfully");
     } catch (err) {
-      dispatch(optimisticallyUpdateUserRole({ id, role: previousUserRole }));
+      dispatch(optimisticallyUpdateUserRole({ id, role: previousUserRoleId }));
       toast.error("Failed to update role");
     } finally {
       setUpdatingUserRoleById(null);
@@ -77,12 +77,13 @@ function AdminUserPage() {
       header: "role",
       accessor: "role",
       render: (row) => {
+        console.log(row)
         return (
           <>
             {!isFetchingRoles && userRoles && (
               <AppSelect
                 onChange={(e) => handleChangeRole(row.id, row.roleId)}
-                value={row.id}
+                value={row.roleId}
                 disabled={
                   row.id === updatingUserRoleById || row.id === authUser.id
                 }
@@ -114,6 +115,7 @@ function AdminUserPage() {
       },
     },
   ];
+  console.log('userRoles', userRoles)
 
   return (
     <div style={{ textAlign: "center" }}>
