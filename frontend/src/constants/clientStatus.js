@@ -9,6 +9,4 @@ const CLIENT_STATUS = {
   ARCHIVED: "ARCHIVED",
 };
 
-module.exports = {
-  CLIENT_STATUS,
-};
+export default CLIENT_STATUS

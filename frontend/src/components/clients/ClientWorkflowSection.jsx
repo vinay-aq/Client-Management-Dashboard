@@ -4,7 +4,6 @@ import { AppSelect, AppButton } from "../common";
 
 function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
   const [nextStatus, setNextStatus] = useState("select");
-  console.log("currentStatus", currentStatus);
 
   const availableTransitions = CLIENT_WORKFLOW["QUALIFIED"] || [];
 
@@ -13,13 +12,6 @@ function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
     if (value === "select") return;
     setNextStatus(value);
   }
-
-  console.log(
-    "availableTransitions: ",
-    availableTransitions,
-    "CLIENT_WORKFLOW",
-    CLIENT_WORKFLOW,
-  );
 
   return (
     <div
