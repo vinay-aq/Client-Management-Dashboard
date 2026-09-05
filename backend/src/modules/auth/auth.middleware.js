@@ -29,12 +29,13 @@ function authorize(...allowedRoles) {
 
 function permissionAuthorize(requiredPermissions) {
   return (req, res, next) => {
+    console.log("user", req.user)
     const rolePermissions = req?.user?.permissions || [];
     const hasPermission = rolePermissions.includes(requiredPermissions);
+    console.log({ rolePermissions, requiredPermissions });
     if (!hasPermission) {
       next(new AppError("Forbidden", 403));
     }
-
     next();
   };
 }

@@ -168,19 +168,24 @@ function validateMasterData(master) {
 
 async function updateMasterService(masterId, master) {
   validateMasterData(master);
+  const updateMasterData = {
+    name: master.name,
+    description: master.description,
+  };
+  masterId = Number(masterId);
   let updatedMaster;
   switch (master?.type) {
     case MASTER_TYPES.USER_ROLE:
-      updatedMaster = await updateUserRole(masterId, master);
+      updatedMaster = await updateUserRole(masterId, updateMasterData);
       break;
     case MASTER_TYPES.CLIENT_TYPE:
-      updatedMaster = await updateClientTypes(masterId, master);
+      updatedMaster = await updateClientTypes(masterId, updateMasterData);
       break;
     case MASTER_TYPES.CLIENT_STATUS:
-      updatedMaster = await updateClientStatuses(masterId, master);
+      updatedMaster = await updateClientStatuses(masterId, updateMasterData);
       break;
     case MASTER_TYPES.CLIENT_INDUSTRY:
-      updatedMaster = await updateClientIndustries(masterId, master);
+      updatedMaster = await updateClientIndustries(masterId, updateMasterData);
       break;
 
     default:
@@ -209,7 +214,7 @@ async function updateClientTypes(masterId, master) {
   if (!existingMaster) {
     throw AppError("Invalid master id", 400);
   }
-  return await prisma.userRole.update({
+  return await prisma.clientType.update({
     where: { id: masterId },
     data: { ...master },
   });
@@ -221,19 +226,20 @@ async function updateClientStatuses(masterId, master) {
   if (!existingMaster) {
     throw AppError("Invalid master id", 400);
   }
-  return await prisma.userRole.update({
+  return await prisma.clientStatus.update({
     where: { id: masterId },
     data: { ...master },
   });
 }
 async function updateClientIndustries(masterId, master) {
+  console.log(masterId, master);
   const existingMaster = await prisma.industry.findFirst({
     where: { id: masterId },
   });
   if (!existingMaster) {
     throw AppError("Invalid master id", 400);
   }
-  return await prisma.userRole.update({
+  return await prisma.industry.update({
     where: { id: masterId },
     data: { ...master },
   });
