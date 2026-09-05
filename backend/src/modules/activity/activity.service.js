@@ -9,7 +9,6 @@ async function createActivityService({
   oldValue = {},
   newValue = {},
 }) {
-  console.log(message, entityType, entityId, (oldValue = {}), newValue);
   const activity = await prisma.activity.create({
     data: {
       message,

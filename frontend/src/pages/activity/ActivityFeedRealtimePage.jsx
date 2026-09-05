@@ -48,7 +48,7 @@ function ActivityFeedRealTimePage() {
       {activities &&
         activities.map((activity) => (
           <div
-            key={activity._id}
+            key={activity.id}
             style={{
               border: "1px solid #ddd",
 

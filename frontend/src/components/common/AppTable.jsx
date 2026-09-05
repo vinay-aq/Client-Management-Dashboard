@@ -64,7 +64,7 @@ function AppTable({
               rows.map((row) => (
                 <TableRow
                   hover
-                  key={row?._id}
+                  key={row?.id}
                   sx={{
                     "&:last-child td": {
                       borderBottom: 0,

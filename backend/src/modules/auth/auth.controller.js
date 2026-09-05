@@ -52,7 +52,7 @@ async function refreshToken(req, res, next) {
     res.send({
       accessToken: newAccessToken,
       user: {
-        id: user._id,
+        id: user.id,
         email: user.email,
         role: user.role,
         permissions,

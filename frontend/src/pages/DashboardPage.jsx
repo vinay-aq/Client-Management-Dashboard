@@ -19,7 +19,6 @@ function DashboardPage() {
     (state) => state.dashboard,
   );
 
-  console.log("stats", stats);
 
   useEffect(() => {
     dispatch(fetchDashboardStats());

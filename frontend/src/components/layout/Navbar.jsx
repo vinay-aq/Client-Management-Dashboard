@@ -16,7 +16,6 @@ function Navbar() {
     navigate("/login");
   }
 
-  console.log({user})
 
   return (
     <nav

@@ -21,9 +21,11 @@ function DataTable({ columns, data, loading, emptyMessage }) {
         </thead>
         <tbody>
           {data.map((row) => (
-            <tr key={row._id}>
+            <tr key={row.id}>
               {columns.map((column) => (
-                <td key={column.accessor}>{column.render ? column.render(row) : row[column.accessor]}</td>
+                <td key={column.accessor}>
+                  {column.render ? column.render(row) : row[column.accessor]}
+                </td>
               ))}
             </tr>
           ))}

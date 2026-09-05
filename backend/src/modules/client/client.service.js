@@ -63,9 +63,7 @@ async function fetchClients(page, limit, search) {
       take: limit,
     }),
     prisma.client.count({
-      where,
-      skip,
-      take: limit
+      where
     }),
   ]);
 
@@ -120,7 +118,7 @@ async function createClientService(data) {
   await createActivityService({
     message: `Client ${newClient.name} is created`,
     entityType: "client",
-    entityId: newClient._id,
+    entityId: newClient.id,
     action: "client_created",
     actorId: user.id,
     actorName: user.name,

@@ -89,7 +89,6 @@ function MastersPage() {
     setSelectedType(value);
   }
 
-  console.log({editingMaster, masterToDelete})
 
   return (
     <div style={{ textAlign: "left" }}>

@@ -23,7 +23,7 @@ function ActivityFeed() {
         const result = await getActivities();
 
         currentActivitiesIdRef.current = result.activities.map(
-          (activities) => activities._id,
+          (activities) => activities.id,
         );
         setActivities(result.activities);
       }
@@ -31,7 +31,7 @@ function ActivityFeed() {
       if (silent) {
         const result = await getActivities();
         const currentActivitiesIds = result.activities.map(
-          (result) => result._id,
+          (result) => result.id,
         );
         const areActivitiesEqual = _.isEqual(
           currentActivitiesIdRef.current,
@@ -42,7 +42,7 @@ function ActivityFeed() {
           toast.success("Activities updated");
 
           currentActivitiesIdRef.current = result.activities.map(
-            (activities) => activities._id,
+            (activities) => activities.id,
           );
 
           setActivities(result.activities);
@@ -82,7 +82,7 @@ function ActivityFeed() {
       {activities &&
         activities.map((activity) => (
           <div
-            key={activity._id}
+            key={activity.id}
             style={{
               border: "1px solid #ddd",
 

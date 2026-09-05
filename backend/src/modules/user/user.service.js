@@ -21,7 +21,7 @@ async function fetchUsers() {
   users = users.map((user) => ({
     ...user,
     role: user?.role?.name,
-    _id: user.id,
+    id: user.id,
   }));
 
   return users;
@@ -100,7 +100,6 @@ async function toggleUserStatusService(userId, isActive, authUser) {
     },
   });
 
-  console.log('authUser', authUser)
 
   await createActivityService({
     message: `User ${updatedUser.name} is marked as ${isActive ? "active" : "inactive"}`,

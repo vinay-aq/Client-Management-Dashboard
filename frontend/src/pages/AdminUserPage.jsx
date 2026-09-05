@@ -25,7 +25,7 @@ function AdminUserPage() {
   }, [dispatch]);
 
   async function handleChangeRole(id, role) {
-    const previousUser = users.find((user) => user._id === id);
+    const previousUser = users.find((user) => user.id === id);
     const previousUserRole = previousUser.role;
 
     try {
@@ -75,11 +75,9 @@ function AdminUserPage() {
       render: (row) => {
         return (
           <AppSelect
-            onChange={(e) => handleChangeRole(row._id, e.target.value)}
+            onChange={(e) => handleChangeRole(row.id, e.target.value)}
             value={row.role}
-            disabled={
-              row._id === updatingUserRoleById || row._id === authUser.id
-            }
+            disabled={row.id === updatingUserRoleById || row.id === authUser.id}
             options={ROLE_VALUES.map((role) => ({ value: role, label: role }))}
           >
             <option value="admin">Admin</option>
@@ -95,11 +93,9 @@ function AdminUserPage() {
       render: (row) => {
         return (
           <AppButton
-            disabled={
-              updatingUserStatusId === row._id || row._id === authUser.id
-            }
+            disabled={updatingUserStatusId === row.id || row.id === authUser.id}
             loading={isUpdatingUserStatus}
-            onClick={() => toggleUserStatus(row._id, !row.isActive)}
+            onClick={() => toggleUserStatus(row.id, !row.isActive)}
           >
             {row.isActive ? "Inactive" : "Active"}
           </AppButton>

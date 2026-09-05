@@ -62,7 +62,9 @@ const usersSlice = createSlice({
   reducers: {
     optimisticallyUpdateUserRole: (state, action) => {
       const { role, id } = action.payload;
-      state.users = state.users.map((user) => (user._id === id ? { ...user, role } : user));
+      state.users = state.users.map((user) =>
+        user.id === id ? { ...user, role } : user,
+      );
     },
   },
   extraReducers: (builder) => {
@@ -86,7 +88,7 @@ const usersSlice = createSlice({
     builder.addCase(toggleUserStatusById.fulfilled, (state, action) => {
       state.isUpdatingUserStatus = false;
       state.users = state.users.map((user) =>
-        user._id === action.payload._id ? action.payload : user,
+        user.id === action.payload.id ? action.payload : user,
       );
       state.error = null;
     });
@@ -101,7 +103,7 @@ const usersSlice = createSlice({
     builder.addCase(updateUserRoleById.fulfilled, (state, action) => {
       state.isUpdatingUserRole = false;
       state.users = state.users.map((user) =>
-        user._id === action.payload._id ? action.payload : user,
+        user.id === action.payload.id ? action.payload : user,
       );
       state.error = null;
     });

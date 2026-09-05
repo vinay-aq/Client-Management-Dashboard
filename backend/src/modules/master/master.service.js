@@ -232,7 +232,6 @@ async function updateClientStatuses(masterId, master) {
   });
 }
 async function updateClientIndustries(masterId, master) {
-  console.log(masterId, master);
   const existingMaster = await prisma.industry.findFirst({
     where: { id: masterId },
   });
@@ -246,6 +245,7 @@ async function updateClientIndustries(masterId, master) {
 }
 
 async function deleteMasterService(masterId, masterType) {
+  masterId = Number(masterId);
   let deletedMaster;
   switch (masterType) {
     case MASTER_TYPES.USER_ROLE:
@@ -265,7 +265,7 @@ async function deleteMasterService(masterId, masterType) {
       throw new AppError("Invalid master type", 400);
   }
 
-  await masterModel.deleteOne({ _id: masterId });
+  await masterModel.deleteOne({ id: masterId });
 
   return deletedMaster;
 }
