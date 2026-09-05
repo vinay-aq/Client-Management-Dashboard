@@ -28,17 +28,24 @@ function AdminUserPage() {
     dispatch(fetchMastersData("role"));
   }, [dispatch]);
 
-  async function handleChangeRole(id, role) {
+  async function handleChangeRole({ id, roleId, role }) {
     const previousUser = users.find((user) => user.id === id);
     const previousUserRoleId = previousUser.roleId;
+    const previousUserRoleName = previousUser.role;
 
     try {
-      dispatch(optimisticallyUpdateUserRole({ id, role }));
+      dispatch(optimisticallyUpdateUserRole({ id, role, roleId }));
       setUpdatingUserRoleById(id);
-      await dispatch(updateUserRoleById({ id, roleId: role })).unwrap();
+      await dispatch(updateUserRoleById({ id, roleId })).unwrap();
       toast.success("Role updated successfully");
     } catch (err) {
-      dispatch(optimisticallyUpdateUserRole({ id, role: previousUserRoleId }));
+      dispatch(
+        optimisticallyUpdateUserRole({
+          id,
+          role: previousUserRoleName,
+          roleId: previousUserRoleId,
+        }),
+      );
       toast.error("Failed to update role");
     } finally {
       setUpdatingUserRoleById(null);
@@ -77,23 +84,32 @@ function AdminUserPage() {
       header: "role",
       accessor: "role",
       render: (row) => {
-        console.log(row)
+        const roleOptions = userRoles.map((role) => ({
+          value: role.id,
+          label: role.name,
+        }));
+
         return (
           <>
             {!isFetchingRoles && userRoles && (
               <AppSelect
-                onChange={(e) => handleChangeRole(row.id, row.roleId)}
+                onChange={(e) => {
+                  const selectedRole = userRoles.find(
+                    (role) => role.value === e.target.value,
+                  );
+
+                  handleChangeRole({
+                    id: row.id,
+                    roleId: Number(e.target.value),
+                    role: selectedRole,
+                  });
+                }}
                 value={row.roleId}
                 disabled={
                   row.id === updatingUserRoleById || row.id === authUser.id
                 }
-                options={userRoles.map((role) => ({
-                  value: role.id,
-                  label: role.name,
-                }))}
-              >
-                
-              </AppSelect>
+                options={roleOptions}
+              ></AppSelect>
             )}
           </>
         );
@@ -115,7 +131,6 @@ function AdminUserPage() {
       },
     },
   ];
-  console.log('userRoles', userRoles)
 
   return (
     <div style={{ textAlign: "center" }}>

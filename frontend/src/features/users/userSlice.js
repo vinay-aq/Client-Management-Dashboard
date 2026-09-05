@@ -61,9 +61,9 @@ const usersSlice = createSlice({
   initialState,
   reducers: {
     optimisticallyUpdateUserRole: (state, action) => {
-      const { role, id } = action.payload;
+      const { role, roleId, id } = action.payload;
       state.users = state.users.map((user) =>
-        user.id === id ? { ...user, role } : user,
+        user.id === id ? { ...user, role, roleId } : user,
       );
     },
   },
