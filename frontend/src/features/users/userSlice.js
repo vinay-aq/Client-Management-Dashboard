@@ -44,9 +44,9 @@ export const toggleUserStatusById = createAsyncThunk(
 
 export const updateUserRoleById = createAsyncThunk(
   "/users/updateUserRoleById",
-  async ({ id, role }, thunk) => {
+  async ({ id, roleId }, thunk) => {
     try {
-      const res = await updateUserRoleByIdAPI(id, role);
+      const res = await updateUserRoleByIdAPI(id, roleId);
       return res;
     } catch (err) {
       return thunk.rejectWithValue(

@@ -1,6 +1,5 @@
 const AppError = require("../../utils/AppError");
 const { createActivityService } = require("../activity/activity.service");
-const { ROLE_VALUES } = require("../../constants/roles");
 const { ActivityEntityType } = require("../../generated/prisma");
 const prisma = require("../../db/prisma");
 
@@ -27,7 +26,7 @@ async function fetchUsers() {
   return users;
 }
 
-async function updateUserRoleService(userId, role, authUser) {
+async function updateUserRoleService(userId, roleId, authUser) {
   if (authUser.id === userId) {
     throw new AppError("You cannot modify your own role", 400);
   }
@@ -43,13 +42,9 @@ async function updateUserRoleService(userId, role, authUser) {
     throw new AppError("user is invalid", 400);
   }
 
-  if (!ROLE_VALUES.includes(role)) {
-    throw new AppError("Invalid role", 400);
-  }
-
   const updatedUser = await prisma.user.update({
     where: { id: userId },
-    data: { role },
+    data: { roleId },
     omit: {
       passwordHash: true,
     },
@@ -60,7 +55,6 @@ async function updateUserRoleService(userId, role, authUser) {
     entityType: ActivityEntityType.user,
     entityId: updatedUser.id,
     actorId: authUser.id,
-    actorName: authUser.name,
     oldValue: {
       status: user.role,
     },

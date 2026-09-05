@@ -5,8 +5,8 @@ export const fetchUsersAPI = async () => {
   return res.data;
 };
 
-export const updateUserRoleByIdAPI = async (id, role) => {
-  const res = await axiosInstance.patch(`/api/users/${id}/role`, { role });
+export const updateUserRoleByIdAPI = async (id, roleId) => {
+  const res = await axiosInstance.patch(`/api/users/${id}/role`, { roleId });
   return res.data;
 };
 

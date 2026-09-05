@@ -9,6 +9,7 @@ import {
 import toast from "react-hot-toast";
 import { AppTable, AppSelect, AppButton } from "../components/common";
 import { ROLE_VALUES } from "../constants/roles";
+import { fetchMastersData } from "../features/master/masterSlice";
 
 function AdminUserPage() {
   const dispatch = useDispatch();
@@ -16,12 +17,15 @@ function AdminUserPage() {
     (state) => state.users,
   );
   const { user: authUser } = useSelector((state) => state.auth);
+  const { masters: userRoles, isFetchingMasters: isFetchingRoles } =
+    useSelector((state) => state.masters);
 
   const [updatingUserStatusId, setUpdatingUserStatusId] = useState(null);
   const [updatingUserRoleById, setUpdatingUserRoleById] = useState(null);
 
   useEffect(() => {
     dispatch(getUsers());
+    dispatch(fetchMastersData("role"));
   }, [dispatch]);
 
   async function handleChangeRole(id, role) {
@@ -74,16 +78,23 @@ function AdminUserPage() {
       accessor: "role",
       render: (row) => {
         return (
-          <AppSelect
-            onChange={(e) => handleChangeRole(row.id, e.target.value)}
-            value={row.role}
-            disabled={row.id === updatingUserRoleById || row.id === authUser.id}
-            options={ROLE_VALUES.map((role) => ({ value: role, label: role }))}
-          >
-            <option value="admin">Admin</option>
-            <option value="manager">Manager</option>
-            <option value="viewer">Viewer</option>
-          </AppSelect>
+          <>
+            {!isFetchingRoles && userRoles && (
+              <AppSelect
+                onChange={(e) => handleChangeRole(row.id, row.roleId)}
+                value={row.id}
+                disabled={
+                  row.id === updatingUserRoleById || row.id === authUser.id
+                }
+                options={userRoles.map((role) => ({
+                  value: role.id,
+                  label: role.name,
+                }))}
+              >
+                
+              </AppSelect>
+            )}
+          </>
         );
       },
     },

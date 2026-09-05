@@ -56,7 +56,7 @@ async function loginUser(email, password) {
   const permissions = ROLE_PERMISSIONS[role] || [];
 
   let accessToken = generateAccessToken(user, permissions);
-  let refreshToken = generateRefreshToken(user);
+  let refreshToken = generateRefreshToken(user, permissions);
 
   await prisma.refreshToken.create({
     data: {
@@ -92,15 +92,19 @@ async function handleRefreshToken(oldRefreshToken) {
     throw new AppError("Refresh token is exired.", 403);
   }
 
-
-  let user = await prisma.user.findUnique({ where: { email: decodedUser.email } });
+  let user = await prisma.user.findUnique({
+    where: { email: decodedUser.email },
+    include: {
+      role: true,
+    },
+  });
   if (!user) {
     throw new AppError("User does not exist", 400);
   }
 
   let newRefreshToken = generateRefreshToken(user);
 
-  await prisma.refreshToken.deleteMany({ where: { userId: Number(user.id )} });
+  await prisma.refreshToken.deleteMany({ where: { userId: Number(user.id) } });
   //here all the sessions of the user are revoked instead of the particular session which is requested to be refreshed.
 
   await prisma.refreshToken.create({
@@ -111,7 +115,7 @@ async function handleRefreshToken(oldRefreshToken) {
     },
   });
 
-  const role = user?.role;
+  const role = user?.role?.name;
   const permissions = ROLE_PERMISSIONS[role] || [];
 
   let newAccessToken = generateAccessToken(user, permissions);

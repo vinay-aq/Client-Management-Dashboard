@@ -1,4 +1,3 @@
-const errorMiddleware = require("../../middlewares/err.middleware");
 const {
   fetchUsers,
   updateUserRoleService,
@@ -16,10 +15,10 @@ async function getUsers(req, res, next) {
 
 async function updateUserRole(req, res, next) {
   const userId = req.params.id;
-  const role = req.body.role;
+  const roleId = req.body.roleId;
   const authUser = req.user;
   try {
-    const updatedUser = await updateUserRoleService(userId, role, authUser,);
+    const updatedUser = await updateUserRoleService(userId, roleId, authUser,);
     res.status(200).json(updatedUser);
   } catch (err) {
     next(err);
