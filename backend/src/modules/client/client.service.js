@@ -63,7 +63,7 @@ async function fetchClients(page, limit, search) {
       take: limit,
     }),
     prisma.client.count({
-      where
+      where,
     }),
   ]);
 
@@ -191,6 +191,8 @@ async function deleteClientService(id, user) {
     throw new AppError("Id is missing", 400);
   }
 
+  id = Number(id);
+
   const client = await prisma.client.findUnique({ where: { id: id } });
 
   if (!client) {
@@ -201,10 +203,9 @@ async function deleteClientService(id, user) {
 
   await createActivityService({
     message: `Client ${client.name} is deleted`,
-    entityType: prisma.activity.clien,
+    entityType: ActivityEntityType.client,
     entityId: client.id,
     actorId: user.id,
-    actorName: user.name,
     oldValue: null,
     newValue: null,
   });
@@ -218,8 +219,13 @@ async function updateClientWorkflowService({ clientId, nextStatusId, user }) {
     throw new AppError("Status id for next status does not exist", 404);
   }
 
+  clientId = Number(clientId);
+
   const client = await prisma.client.findUnique({
     where: { id: clientId },
+    include: {
+      clientStatus: true,
+    },
   });
 
   if (!client) {
@@ -228,9 +234,13 @@ async function updateClientWorkflowService({ clientId, nextStatusId, user }) {
 
   const clientStatus = client.clientStatus;
 
-  const nextStatus = prisma.client.findUnique({
+  console.log("nextStatusId", nextStatusId);
+
+  const nextStatus = await prisma.clientStatus.findUnique({
     where: { id: nextStatusId },
   });
+
+  console.log("nextStatus", nextStatus);
 
   const isValidTransition = isValidClientTransition(
     clientStatus.code,
@@ -248,11 +258,11 @@ async function updateClientWorkflowService({ clientId, nextStatusId, user }) {
     where: {
       id: clientId,
     },
-    data: { client_status_id: nextStatusId },
+    data: { clientStatusId: nextStatusId },
   });
 
   await createActivityService({
-    message: `Client ${client.clientStatus.name} status updated to ${nextStatus.name}`,
+    message: `Client ${client.name} status update: ${clientStatus.name} -> ${nextStatus.name}`,
     entityType: ActivityEntityType.client,
     entityId: client.id,
     actorId: user.id,

@@ -32,8 +32,6 @@ function ClientDetailsPage() {
   const { selectedClient, error, isFetchingClientDetails, isDeletingClient } =
     useSelector((state) => state.clients);
   
-    console.log('selectedClient', selectedClient)
-
   async function getClientTimeline() {
     setIsFetchingClientTimeline(true);
 
@@ -78,6 +76,7 @@ function ClientDetailsPage() {
     try {
       setIsUpdatingWorkflow(true);
       await dispatch(updateClientWorkflow({ id, nextStatus })).unwrap();
+      await dispatch(fetchClientById(id));
       await getClientTimeline();
       toast.success("Workflow updated");
     } catch (err) {

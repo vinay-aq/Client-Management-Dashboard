@@ -1,17 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import CLIENT_WORKFLOW from "../../constants/clientWorkflow";
 import { AppSelect, AppButton } from "../common";
+import { MASTER_TYPES } from "../../constants/masterTypes";
+import { fetchMastersData } from "../../features/master/masterSlice";
 
 function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
   const [nextStatus, setNextStatus] = useState("select");
+  const dispatch = useDispatch();
+  const {
+    masters: clientStatuses,
+    isFetchingMasters: isFetchingClientStatus = null,
+  } = useSelector((state) => state.masters);
 
-  const availableTransitions = CLIENT_WORKFLOW["QUALIFIED"] || [];
+  useEffect(() => {
+    dispatch(fetchMastersData(MASTER_TYPES.CLIENT_STATUS));
+  }, []);
+
+  const availableTransitions = CLIENT_WORKFLOW[currentStatus] || [];
+  const availableTransitionsOptions = clientStatuses
+    ? clientStatuses
+        .filter((cs) => availableTransitions.includes(cs.code))
+        .map((cs) => ({ value: cs.id, label: cs.name }))
+    : [];
 
   function handleChangeTransition(e) {
     const value = e.target?.value;
     if (value === "select") return;
     setNextStatus(value);
   }
+
+
+  const labelCurrentStatus = clientStatuses ? clientStatuses.filter(
+    (cs) => cs.code === currentStatus,
+  )[0]?.name : "";
 
   return (
     <div
@@ -25,7 +47,7 @@ function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
     >
       <h3>Workflow</h3>
       <p>
-        Current Status: <strong> {currentStatus}</strong>
+        Current Status: <strong> {labelCurrentStatus}</strong>
       </p>
 
       {availableTransitions.length > 0 ? (
@@ -34,12 +56,13 @@ function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
           value={nextStatus}
           options={[
             { label: "Select Transition", value: "select" },
-            ...availableTransitions.map((tx) => ({ label: tx, value: tx })),
+            ...availableTransitionsOptions,
           ]}
         ></AppSelect>
       ) : (
         "No available Transitions"
       )}
+
       <AppButton
         disabled={loading || !nextStatus}
         onClick={() => {

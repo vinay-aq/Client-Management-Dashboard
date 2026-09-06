@@ -30,7 +30,7 @@ export const deleteClientAPI = async (id) => {
 
 export const updateClientWorkflowAPI = async (id, nextStatus) => {
   const res = await axiosInstance.post(`/api/clients/${id}/workflow`, {
-    nextStatus,
+    nextStatusId: nextStatus,
   });
   return res.data;
 };
