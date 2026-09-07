@@ -105,6 +105,25 @@ function ClientForm({
 
         <br />
         <br />
+        <FormInput
+          type="text"
+          name="clientTypeId"
+          label="Client Type"
+          placeholder="Client Type"
+          rules={{ required: "Client type is required" }}
+        />
+        <br />
+        <br />
+        <FormInput
+          type="text"
+          name="industryId"
+          label="Industry"
+          placeholder="Industry"
+          rules={{ required: "Industry is required" }}
+        />
+
+        <br />
+        <br />
         <input
           type="file"
           accept="image/*"
