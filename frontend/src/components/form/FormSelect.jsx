@@ -47,7 +47,7 @@ function FormSelect({
               </MenuItem>
             ))}
           </Select>
-          <FormHelperText>{errors?.[name].message}</FormHelperText>
+          <FormHelperText>{errors?.[name]?.message}</FormHelperText>
         </FormControl>
       )}
     />

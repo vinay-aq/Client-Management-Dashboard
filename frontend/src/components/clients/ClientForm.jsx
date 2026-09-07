@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { clientSchema } from "../../features/clients/clientSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
-import { FormInput } from "../form";
+import { FormInput, FormSelect } from "../form";
 import { AppButton } from "../common";
+import { useSelector } from "react-redux";
 
 function ClientForm({
   initialFormData,
   loading,
   submitLabel,
   onSubmit,
-  mastersData,
 }) {
   const [previewImage, setPreviewImage] = useState(
     initialFormData?.avatar
@@ -18,8 +18,8 @@ function ClientForm({
       : "",
   );
 
-  const [clientTypes, clientStatus, clientIndustry] = mastersData;
-  console.log({ mastersData });
+  // const [] = useSelector(state => state.);
+
 
   const methods = useForm({
     resolver: zodResolver(clientSchema),
@@ -61,6 +61,7 @@ function ClientForm({
     setPreviewImage(imageURL);
   }
 
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -84,7 +85,7 @@ function ClientForm({
 
         <br />
         <br />
-
+        
         <FormInput
           type="text"
           name="company"
@@ -121,6 +122,25 @@ function ClientForm({
           placeholder="Industry"
           rules={{ required: "Industry is required" }}
         />
+        <FormSelect
+          name="clientTypeId"
+          required
+          options={[
+            { label: "Select Client Type", value: "select" },
+            ...clientTypes?.masters?.map((ct) => ({ value: ct.id, label: ct.name })),
+          ]}
+          rules={{ required: "Client Type is required" }}
+        ></FormSelect>
+
+        <FormSelect
+          name="industryId"
+          required
+          options={[
+            { label: "Select Industry", value: "select" },
+            ...clientIndustry?.map((ci) => ({ value: ci.id, label: ci.name })),
+          ]}
+          rules={{ required: "Client Type is required" }}
+        ></FormSelect>
 
         <br />
         <br />

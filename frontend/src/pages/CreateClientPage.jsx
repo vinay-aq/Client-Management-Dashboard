@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { createClient } from "../features/clients/clientSlice";
 import ClientForm from "../components/clients/ClientForm";
 import toast from "react-hot-toast";
-import useClientMasters from "../hooks/clients/useClientMasters";
 
 function CreateClientPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const mastersData = useClientMasters();
 
   const { isCreatingClient, error } = useSelector((state) => state.clients);
 
@@ -38,7 +36,6 @@ function CreateClientPage() {
         loading={isCreatingClient}
         submitLabel="Create Client"
         onSubmit={handleCreateClient}
-        mastersData={mastersData}
       />
 
       {error && <p>{error}</p>}

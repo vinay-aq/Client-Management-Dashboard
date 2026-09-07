@@ -6,13 +6,11 @@ import { updateClient, fetchClientById } from "../features/clients/clientSlice";
 import { useParams } from "react-router-dom";
 import ClientForm from "../components/clients/ClientForm";
 import toast from "react-hot-toast";
-import useClientMasters from "../hooks/clients/useClientMasters";
 
 function EditClientPage() {
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const mastersData = useClientMasters();
 
   const { isUpdatingClient, error, selectedClient } = useSelector(
     (state) => state.clients,
@@ -61,7 +59,6 @@ function EditClientPage() {
         loading={isUpdatingClient}
         submitLabel="Update Client"
         onSubmit={handleUpdateClient}
-        mastersData={mastersData}
       />
     </>
   );
