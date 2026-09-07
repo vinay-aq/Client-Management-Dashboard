@@ -8,18 +8,16 @@ import { fetchMastersData } from "../../features/master/masterSlice";
 function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
   const [nextStatus, setNextStatus] = useState("select");
   const dispatch = useDispatch();
-  const {
-    masters: clientStatuses,
-    isFetchingMasters: isFetchingClientStatus = null,
-  } = useSelector((state) => state.masters);
+  const { clientStatus, isFetchingMasters: isFetchingClientStatus = null } =
+    useSelector((state) => state.masters);
 
   useEffect(() => {
     dispatch(fetchMastersData(MASTER_TYPES.CLIENT_STATUS));
   }, []);
 
   const availableTransitions = CLIENT_WORKFLOW[currentStatus] || [];
-  const availableTransitionsOptions = clientStatuses
-    ? clientStatuses
+  const availableTransitionsOptions = clientStatus
+    ? clientStatus
         .filter((cs) => availableTransitions.includes(cs.code))
         .map((cs) => ({ value: cs.id, label: cs.name }))
     : [];
@@ -30,10 +28,9 @@ function ClientWorkflowSection({ currentStatus, onUpdateStatus, loading }) {
     setNextStatus(value);
   }
 
-
-  const labelCurrentStatus = clientStatuses ? clientStatuses.filter(
-    (cs) => cs.code === currentStatus,
-  )[0]?.name : "";
+  const labelCurrentStatus = clientStatus
+    ? clientStatus.filter((cs) => cs.code === currentStatus)[0]?.name
+    : "";
 
   return (
     <div

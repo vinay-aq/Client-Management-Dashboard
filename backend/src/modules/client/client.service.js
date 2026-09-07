@@ -93,14 +93,24 @@ async function fetchClientsById(id) {
 }
 
 async function createClientService(data) {
-  const { name, email, phone, company, status, avatar, user } = data;
-  if (!name || !company || !phone || !email || !status) {
+  const {
+    name,
+    email,
+    phone,
+    company,
+    avatar,
+    user,
+    clientTypeId,
+    industryId,
+  } = data;
+  if (!name || !company || !phone || !email) {
     throw new AppError("One or more fields are missing", 404);
   }
   const existingClient = await prisma.client.findUnique({
     where: { email: email },
   });
-  if (existingClient.length) {
+  console.log(existingClient);
+  if (existingClient) {
     throw new AppError("Email already in use", 409);
   }
 
@@ -110,8 +120,10 @@ async function createClientService(data) {
       email,
       phone,
       company,
-      status,
       avatar,
+      clientStatusId: 17,
+      industryId: Number(industryId),
+      clientTypeId: Number(clientTypeId),
     },
   });
 
