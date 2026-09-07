@@ -34,7 +34,7 @@ function FormSelect({
           error={!!errors[name]}
           disabled={disabled}
         >
-          <InputLabel required={required}>{label}</InputLabel>
+          <InputLabel required={required} >{label} </InputLabel>
           <Select
             {...field}
             label={label}

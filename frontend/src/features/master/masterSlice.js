@@ -66,7 +66,8 @@ export const deleteMaster = createAsyncThunk(
   },
 );
 
-const dashboardSlice = createSlice({
+
+const masterSlice = createSlice({
   name: "master",
   initialState,
   reducers: {},
@@ -117,4 +118,4 @@ const dashboardSlice = createSlice({
   },
 });
 
-export default dashboardSlice.reducer;
+export default masterSlice.reducer;
