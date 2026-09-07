@@ -262,7 +262,7 @@ async function updateClientWorkflowService({ clientId, nextStatusId, user }) {
   });
 
   await createActivityService({
-    message: `Client ${client.name} status update: ${clientStatus.name} -> ${nextStatus.name}`,
+    message: `User ${user.name} updated Client ${client.name} status: ${clientStatus.name} -> ${nextStatus.name}`,
     entityType: ActivityEntityType.client,
     entityId: client.id,
     actorId: user.id,
