@@ -13,8 +13,8 @@ import { PERMISSIONS } from "../utils/permissions";
 import ClientWorkflowSection from "../components/clients/ClientWorkflowSection";
 import ActivityTimeline from "../components/activity/ActivityTimeline";
 import { fetchClientTimeline } from "../features/clients/clientAPI";
-import { AppCard } from "../components/common";
-import { Typography } from "@mui/material";
+import { AppCard, AppButton } from "../components/common";
+import { Typography, Box } from "@mui/material";
 import toast from "react-hot-toast";
 
 function ClientDetailsPage() {
@@ -31,7 +31,7 @@ function ClientDetailsPage() {
 
   const { selectedClient, error, isFetchingClientDetails, isDeletingClient } =
     useSelector((state) => state.clients);
-  
+
   async function getClientTimeline() {
     setIsFetchingClientTimeline(true);
 
@@ -80,7 +80,7 @@ function ClientDetailsPage() {
       await getClientTimeline();
       toast.success("Workflow updated");
     } catch (err) {
-      toast.error(err || "Failed to updated workflow");
+      toast.error(err || "Failed to update workflow");
     } finally {
       setIsUpdatingWorkflow(false);
     }
@@ -120,16 +120,22 @@ function ClientDetailsPage() {
 
       {activities.length > 0 && <ActivityTimeline activities={activities} />}
 
-      {canEditClient && <button onClick={handleEditClient}>Edit client</button>}
-      {canDeleteClient && (
-        <button
-          onClick={() => setIsDeleteModalOpen(true)}
-          disabled={isDeletingClient}
-        >
-          {isDeletingClient ? "Deleting..." : "Delete client"}
-        </button>
-      )}
-      <button onClick={() => navigate("/clients")}>Back to Clients</button>
+      <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+        {canEditClient && (
+          <AppButton onClick={handleEditClient}>Edit client</AppButton>
+        )}
+        {canDeleteClient && (
+          <AppButton
+            onClick={() => setIsDeleteModalOpen(true)}
+            disabled={isDeletingClient}
+          >
+            {isDeletingClient ? "Deleting..." : "Delete client"}
+          </AppButton>
+        )}
+        <AppButton onClick={() => navigate("/clients")}>
+          Back to Clients
+        </AppButton>
+      </Box>
 
       <ConfirmModal
         isOpen={iseDeleteModalOpen}

@@ -81,7 +81,7 @@ export const updateClient = createAsyncThunk(
       return res;
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Failed to updated client",
+        err.response?.data?.message || "Failed to update client",
       );
     }
   },

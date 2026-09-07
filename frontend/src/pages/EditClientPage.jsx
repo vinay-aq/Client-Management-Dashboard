@@ -6,11 +6,14 @@ import { updateClient, fetchClientById } from "../features/clients/clientSlice";
 import { useParams } from "react-router-dom";
 import ClientForm from "../components/clients/ClientForm";
 import toast from "react-hot-toast";
+import useClientMasters from "../hooks/clients/useClientMasters";
 
 function EditClientPage() {
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const mastersData = useClientMasters();
+
   const { isUpdatingClient, error, selectedClient } = useSelector(
     (state) => state.clients,
   );
@@ -27,7 +30,7 @@ function EditClientPage() {
       phone: selectedClient?.phone || "",
       company: selectedClient?.company || "",
       status: selectedClient?.status || "",
-      avatar: selectedClient?.avatar || ""
+      avatar: selectedClient?.avatar || "",
     });
   }, [selectedClient]);
 
@@ -52,15 +55,14 @@ function EditClientPage() {
   }
   return (
     <>
-     <h2>Update Client</h2>
+      <h2>Update Client</h2>
       <ClientForm
         initialFormData={formData}
         loading={isUpdatingClient}
         submitLabel="Update Client"
         onSubmit={handleUpdateClient}
+        mastersData={mastersData}
       />
-
-      {error && <p>{error}</p>}
     </>
   );
 }

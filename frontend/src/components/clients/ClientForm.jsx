@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import { clientSchema } from "../../features/clients/clientSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
+import { FormInput } from "../form";
+import { AppButton } from "../common";
 
-function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
+function ClientForm({
+  initialFormData,
+  loading,
+  submitLabel,
+  onSubmit,
+  mastersData,
+}) {
   const [previewImage, setPreviewImage] = useState(
     initialFormData?.avatar
       ? `http://localhost:8000${initialFormData?.avatar}`
       : "",
   );
-  
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isDirty, isSubmitting, touchedFields },
-    reset,
-  } = useForm({
+
+  const [clientTypes, clientStatus, clientIndustry] = mastersData;
+  console.log({ mastersData });
+
+  const methods = useForm({
     resolver: zodResolver(clientSchema),
     mode: "onBlur",
     defaultValues: {
@@ -27,6 +33,13 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       avatar: null,
     },
   });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isDirty, isSubmitting, touchedFields },
+    reset,
+  } = methods;
 
   useEffect(() => {
     reset({
@@ -49,62 +62,80 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label>Name: </label>
-      <input type="text" {...register("name")} placeholder="Name" />
-      {touchedFields.name && errors.name && <p>{errors.name.message}</p>}
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormInput
+          type="text"
+          name="name"
+          label="Name"
+          placeholder="Name"
+          rules={{ required: "value is required" }}
+        />
 
-      <br />
-      <br />
-      <label>Email: </label>
-      <input type="text" {...register("email")} placeholder="Email" />
-      {touchedFields.email && errors.email && <p>{errors.email.message}</p>}
+        <br />
+        <br />
+        <FormInput
+          type="text"
+          name="email"
+          label="Email"
+          placeholder="Email"
+          rules={{ required: "email is required" }}
+        />
 
-      <br />
-      <br />
-      <label>Company: </label>
-      <input type="text" {...register("company")} placeholder="Company" />
-      {touchedFields.company && errors.company && (
-        <p>{errors.company.message}</p>
-      )}
+        <br />
+        <br />
 
-      <br />
-      <br />
-      <label>Phone: </label>
-      <input type="text" {...register("phone")} placeholder="Phone" />
-      {touchedFields.phone && errors.phone && <p>{errors.phone.message}</p>}
+        <FormInput
+          type="text"
+          name="company"
+          label="Company"
+          placeholder="Company"
+          rules={{ required: "company is required" }}
+        />
 
-      <br />
-      <br />
-      <input
-        type="file"
-        accept="image/*"
-        {...register("avatar", {
-          onChange: handleImageChange,
-        })}
-      />
-      {(previewImage || initialFormData?.avatar) && (
-        <div>
-          <img
-            src={
-              previewImage || `http://localhost:8000${initialFormData?.avatar}`
-            }
-            alt="avatar"
-            width="120"
-            height="120"
-            style={{
-              objectFit: "cover",
-              borderRadius: "8px",
-            }}
-          />
-        </div>
-      )}
-      <br />
-      <br />
-      <button type="submit" disabled={loading || isSubmitting || !isDirty}>
-        {loading ? "loading..." : submitLabel}{" "}
-      </button>
-    </form>
+        <br />
+        <br />
+        <FormInput
+          type="text"
+          name="phone"
+          label="Phone"
+          placeholder="Phone"
+          rules={{ required: "company is required" }}
+        />
+
+        <br />
+        <br />
+        <input
+          type="file"
+          accept="image/*"
+          {...register("avatar", {
+            onChange: handleImageChange,
+          })}
+        />
+        {(previewImage || initialFormData?.avatar) && (
+          <div>
+            <img
+              src={
+                previewImage ||
+                `http://localhost:8000${initialFormData?.avatar}`
+              }
+              alt="avatar"
+              width="120"
+              height="120"
+              style={{
+                objectFit: "cover",
+                borderRadius: "8px",
+              }}
+            />
+          </div>
+        )}
+        <br />
+        <br />
+        <AppButton type="submit" disabled={loading || isSubmitting || !isDirty}>
+          {loading ? "loading..." : submitLabel}{" "}
+        </AppButton>
+      </form>
+    </FormProvider>
   );
 }
 
