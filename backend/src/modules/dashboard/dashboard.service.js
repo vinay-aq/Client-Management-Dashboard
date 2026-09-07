@@ -17,6 +17,9 @@ async function fetchDashboardStats() {
       orderBy: {
         createdAt: "desc",
       },
+      include:{
+        clientStatus: true
+      },
       take: 5,
     }),
   ]);

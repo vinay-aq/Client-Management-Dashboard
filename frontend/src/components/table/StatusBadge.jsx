@@ -43,6 +43,8 @@ function StatusBadge({ status }) {
     },
   };
 
+
+
   return (
     <span
       style={{
@@ -54,7 +56,7 @@ function StatusBadge({ status }) {
 
         fontWeight: "bold",
 
-        ...(style[status] || {}),
+        ...(style[status?.toLowerCase()] || {}),
       }}
     >
       {status}

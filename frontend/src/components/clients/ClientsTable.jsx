@@ -3,7 +3,7 @@ import DataTable from "../table/DataTable";
 import StatusBadge from "../table/StatusBadge";
 import { AppTable, AppButton } from "../common";
 
-function ClientsTable({ clients, loading}) {
+function ClientsTable({ clients, loading }) {
   const navigate = useNavigate();
 
   const columns = [
@@ -25,11 +25,10 @@ function ClientsTable({ clients, loading}) {
       render: (row) => {
         return (
           <div>
-             <StatusBadge status={row.status}/>
+            <StatusBadge status={row?.clientStatus?.name} />
           </div>
-         
-        )
-      }
+        );
+      },
     },
     {
       header: "Action",
@@ -37,7 +36,7 @@ function ClientsTable({ clients, loading}) {
       render: (row) => {
         return (
           <AppButton
-            style={{ cursor: "pointer", display:'flex' }}
+            style={{ cursor: "pointer", display: "flex" }}
             onClick={() => navigate(`/clients/${row.id}`)}
           >
             View

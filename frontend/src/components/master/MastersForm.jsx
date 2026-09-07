@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { FormInput, FormTextarea } from "../form";
 import AppButton from "../common/AppButton";
+import Box from '@mui/material/Box';
 
 function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
   const methods = useForm({
@@ -43,14 +44,16 @@ function MastersForm({ isLoading, onSubmit, editingMaster, onClickReset }) {
           label="Description"
           disabled={isLoading}
         />
-        <AppButton loading={isLoading} type="submit" sx={{ my: 1 }}>
-          {editingMaster ? "Update" : "Create"}
-        </AppButton>
-        {editingMaster && (
-          <AppButton type="button" onClick={onClickReset}>
-            Cancel
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+          <AppButton loading={isLoading} type="submit" sx={{ my: 1 }}>
+            {editingMaster ? "Update" : "Create"}
           </AppButton>
-        )}
+          {editingMaster && (
+            <AppButton type="button" onClick={onClickReset} sx={{ my: 1 }}>
+              Cancel
+            </AppButton>
+          )}
+        </Box>
       </form>
     </FormProvider>
   );
