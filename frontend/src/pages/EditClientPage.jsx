@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { updateClient, fetchClientById } from "../features/clients/clientSlice";
 import { useParams } from "react-router-dom";
 import ClientForm from "../components/clients/ClientForm";
 import toast from "react-hot-toast";
+import { fetchMastersData } from "../features/master/masterSlice";
+import { MASTER_TYPES } from "../constants/masterTypes";
 
 function EditClientPage() {
   const [formData, setFormData] = useState({});
@@ -16,6 +17,7 @@ function EditClientPage() {
     (state) => state.clients,
   );
   const { id } = useParams();
+  const { clientType, industry } = useSelector((state) => state.masters);
 
   useEffect(() => {
     dispatch(fetchClientById(id));
@@ -39,6 +41,8 @@ function EditClientPage() {
     formData.append("phone", data.phone);
     formData.append("company", data.company);
     formData.append("status", data.status);
+    formData.append("clientTypeId", data.clientTypeId);
+    formData.append("industryId", data.industryId);
     if (data?.avatar[0]) {
       formData.append("avatar", data.avatar[0]);
     }
@@ -51,6 +55,14 @@ function EditClientPage() {
       toast.error(result.payload || "Failed to update client");
     }
   }
+
+  useEffect(() => {
+    if (clientType && clientType.length > 0)
+      dispatch(fetchMastersData(MASTER_TYPES.CLIENT_TYPE));
+    if (industry && industry.length > 0)
+      dispatch(fetchMastersData(MASTER_TYPES.CLIENT_INDUSTRY));
+  }, []);
+
   return (
     <>
       <h2>Update Client</h2>

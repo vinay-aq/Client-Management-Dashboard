@@ -9,7 +9,7 @@ async function getMasters(req, res, next) {
   const { type } = req.query;
   try {
     const masters = await fetchMasterService(type);
-    res.status(201).json({ success: true, masters });
+    res.status(201).json({ success: true, masters, type });
   } catch (err) {
     next(err);
   }
@@ -30,13 +30,11 @@ async function updateMaster(req, res, next) {
 
   try {
     const updatedMaster = await updateMasterService(masterId, master);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Master updated successfuly",
-        updatedMaster,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Master updated successfuly",
+      updatedMaster,
+    });
   } catch (err) {
     next(err);
   }

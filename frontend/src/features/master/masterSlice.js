@@ -7,7 +7,10 @@ import {
 } from "./masterAPI";
 
 const initialState = {
-  masters: null,
+  clientStatus: [],
+  clientType: [],
+  industry: [],
+  role: [],
   isFetchingMasters: false,
   isCreatingMaster: false,
   isUpdatingMaster: false,
@@ -22,7 +25,9 @@ export const fetchMastersData = createAsyncThunk(
       const res = await fetchMastersDataAPI(type);
       return res;
     } catch (err) {
-        return thunk.rejectWithValue(err?.response?.data?.error?.message || "Unable to fetch master data");
+      return thunk.rejectWithValue(
+        err?.response?.data?.error?.message || "Unable to fetch master data",
+      );
     }
   },
 );
@@ -49,23 +54,26 @@ export const updateMaster = createAsyncThunk(
       const res = await updateMasterAPI(master);
       return res;
     } catch (err) {
-      return  thunk.rejectWithValue(err?.response?.data?.error?.message || "Unable to update Master");
+      return thunk.rejectWithValue(
+        err?.response?.data?.error?.message || "Unable to update Master",
+      );
     }
   },
 );
 
 export const deleteMaster = createAsyncThunk(
   "/master/deleteMaster",
-  async ({id, type}, thunk) => {
+  async ({ id, type }, thunk) => {
     try {
       const res = await deleteMasterAPI(id, type);
       return res;
     } catch (err) {
-      return  thunk.rejectWithValue(err?.response?.data?.error?.message || "Unable to delete Master");
+      return thunk.rejectWithValue(
+        err?.response?.data?.error?.message || "Unable to delete Master",
+      );
     }
   },
 );
-
 
 const masterSlice = createSlice({
   name: "master",
@@ -76,7 +84,8 @@ const masterSlice = createSlice({
       state.isFetchingMasters = true;
     });
     builder.addCase(fetchMastersData.fulfilled, (state, action) => {
-      state.masters = action.payload.masters;
+      const { masters, type } = action.payload;
+      state[type] = masters;
       state.isFetchingMasters = false;
     });
     builder.addCase(fetchMastersData.rejected, (state, action) => {

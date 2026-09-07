@@ -13,7 +13,9 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       : "",
   );
 
-  // const [] = useSelector((state) => state.masters);
+  const { clientType = [], industry = [] } = useSelector(
+    (state) => state.masters,
+  );
 
   const methods = useForm({
     resolver: zodResolver(clientSchema),
@@ -23,6 +25,8 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       email: "",
       phone: "",
       company: "",
+      clientTypeId: "select",
+      industryId: "select",
       status: "active",
       avatar: null,
     },
@@ -43,6 +47,8 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
       company: initialFormData?.company || "",
       status: initialFormData?.status || "active",
       avatar: initialFormData?.avatar || "",
+      clientTypeId: initialFormData?.clientTypeId || "",
+      industryId: initialFormData?.industryId || "",
     });
   }, [initialFormData, reset]);
 
@@ -54,6 +60,8 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
     const imageURL = URL.createObjectURL(file);
     setPreviewImage(imageURL);
   }
+
+  console.log("cti", clientType, industry);
 
   return (
     <FormProvider {...methods}>
@@ -99,37 +107,28 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
 
         <br />
         <br />
-        {/* <FormInput
-          type="text"
-          name="clientTypeId"
-          label="Client Type"
-          placeholder="Client Type"
-          rules={{ required: "Client type is required" }}
-        />
-        <br />
-        <br /> */}
 
         <FormSelect
           name="clientTypeId"
           label="Type"
           required
           options={[
-            { label: "Select Client Type", value: "select" },
-            // ...clientTypes?.masters?.map((ct) => ({ value: ct.id, label: ct.name })),
+            { label: "Select Client Type", value: "" },
+            ...clientType?.map((ct) => ({ value: ct.id, label: ct.name })),
           ]}
           rules={{ required: "Client Type is required" }}
-        ></FormSelect>
+        />
 
         <FormSelect
           name="industryId"
           label="Industry"
           required
           options={[
-            { label: "Select Industry", value: "select" },
-            // ...clientIndustry?.map((ci) => ({ value: ci.id, label: ci.name })),
+            { label: "Select Industry", value: "" },
+            ...industry?.map((ci) => ({ value: ci.id, label: ci.name })),
           ]}
           rules={{ required: "Industry is required" }}
-        ></FormSelect>
+        />
 
         <br />
         <br />

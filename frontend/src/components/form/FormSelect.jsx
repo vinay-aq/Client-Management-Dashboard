@@ -27,7 +27,7 @@ function FormSelect({
       name={name}
       control={control}
       rules={rules}
-      render={(field) => (
+      render={({field}) => (
         <FormControl
           fullWidth
           margin="normal"

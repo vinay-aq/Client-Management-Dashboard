@@ -23,7 +23,10 @@ function MastersPage() {
     isCreatingMaster,
     isUpdatingMaster,
     isDeletingMaster,
-    masters = [],
+    clientStatus,
+    clientType,
+    industry,
+    role,
     isFetchingMasters = null,
   } = useSelector((state) => state.masters);
 
@@ -76,7 +79,9 @@ function MastersPage() {
     if (!masterToDelete) return;
 
     try {
-      await dispatch(deleteMaster({id: masterToDelete.id, type: selectedType})).unwrap();
+      await dispatch(
+        deleteMaster({ id: masterToDelete.id, type: selectedType }),
+      ).unwrap();
       toast.success("Master deleted successfully");
       setMasterToDelete(null);
     } catch (err) {
@@ -89,6 +94,20 @@ function MastersPage() {
     setSelectedType(value);
   }
 
+  let masters = [];
+
+  if (selectedType === MASTER_TYPES.USER_ROLE) {
+    masters = role;
+  }
+  if (selectedType === MASTER_TYPES.CLIENT_TYPE) {
+    masters = clientType;
+  }
+  if (selectedType === MASTER_TYPES.CLIENT_STATUS) {
+    masters = clientStatus;
+  }
+  if (selectedType === MASTER_TYPES.CLIENT_INDUSTRY) {
+    masters = industry;
+  }
 
   return (
     <div style={{ textAlign: "left" }}>
