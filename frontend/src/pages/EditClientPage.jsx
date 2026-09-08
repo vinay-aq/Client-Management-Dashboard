@@ -55,11 +55,10 @@ function EditClientPage() {
       toast.error(result.payload || "Failed to update client");
     }
   }
-
   useEffect(() => {
-    if (clientType && clientType.length > 0)
+    if (!clientType.length)
       dispatch(fetchMastersData(MASTER_TYPES.CLIENT_TYPE));
-    if (industry && industry.length > 0)
+    if (!industry.length)
       dispatch(fetchMastersData(MASTER_TYPES.CLIENT_INDUSTRY));
   }, []);
 

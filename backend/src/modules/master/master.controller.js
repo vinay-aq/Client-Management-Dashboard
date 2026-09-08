@@ -9,7 +9,7 @@ async function getMasters(req, res, next) {
   const { type } = req.query;
   try {
     const masters = await fetchMasterService(type);
-    res.status(201).json({ success: true, masters, type });
+    res.status(200).json({ success: true, masters, type });
   } catch (err) {
     next(err);
   }

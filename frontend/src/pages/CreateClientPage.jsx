@@ -15,7 +15,6 @@ function CreateClientPage() {
   const { clientType, industry } = useSelector((state) => state.masters);
 
   async function handleCreateClient(data) {
-    console.log('datae', data)
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("email", data.email);
@@ -37,7 +36,6 @@ function CreateClientPage() {
   }
 
   useEffect(() => {
-    console.log(clientType, industry);
     if (!clientType.length)
       dispatch(fetchMastersData(MASTER_TYPES.CLIENT_TYPE));
     if (!industry.length)
