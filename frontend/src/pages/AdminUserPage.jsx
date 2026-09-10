@@ -84,7 +84,7 @@ function AdminUserPage() {
       header: "role",
       accessor: "role",
       render: (row) => {
-        const roleOptions = userRoles.map((role) => ({
+        const roleOptions = userRoles?.map((role) => ({
           value: role.id,
           label: role.name,
         }));

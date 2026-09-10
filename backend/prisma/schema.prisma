@@ -1,149 +1,128 @@
 generator client {
-    provider     = "prisma-client-js"
-    output       = "../src/generated/prisma"
-    moduleFormat = "cjs"
+  provider     = "prisma-client-js"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
-    provider = "postgresql"
+  provider = "postgresql"
 }
 
 model UserRole {
-    id          Int     @id @default(autoincrement())
-    name        String  @unique @db.VarChar(255)
-    description String?
-    isActive    Boolean @default(true) @map("is_active")
+  id          Int      @id @default(autoincrement())
+  name        String   @unique(map: "user_roles_name_unique") @db.VarChar(255)
+  description String?
+  code        String  @unique() @db.VarChar(255)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  users       User[]
 
-    createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-    updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-    users User[]
-
-    @@map("user_roles")
+  @@map("user_roles")
 }
 
 model User {
-    id           Int    @id @default(autoincrement())
-    name         String @db.VarChar(255)
-    email        String @unique @db.VarChar(255)
-    passwordHash String @map("password_hash") @db.VarChar(255)
+  id            Int            @id @default(autoincrement())
+  name          String         @db.VarChar(255)
+  email         String         @unique(map: "users_email_unique") @db.VarChar(255)
+  passwordHash  String         @map("password_hash") @db.VarChar(255)
+  roleId        Int            @map("role_id")
+  isActive      Boolean        @default(true) @map("is_active")
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  refreshTokens RefreshToken[]
+  role          UserRole       @relation(fields: [roleId], references: [id], onUpdate: NoAction, map: "users_role_id_foreign")
 
-    roleId   Int     @map("role_id")
-    isActive Boolean @default(true) @map("is_active")
-
-    createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-    updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-    role          UserRole       @relation(fields: [roleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-    activities    Activity[]
-    refreshTokens RefreshToken[]
-
-    @@map("users")
+  @@index([roleId], map: "fki_USERS")
+  @@index([roleId], map: "fki_users_role_id_foreign")
+  @@map("users")
 }
 
 model Industry {
-    id          Int     @id @default(autoincrement())
-    name        String  @unique @db.VarChar(255)
-    description String?
-    isActive    Boolean @default(true) @map("is_active")
+  id          Int      @id @default(autoincrement())
+  name        String   @unique(map: "industries_name_unique") @db.VarChar(255)
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  clients     Client[]
 
-    createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-    updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-    clients Client[]
-
-    @@map("industries")
+  @@map("industries")
 }
 
 model ClientType {
-    id          Int     @id @default(autoincrement())
-    name        String  @unique @db.VarChar(255)
-    description String?
-    isActive    Boolean @default(true) @map("is_active")
+  id          Int      @id @default(autoincrement())
+  name        String   @unique(map: "client_types_name_unique") @db.VarChar(255)
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  clients     Client[]
 
-    createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-    updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-    clients Client[]
-
-    @@map("client_types")
+  @@map("client_types")
 }
 
 model ClientStatus {
-    id          Int     @id @default(autoincrement())
-    name        String  @unique @db.VarChar(255)
-    description String?
-    isActive    Boolean @default(true) @map("is_active")
-    code        String
+  id          Int      @id @default(autoincrement())
+  name        String   @unique(map: "client_statuses_name_unique") @db.VarChar(255)
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  code        String?  @db.VarChar(50)
+  clients     Client[]
 
-    createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-    updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-    clients Client[]
-
-    @@map("client_statuses")
+  @@map("client_statuses")
 }
 
 model Client {
-    id      Int     @id @default(autoincrement())
-    name    String  @db.VarChar(255)
-    email   String  @unique @db.VarChar(255)
-    phone   String  @db.VarChar(50)
-    company String  @db.VarChar(255)
-    avatar  String? @db.VarChar(500)
+  id             Int          @id @default(autoincrement())
+  name           String       @db.VarChar(255)
+  email          String       @unique(map: "clients_email_unique") @db.VarChar(255)
+  phone          String       @db.VarChar(50)
+  company        String       @db.VarChar(255)
+  clientTypeId   Int?         @map("client_type_id")
+  clientStatusId Int          @map("client_status_id")
+  industryId     Int          @map("industry_id")
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  avatar         String?      @db.VarChar(500)
+  activities     Activity[]
+  clientStatus   ClientStatus @relation(fields: [clientStatusId], references: [id], onUpdate: NoAction, map: "clients_client_status_id_foreign")
+  clientType     ClientType?  @relation(fields: [clientTypeId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  industry       Industry     @relation(fields: [industryId], references: [id], onUpdate: NoAction, map: "clients_industry_id_foreign")
 
-    clientTypeId   Int? @map("client_type_id")
-    clientStatusId Int  @map("client_status_id")
-    industryId     Int? @map("industry_id")
-
-    createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-    updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-    clientType ClientType? @relation(fields: [clientTypeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-
-    clientStatus ClientStatus @relation(fields: [clientStatusId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-
-    industry Industry? @relation(fields: [industryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-
-    @@map("clients")
+  @@index([clientStatusId], map: "fki_clients_client_status_id_foreign")
+  @@index([clientTypeId], map: "fki_clients_client_type_id_fkey")
+  @@index([industryId], map: "fki_clients_industry_id_foreign")
+  @@map("clients")
 }
 
 model Activity {
-    id         Int    @id @default(autoincrement())
-    message    String
-    entityId   Int    @map("entity_id")
-    entityType String @map("entity_type")
-    actorId    Int    @map("actor_id")
+  id         Int      @id @default(autoincrement())
+  message    String
+  actorId    Int      @map("actor_id")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  entityId   Int?     @map("entity_id")
+  entityType String?  @map("entity_type") @db.VarChar(50)
+  oldValue   Json?    @map("old_value")
+  newValue   Json?    @map("new_value")
+  actor      Client   @relation(fields: [actorId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "activities_actor_id_foreign")
 
-    oldValue Json? @map("old_value")
-    newValue Json? @map("new_value")
-
-    createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-    actor User @relation(fields: [actorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-    @@index([entityId, entityType])
-    @@index([actorId])
-    @@map("activities")
-}
-
-enum ActivityEntityType {
-    user
-    client
+  @@index([actorId], map: "fki_activities_actor_id_foreign")
+  @@map("activities")
 }
 
 model RefreshToken {
-    id               Int    @id @default(autoincrement())
-    refreshTokenHash String @map("refresh_token_hash")
+  id               Int       @id @default(autoincrement())
+  refreshTokenHash String    @map("refresh_token_hash")
+  userId           Int       @map("user_id")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  expiresAt        DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt        DateTime? @map("revoked_at") @db.Timestamptz(6)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "refresh_tokens_user_id_foreign")
 
-    userId Int @map("user_id")
-
-    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
-    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
-    expiresAt DateTime  @map("expires_at") @db.Timestamptz
-    revokedAt DateTime? @map("revoked_at") @db.Timestamptz
-
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-    @@map("refresh_tokens")
+  @@index([userId], map: "fki_refresh_tokens_user_id_foreign")
+  @@map("refresh_tokens")
 }
