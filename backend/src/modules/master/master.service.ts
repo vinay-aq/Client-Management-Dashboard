@@ -1,5 +1,5 @@
 const AppError = require("../../utils/AppError");
-const { masterTypes, MASTER_TYPES } = require("../../constants/masterTypes");
+const { masterTypes, MASTER_TYPES } = require("../../constants/masterTypes.ts");
 const prisma = require("../../db/prisma");
 
 type MasterData = {
@@ -12,6 +12,7 @@ type UpdateMasterData = {
   name: string;
   description?: string;
 };
+
 
 async function fetchMasterService(type: string) {
   if (!type) {

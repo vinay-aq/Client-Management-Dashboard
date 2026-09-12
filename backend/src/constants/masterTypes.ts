@@ -7,6 +7,8 @@ const MASTER_TYPES = {
 
 const masterTypes = Object.values(MASTER_TYPES);
 
+type MasterTypeData = (typeof MASTER_TYPES)[keyof typeof MASTER_TYPES];
+
 module.exports = {
   masterTypes,
   MASTER_TYPES,
