@@ -7,4 +7,4 @@ export const MASTER_TYPES = {
 
 export const masterTypes = Object.values(MASTER_TYPES);
 
-export type MasterTypeData = (typeof MASTER_TYPES)[keyof typeof MASTER_TYPES];
+export type MasterType = (typeof MASTER_TYPES)[keyof typeof MASTER_TYPES];

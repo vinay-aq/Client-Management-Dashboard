@@ -1,9 +1,13 @@
 import AppError from "../../utils/AppError.js";
-import { masterTypes, MASTER_TYPES } from "../../constants/masterTypes.ts";
+import {
+  masterTypes,
+  MASTER_TYPES,
+  MasterType,
+} from "../../constants/masterTypes.js";
 import prisma from "../../db/prisma.js";
 
 type MasterData = {
-  type: string;
+  type: MasterType;
   name: string;
   description?: string;
 };
@@ -13,8 +17,20 @@ type UpdateMasterData = {
   description?: string;
 };
 
+function toScreamingSnakeCase(input: string): string {
+  return (
+    input
+      // insert underscore between a lowercase/digit and an uppercase letter (camelCase/PascalCase boundaries)
+      .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+      // replace any run of spaces, hyphens, or underscores with a single underscore
+      .replace(/[\s\-_]+/g, "_")
+      // trim leading/trailing underscores
+      .replace(/^_+|_+$/g, "")
+      .toUpperCase()
+  );
+}
 
-async function fetchMasterService(type: string) {
+async function fetchMasterService(type: MasterType) {
   if (!type) {
     throw new AppError("master type is required");
   }
@@ -92,6 +108,7 @@ async function createUserRole(master: MasterData) {
     data: {
       name: master?.name,
       description: master?.description,
+      code: toScreamingSnakeCase(master?.name),
       isActive: true,
     },
   });
@@ -201,7 +218,7 @@ async function updateUserRole(
     where: { id: masterId },
   });
   if (!existingMaster) {
-    throw AppError("Invalid master id", 400);
+    throw new AppError("Invalid master id", 400);
   }
   return await prisma.userRole.update({
     where: { id: masterId },
@@ -217,7 +234,7 @@ async function updateClientTypes(
     where: { id: masterId },
   });
   if (!existingMaster) {
-    throw AppError("Invalid master id", 400);
+    throw new AppError("Invalid master id", 400);
   }
   return await prisma.clientType.update({
     where: { id: masterId },
@@ -232,7 +249,7 @@ async function updateClientStatuses(
     where: { id: masterId },
   });
   if (!existingMaster) {
-    throw AppError("Invalid master id", 400);
+    throw new AppError("Invalid master id", 400);
   }
   return await prisma.clientStatus.update({
     where: { id: masterId },
@@ -247,7 +264,7 @@ async function updateClientIndustries(
     where: { id: masterId },
   });
   if (!existingMaster) {
-    throw AppError("Invalid master id", 400);
+    throw new AppError("Invalid master id", 400);
   }
   return await prisma.industry.update({
     where: { id: masterId },
@@ -255,7 +272,7 @@ async function updateClientIndustries(
   });
 }
 
-async function deleteMasterService(masterId: string, masterType: string) {
+async function deleteMasterService(masterId: string, masterType: MasterType) {
   const id = Number(masterId);
   switch (masterType) {
     case MASTER_TYPES.USER_ROLE:
