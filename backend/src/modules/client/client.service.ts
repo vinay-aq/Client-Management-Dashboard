@@ -1,40 +1,39 @@
-const AppError =require("../../utils/AppError");
-const { createActivityService } =require("../activity/activity.service.ts") 
-const { notifyDashboardDataChanged } =require("../dashboard/dashboard.events") 
-const { isValidClientTransition } =require("../client/client.utils") 
-const prisma =require( "../../db/prisma")
-const  { ActivityEntityType } =require("../../generated/prisma") 
+const AppError = require("../../utils/AppError");
+const { createActivityService } = require("../activity/activity.service.ts");
+const { notifyDashboardDataChanged } = require("../dashboard/dashboard.events");
+const { isValidClientTransition } = require("../client/client.utils");
+const prisma = require("../../db/prisma");
+const { ActivityEntityType } = require("../../generated/prisma");
 import type { Prisma } from "../../generated/prisma";
 
 type User = {
-  id: number | string,
-  email: string,
-  name: string
-}
+  id: number | string;
+  email: string;
+  name: string;
+};
 
 type CreateClientData = {
-  name: string ,
-  email: string,
-  phone: string,
-  company: string,
-  avatar?: string | null,
-  user: User,
-  clientTypeId: string | number,
-  industryId: string | number,
-}
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  avatar?: string | null;
+  user: User;
+  clientTypeId: string | number;
+  industryId: string | number;
+};
 
 type UpdateClientType = {
-    name: string | number,
-    email: string,
-    phone: string,
-    company: string,
-    status_id: string,
-    type_id: string,
-    industry_id: string,
-    avatar?: string | null,
-    user: User
-}
-
+  name: string | number;
+  email: string;
+  phone: string;
+  company: string;
+  status_id: string;
+  type_id: string;
+  industry_id: string;
+  avatar?: string | null;
+  user: User;
+};
 
 async function fetchClients(page: number, limit: number, search?: string) {
   let skip = limit * (page - 1);
@@ -124,7 +123,6 @@ async function fetchClientsById(id: string) {
 }
 
 async function createClientService(data: CreateClientData) {
-
   const {
     name,
     email,
@@ -160,7 +158,7 @@ async function createClientService(data: CreateClientData) {
   });
 
   await createActivityService({
-    message: `Client ${newClient.name} is created`,
+    message: `User ${user.name} created client ${newClient.name}`,
     entityType: "client",
     entityId: newClient.id,
     action: "client_created",
@@ -174,7 +172,10 @@ async function createClientService(data: CreateClientData) {
   return newClient;
 }
 
-async function updateClientService(id: number | string, data : UpdateClientType ) {
+async function updateClientService(
+  id: number | string,
+  data: UpdateClientType,
+) {
   const {
     name,
     email,
@@ -265,7 +266,11 @@ type UpdateWorkflowData = {
   user: User;
 };
 
-async function updateClientWorkflowService({ clientId, nextStatusId, user }: UpdateWorkflowData) {
+async function updateClientWorkflowService({
+  clientId,
+  nextStatusId,
+  user,
+}: UpdateWorkflowData) {
   if (!nextStatusId) {
     throw new AppError("Status id for next status does not exist", 404);
   }
@@ -290,7 +295,6 @@ async function updateClientWorkflowService({ clientId, nextStatusId, user }: Upd
   const nextStatus = await prisma.clientStatus.findUnique({
     where: { id: nextStatusId },
   });
-
 
   const isValidTransition = isValidClientTransition(
     clientStatus.code,
