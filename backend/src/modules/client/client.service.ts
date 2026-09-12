@@ -1,14 +1,45 @@
-const AppError = require("../../utils/AppError");
-const { createActivityService } = require("../activity/activity.service");
-const { notifyDashboardDataChanged } = require("../dashboard/dashboard.events");
-const { isValidClientTransition } = require("../client/client.utils");
-const prisma = require("../../db/prisma");
-const { ActivityEntityType } = require("../../generated/prisma");
+const AppError =require("../../utils/AppError");
+const { createActivityService } =require("../activity/activity.service.ts") 
+const { notifyDashboardDataChanged } =require("../dashboard/dashboard.events") 
+const { isValidClientTransition } =require("../client/client.utils") 
+const prisma =require( "../../db/prisma")
+const  { ActivityEntityType } =require("../../generated/prisma") 
+import type { Prisma } from "../../generated/prisma";
 
-async function fetchClients(page, limit, search) {
+type User = {
+  id: number | string,
+  email: string,
+  name: string
+}
+
+type CreateClientData = {
+  name: string ,
+  email: string,
+  phone: string,
+  company: string,
+  avatar?: string | null,
+  user: User,
+  clientTypeId: string | number,
+  industryId: string | number,
+}
+
+type UpdateClientType = {
+    name: string | number,
+    email: string,
+    phone: string,
+    company: string,
+    status_id: string,
+    type_id: string,
+    industry_id: string,
+    avatar?: string | null,
+    user: User
+}
+
+
+async function fetchClients(page: number, limit: number, search?: string) {
   let skip = limit * (page - 1);
 
-  let where = {};
+  let where: Prisma.ClientWhereInput = {};
 
   if (search) {
     where = {
@@ -77,7 +108,7 @@ async function fetchClients(page, limit, search) {
   };
 }
 
-async function fetchClientsById(id) {
+async function fetchClientsById(id: string) {
   let clientData = await prisma.client.findUnique({
     where: { id: Number(id) },
     include: {
@@ -92,7 +123,8 @@ async function fetchClientsById(id) {
   return clientData;
 }
 
-async function createClientService(data) {
+async function createClientService(data: CreateClientData) {
+
   const {
     name,
     email,
@@ -109,7 +141,7 @@ async function createClientService(data) {
   const existingClient = await prisma.client.findUnique({
     where: { email: email },
   });
-  console.log(existingClient);
+
   if (existingClient) {
     throw new AppError("Email already in use", 409);
   }
@@ -142,7 +174,7 @@ async function createClientService(data) {
   return newClient;
 }
 
-async function updateClientService(id, data) {
+async function updateClientService(id: number | string, data : UpdateClientType ) {
   const {
     name,
     email,
@@ -154,6 +186,7 @@ async function updateClientService(id, data) {
     avatar,
     user,
   } = data;
+
   if (!id) {
     throw new AppError("Id is missing", 400);
   }
@@ -198,7 +231,7 @@ async function updateClientService(id, data) {
   return updatedClient;
 }
 
-async function deleteClientService(id, user) {
+async function deleteClientService(id: string | number, user: User) {
   if (!id) {
     throw new AppError("Id is missing", 400);
   }
@@ -226,7 +259,13 @@ async function deleteClientService(id, user) {
   return deletedClient;
 }
 
-async function updateClientWorkflowService({ clientId, nextStatusId, user }) {
+type UpdateWorkflowData = {
+  clientId: number | string;
+  nextStatusId: number | string;
+  user: User;
+};
+
+async function updateClientWorkflowService({ clientId, nextStatusId, user }: UpdateWorkflowData) {
   if (!nextStatusId) {
     throw new AppError("Status id for next status does not exist", 404);
   }
@@ -252,7 +291,6 @@ async function updateClientWorkflowService({ clientId, nextStatusId, user }) {
     where: { id: nextStatusId },
   });
 
-  console.log("nextStatus", nextStatus);
 
   const isValidTransition = isValidClientTransition(
     clientStatus.code,

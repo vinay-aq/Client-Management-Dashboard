@@ -3,7 +3,7 @@ const {
   createMasterService,
   updateMasterService,
   deleteMasterService,
-} = require("./master.service");
+} = require("./master.service.ts");
 
 async function getMasters(req, res, next) {
   const { type } = req.query;

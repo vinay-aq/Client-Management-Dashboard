@@ -5,11 +5,13 @@ const {
   updateClientService,
   deleteClientService,
   updateClientWorkflowService,
-} = require("./client.service.js");
+} = require("./client.service.ts");
+import type {Request, Response, NextFunction} from "express";
 
-async function getClients(req, res, next) {
-  let page = Math.max(req.query.page || 1, 1);
-  let limit = Math.min(req.query.limit || 10, 50);
+async function getClients(req: Request, res: Response, next: NextFunction) {
+    console.log('user', req.user)
+  let page = Math.max(Number(req.query.page) || 1, 1);
+  let limit = Math.min(Number(req.query.limit) || 10, 50);
   let search = req.query.search || "";
 
   try {
@@ -20,7 +22,7 @@ async function getClients(req, res, next) {
   }
 }
 
-async function getClientById(req, res, next) {
+async function getClientById(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params;
     const data = await fetchClientsById(id);
@@ -30,7 +32,7 @@ async function getClientById(req, res, next) {
   }
 }
 
-async function createClient(req, res, next) {
+async function createClient(req: Request, res: Response, next: NextFunction) {
   const avatar = req.file ? `/uploads/${req.file.filename}` : "";
   const user = req.user;
 
@@ -42,10 +44,11 @@ async function createClient(req, res, next) {
   }
 }
 
-async function updateClient(req, res, next) {
+async function updateClient(req: Request, res: Response, next: NextFunction) {
   const avatar = req.file ? `/uploads/${req.file.filename}` : "";
   const { id } = req.params;
   const user = req.user;
+
   try {
     const client = await updateClientService(id, { ...req.body, avatar, user });
     res.status(200).json({ ...client });
@@ -54,7 +57,7 @@ async function updateClient(req, res, next) {
   }
 }
 
-async function deleteClient(req, res, next) {
+async function deleteClient(req: Request, res: Response, next: NextFunction) {
   const { id } = req.params;
   const user = req.user;
   try {
@@ -67,7 +70,7 @@ async function deleteClient(req, res, next) {
   }
 }
 
-async function updateClientWorkflow(req, res, next) {
+async function updateClientWorkflow(req: Request, res: Response, next: NextFunction) {
   const { id : clientId } = req.params;
   const { nextStatusId } = req.body;
   const user = req.user;

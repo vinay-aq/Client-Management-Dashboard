@@ -1,9 +1,19 @@
 const AppError = require("../../utils/AppError");
-const masterModel = require("./master.model");
 const { masterTypes, MASTER_TYPES } = require("../../constants/masterTypes");
 const prisma = require("../../db/prisma");
 
-async function fetchMasterService(type) {
+type MasterData = {
+  type: string;
+  name: string;
+  description?: string;
+};
+
+type UpdateMasterData = {
+  name: string;
+  description?: string;
+};
+
+async function fetchMasterService(type: string) {
   if (!type) {
     throw new AppError("master type is required");
   }
@@ -13,27 +23,22 @@ async function fetchMasterService(type) {
     throw new AppError("Invalid master type");
   }
 
-  let masters;
-
   switch (type) {
     case MASTER_TYPES.USER_ROLE:
-      masters = await fetchUserRoles();
-      break;
+      return await fetchUserRoles();
+
     case MASTER_TYPES.CLIENT_TYPE:
-      masters = await fetchClientTypes();
-      break;
+      return await fetchClientTypes();
+
     case MASTER_TYPES.CLIENT_STATUS:
-      masters = await fetchClientStatuses();
-      break;
+      return await fetchClientStatuses();
+
     case MASTER_TYPES.CLIENT_INDUSTRY:
-      masters = await fetchClientIndustries();
-      break;
+      return await fetchClientIndustries();
 
     default:
       throw new AppError("Invalid master type", 400);
   }
-
-  return masters;
 }
 
 async function fetchUserRoles() {
@@ -52,31 +57,27 @@ async function fetchClientIndustries() {
   return await prisma.industry.findMany();
 }
 
-async function createMasterService({ master }) {
+async function createMasterService({ master }: { master: MasterData }) {
   validateMasterData(master);
-  let createdMaster;
   switch (master?.type) {
     case MASTER_TYPES.USER_ROLE:
-      createdMaster = await createUserRole(master);
-      break;
+      return await createUserRole(master);
+
     case MASTER_TYPES.CLIENT_TYPE:
-      createdMaster = await createClientTypes(master);
-      break;
+      return await createClientTypes(master);
+
     case MASTER_TYPES.CLIENT_STATUS:
-      createdMaster = await createClientStatuses(master);
-      break;
+      return await createClientStatuses(master);
+
     case MASTER_TYPES.CLIENT_INDUSTRY:
-      createdMaster = await createClientIndustries(master);
-      break;
+      return await createClientIndustries(master);
 
     default:
       throw new AppError("Invalid master type", 400);
   }
-
-  return createdMaster;
 }
 
-async function createUserRole(master) {
+async function createUserRole(master: MasterData) {
   const duplicateMaster = await prisma.userRole.findFirst({
     where: {
       name: master?.name,
@@ -95,7 +96,7 @@ async function createUserRole(master) {
   });
 }
 
-async function createClientTypes(master) {
+async function createClientTypes(master: MasterData) {
   const duplicateMaster = await prisma.clientType.findFirst({
     where: {
       name: master?.name,
@@ -114,7 +115,7 @@ async function createClientTypes(master) {
   });
 }
 
-async function createClientStatuses(master) {
+async function createClientStatuses(master: MasterData) {
   const duplicateMaster = await prisma.clientStatus.findFirst({
     where: {
       name: master?.name,
@@ -133,7 +134,7 @@ async function createClientStatuses(master) {
   });
 }
 
-async function createClientIndustries(master) {
+async function createClientIndustries(master: MasterData) {
   const duplicateMaster = await prisma.industry.findFirst({
     where: {
       name: master?.name,
@@ -152,7 +153,7 @@ async function createClientIndustries(master) {
   });
 }
 
-function validateMasterData(master) {
+function validateMasterData(master: MasterData) {
   if (!master) {
     throw new AppError("Please provide master details");
   }
@@ -166,36 +167,35 @@ function validateMasterData(master) {
   }
 }
 
-async function updateMasterService(masterId, master) {
+async function updateMasterService(masterId: string, master: MasterData) {
   validateMasterData(master);
   const updateMasterData = {
     name: master.name,
     description: master.description,
   };
-  masterId = Number(masterId);
-  let updatedMaster;
+  const id = Number(masterId);
   switch (master?.type) {
     case MASTER_TYPES.USER_ROLE:
-      updatedMaster = await updateUserRole(masterId, updateMasterData);
-      break;
+      return await updateUserRole(id, updateMasterData);
+
     case MASTER_TYPES.CLIENT_TYPE:
-      updatedMaster = await updateClientTypes(masterId, updateMasterData);
-      break;
+      return await updateClientTypes(id, updateMasterData);
+
     case MASTER_TYPES.CLIENT_STATUS:
-      updatedMaster = await updateClientStatuses(masterId, updateMasterData);
-      break;
+      return await updateClientStatuses(id, updateMasterData);
+
     case MASTER_TYPES.CLIENT_INDUSTRY:
-      updatedMaster = await updateClientIndustries(masterId, updateMasterData);
-      break;
+      return await updateClientIndustries(id, updateMasterData);
 
     default:
       throw new AppError("Invalid master type", 400);
   }
-
-  return updatedMaster;
 }
 
-async function updateUserRole(masterId, master) {
+async function updateUserRole(
+  masterId: number,
+  updatedMaster: UpdateMasterData,
+) {
   const existingMaster = await prisma.userRole.findFirst({
     where: { id: masterId },
   });
@@ -204,10 +204,14 @@ async function updateUserRole(masterId, master) {
   }
   return await prisma.userRole.update({
     where: { id: masterId },
-    data: { ...master },
+    data: { ...updatedMaster },
   });
 }
-async function updateClientTypes(masterId, master) {
+
+async function updateClientTypes(
+  masterId: number,
+  updatedMaster: UpdateMasterData,
+) {
   const existingMaster = await prisma.clientType.findFirst({
     where: { id: masterId },
   });
@@ -216,10 +220,13 @@ async function updateClientTypes(masterId, master) {
   }
   return await prisma.clientType.update({
     where: { id: masterId },
-    data: { ...master },
+    data: { ...updatedMaster },
   });
 }
-async function updateClientStatuses(masterId, master) {
+async function updateClientStatuses(
+  masterId: number,
+  updatedMaster: UpdateMasterData,
+) {
   const existingMaster = await prisma.clientStatus.findFirst({
     where: { id: masterId },
   });
@@ -228,10 +235,13 @@ async function updateClientStatuses(masterId, master) {
   }
   return await prisma.clientStatus.update({
     where: { id: masterId },
-    data: { ...master },
+    data: { ...updatedMaster },
   });
 }
-async function updateClientIndustries(masterId, master) {
+async function updateClientIndustries(
+  masterId: number,
+  updatedMaster: UpdateMasterData,
+) {
   const existingMaster = await prisma.industry.findFirst({
     where: { id: masterId },
   });
@@ -240,58 +250,52 @@ async function updateClientIndustries(masterId, master) {
   }
   return await prisma.industry.update({
     where: { id: masterId },
-    data: { ...master },
+    data: { ...updatedMaster },
   });
 }
 
-async function deleteMasterService(masterId, masterType) {
-  masterId = Number(masterId);
-  let deletedMaster;
+async function deleteMasterService(masterId: string, masterType: string) {
+  const id = Number(masterId);
   switch (masterType) {
     case MASTER_TYPES.USER_ROLE:
-      deletedMaster = await deleteUserRole(masterId, deletedMaster);
-      break;
+      return await deleteUserRole(id);
+
     case MASTER_TYPES.CLIENT_TYPE:
-      deletedMaster = await deleteClientTypes(masterId, deletedMaster);
-      break;
+      return await deleteClientTypes(id);
+
     case MASTER_TYPES.CLIENT_STATUS:
-      deletedMaster = await deleteClientStatuses(masterId, deletedMaster);
-      break;
+      return await deleteClientStatuses(id);
+
     case MASTER_TYPES.CLIENT_INDUSTRY:
-      deletedMaster = await deleteClientIndustries(masterId, deletedMaster);
-      break;
+      return await deleteClientIndustries(id);
 
     default:
       throw new AppError("Invalid master type", 400);
   }
-
-  await masterModel.deleteOne({ id: masterId });
-
-  return deletedMaster;
 }
 
-async function deleteUserRole(masterId) {
+async function deleteUserRole(masterId: number) {
   return await prisma.userRole.delete({
     where: {
       id: masterId,
     },
   });
 }
-async function deleteClientTypes(masterId) {
+async function deleteClientTypes(masterId: number) {
   return await prisma.clientType.delete({
     where: {
       id: masterId,
     },
   });
 }
-async function deleteClientStatuses(masterId) {
+async function deleteClientStatuses(masterId: number) {
   return await prisma.clientStatus.delete({
     where: {
       id: masterId,
     },
   });
 }
-async function deleteClientIndustries(masterId) {
+async function deleteClientIndustries(masterId: number) {
   return await prisma.industry.delete({
     where: {
       id: masterId,

@@ -1,5 +1,5 @@
 const AppError = require("../../utils/AppError");
-const { createActivityService } = require("../activity/activity.service");
+const { createActivityService } = require("../activity/activity.service.ts");
 const { ActivityEntityType } = require("../../generated/prisma");
 const prisma = require("../../db/prisma");
 

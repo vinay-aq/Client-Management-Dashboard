@@ -1,4 +1,4 @@
-const { fetchActivityService,fetchActivityByEntityService } = require("./activity.service");
+const { fetchActivityService,fetchActivityByEntityService } = require("./activity.service.ts");
 
 async function getActivity(req, res, next) {
   try {

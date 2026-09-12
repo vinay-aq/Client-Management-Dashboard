@@ -8,6 +8,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ActivityEntityType {
+  user
+  client
+}
+
 model UserRole {
   id          Int      @id @default(autoincrement())
   name        String   @unique(map: "user_roles_name_unique") @db.VarChar(255)
