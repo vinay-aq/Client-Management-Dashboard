@@ -1,12 +1,12 @@
-const {
+import {
   fetchClients,
   fetchClientsById,
   createClientService,
   updateClientService,
   deleteClientService,
   updateClientWorkflowService,
-} = require("./client.service.ts");
-import type {Request, Response, NextFunction} from "express";
+} from "./client.service.ts";
+import type { Request, Response, NextFunction } from "express";
 
 async function getClients(req: Request, res: Response, next: NextFunction) {
     console.log('user', req.user)
@@ -84,11 +84,11 @@ async function updateClientWorkflow(req: Request, res: Response, next: NextFunct
   }
 }
 
-module.exports = {
+export {
   getClients,
   getClientById,
   createClient,
   updateClient,
   deleteClient,
-  updateClientWorkflow
+  updateClientWorkflow,
 };

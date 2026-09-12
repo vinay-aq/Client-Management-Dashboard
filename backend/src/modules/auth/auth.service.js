@@ -1,17 +1,14 @@
-const bcrypt = require("bcryptjs");
-const {
+import bcrypt from "bcryptjs";
+import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
-} = require("./auth.utils.js");
+} from "./auth.utils.js";
+import prisma from "../../db/prisma.js";
+import { ROLE_PERMISSIONS } from "../../constants/rolePermissions.js";
+import AppError from "../../utils/AppError.js";
 
-const prisma = require("../../db/prisma");
-
-const { ROLE_PERMISSIONS } = require("../../constants/rolePermissions");
-
-const AppError = require("../../utils/AppError");
-
-async function registerUser(email, password, name) {
+export async function registerUser(email, password, name) {
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
   if (existingUser) {
@@ -33,7 +30,7 @@ async function registerUser(email, password, name) {
   return user;
 }
 
-async function loginUser(email, password) {
+export async function loginUser(email, password) {
   let user = await prisma.user.findUnique({
     where: { email },
     include: {
@@ -69,7 +66,7 @@ async function loginUser(email, password) {
   return { accessToken, refreshToken, user, permissions };
 }
 
-async function handleRefreshToken(oldRefreshToken) {
+export async function handleRefreshToken(oldRefreshToken) {
   if (!oldRefreshToken) {
     throw new AppError("No refresh token found!", 401);
   }
@@ -122,18 +119,10 @@ async function handleRefreshToken(oldRefreshToken) {
   return { newAccessToken, newRefreshToken, user, permissions };
 }
 
-async function handleLogout(userId) {
+export async function handleLogout(userId) {
   await prisma.refreshToken.deleteOne({ where: { userId } });
 }
 
-async function handleLogoutAll(userId) {
+export async function handleLogoutAll(userId) {
   await prisma.refreshToken.deleteMany({ where: { userId } });
 }
-
-module.exports = {
-  registerUser,
-  loginUser,
-  handleRefreshToken,
-  handleLogout,
-  handleLogoutAll,
-};

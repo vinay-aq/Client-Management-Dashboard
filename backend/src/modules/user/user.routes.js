@@ -1,12 +1,30 @@
-const express = require("express");
+import express from "express";
+import {
+  authMiddleware,
+  permissionAuthorize,
+} from "../auth/auth.middleware.js";
+import * as userController from "./user.controller.js";
+import { PERMISSIONS } from "../../constants/permissions.js";
+
 const router = express.Router();
-const { authMiddleware, permissionAuthorize} = require("../auth/auth.middleware")
-const userController = require("../user/user.controller");
-const {PERMISSIONS} = require("../../constants/permissions")
 
-router.get("/",authMiddleware,permissionAuthorize(PERMISSIONS.USERS_VIEW), userController.getUsers);
-router.patch("/:id/role",authMiddleware,permissionAuthorize(PERMISSIONS.USER_ROLE_UPDATE), userController.updateUserRole);
-router.patch("/:id/status",authMiddleware,permissionAuthorize(PERMISSIONS.USER_STATUS_UPDATE), userController.toggleUserStatus);
+router.get(
+  "/",
+  authMiddleware,
+  permissionAuthorize(PERMISSIONS.USERS_VIEW),
+  userController.getUsers,
+);
+router.patch(
+  "/:id/role",
+  authMiddleware,
+  permissionAuthorize(PERMISSIONS.USER_ROLE_UPDATE),
+  userController.updateUserRole,
+);
+router.patch(
+  "/:id/status",
+  authMiddleware,
+  permissionAuthorize(PERMISSIONS.USER_STATUS_UPDATE),
+  userController.toggleUserStatus,
+);
 
-
-module.exports = router;
+export default router;

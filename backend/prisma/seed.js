@@ -1,8 +1,8 @@
-const prisma = require("../src/db/prisma");
-const clientTypes = require("./seedFiles/clientTypes");
-const industries = require("./seedFiles/industries");
-const roles = require("./seedFiles/roles");
-const clientStatuses = require("./seedFiles/statuses");
+import prisma from "../src/db/prisma.js";
+import clientTypes from "./seedFiles/clientTypes.js";
+import industries from "./seedFiles/industries.js";
+import roles from "./seedFiles/roles.js";
+import clientStatuses from "./seedFiles/statuses.js";
 
 async function main() {
   for (const clientType of clientTypes) {
@@ -45,7 +45,7 @@ async function main() {
     });
   }
 
-  console.log("Database seed completed.")
+  console.log("Database seed completed.");
 }
 
 main()

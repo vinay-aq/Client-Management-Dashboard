@@ -1,6 +1,6 @@
-const AppError = require("../../utils/AppError");
-const { masterTypes, MASTER_TYPES } = require("../../constants/masterTypes.ts");
-const prisma = require("../../db/prisma");
+import AppError from "../../utils/AppError.js";
+import { masterTypes, MASTER_TYPES } from "../../constants/masterTypes.ts";
+import prisma from "../../db/prisma.js";
 
 type MasterData = {
   type: string;
@@ -304,7 +304,7 @@ async function deleteClientIndustries(masterId: number) {
   });
 }
 
-module.exports = {
+export {
   fetchMasterService,
   createMasterService,
   updateMasterService,

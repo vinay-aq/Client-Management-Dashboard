@@ -1,11 +1,11 @@
-const {
+import {
   fetchMasterService,
   createMasterService,
   updateMasterService,
   deleteMasterService,
-} = require("./master.service.ts");
+} from "./master.service.ts";
 
-async function getMasters(req, res, next) {
+export async function getMasters(req, res, next) {
   const { type } = req.query;
   try {
     const masters = await fetchMasterService(type);
@@ -15,7 +15,7 @@ async function getMasters(req, res, next) {
   }
 }
 
-async function createMaster(req, res, next) {
+export async function createMaster(req, res, next) {
   try {
     const master = await createMasterService(req.body);
     res.status(201).json({ success: true, message: "Master created", master });
@@ -24,7 +24,7 @@ async function createMaster(req, res, next) {
   }
 }
 
-async function updateMaster(req, res, next) {
+export async function updateMaster(req, res, next) {
   const { id: masterId } = req.params;
   const { master } = req.body;
 
@@ -40,7 +40,7 @@ async function updateMaster(req, res, next) {
   }
 }
 
-async function deleteMaster(req, res, next) {
+export async function deleteMaster(req, res, next) {
   const { id: masterId } = req.params;
   const { type: masterType } = req.query;
   try {
@@ -54,10 +54,3 @@ async function deleteMaster(req, res, next) {
     next(err);
   }
 }
-
-module.exports = {
-  getMasters,
-  createMaster,
-  updateMaster,
-  deleteMaster,
-};

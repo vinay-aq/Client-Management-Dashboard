@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-const AppError = require("../../utils/AppError");
-const prisma = require("../../db/prisma");
+import jwt from "jsonwebtoken";
+import AppError from "../../utils/AppError.js";
+import prisma from "../../db/prisma.js";
 
-async function authMiddleware(req, res, next) {
+export async function authMiddleware(req, res, next) {
   let accessToken = req.headers?.authorization?.split(" ")[1] ?? "";
   try {
     const decodedUser = jwt.verify(accessToken, process.env.JWT_SECRET);
@@ -17,7 +17,7 @@ async function authMiddleware(req, res, next) {
   }
 }
 
-function authorize(...allowedRoles) {
+export function authorize(...allowedRoles) {
   return (req, res, next) => {
     const userRole = req.user.role;
     if (!allowedRoles.includes(userRole)) {
@@ -27,7 +27,7 @@ function authorize(...allowedRoles) {
   };
 }
 
-function permissionAuthorize(requiredPermissions) {
+export function permissionAuthorize(requiredPermissions) {
   return (req, res, next) => {
     const rolePermissions = req?.user?.permissions || [];
     const hasPermission = rolePermissions.includes(requiredPermissions);
@@ -37,5 +37,3 @@ function permissionAuthorize(requiredPermissions) {
     next();
   };
 }
-
-module.exports = { authMiddleware, authorize, permissionAuthorize };

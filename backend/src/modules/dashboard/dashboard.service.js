@@ -1,6 +1,6 @@
-const prisma = require("../../db/prisma");
+import prisma from "../../db/prisma.js";
 
-async function fetchDashboardStats() {
+export async function fetchDashboardStats() {
   const [statusCount, clientStatuses, recentClients] = await Promise.all([
     prisma.client.groupBy({
       by: ["clientStatusId"],
@@ -17,8 +17,8 @@ async function fetchDashboardStats() {
       orderBy: {
         createdAt: "desc",
       },
-      include:{
-        clientStatus: true
+      include: {
+        clientStatus: true,
       },
       take: 5,
     }),
@@ -41,5 +41,3 @@ async function fetchDashboardStats() {
 
   return { clientStatusCounts, recentClients };
 }
-
-module.exports = { fetchDashboardStats };

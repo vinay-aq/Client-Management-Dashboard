@@ -1,10 +1,10 @@
-const {
+import {
   fetchUsers,
   updateUserRoleService,
   toggleUserStatusService,
-} = require("./user.service");
+} from "./user.service.js";
 
-async function getUsers(req, res, next) {
+export async function getUsers(req, res, next) {
   try {
     const users = await fetchUsers();
     return res.status(200).json({ success: true, users: users });
@@ -13,28 +13,26 @@ async function getUsers(req, res, next) {
   }
 }
 
-async function updateUserRole(req, res, next) {
+export async function updateUserRole(req, res, next) {
   const userId = req.params.id;
   const roleId = req.body.roleId;
   const authUser = req.user;
   try {
-    const updatedUser = await updateUserRoleService(userId, roleId, authUser,);
+    const updatedUser = await updateUserRoleService(userId, roleId, authUser);
     res.status(200).json(updatedUser);
   } catch (err) {
     next(err);
   }
 }
 
-async function toggleUserStatus(req, res, next) {
+export async function toggleUserStatus(req, res, next) {
   const userId = req.params.id;
   const role = req.body.isActive;
   const authUser = req.user;
   try {
-    const updatedUser = await toggleUserStatusService(userId, role,authUser);
+    const updatedUser = await toggleUserStatusService(userId, role, authUser);
     res.status(200).json(updatedUser);
   } catch (err) {
     next(err);
   }
 }
-
-module.exports = { getUsers, updateUserRole, toggleUserStatus };

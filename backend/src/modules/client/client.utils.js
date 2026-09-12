@@ -1,7 +1,5 @@
-const { CLIENT_WORKFLOW } = require("../../constants/clientWorkflow");
+import { CLIENT_WORKFLOW } from "../../constants/clientWorkflow.js";
 
-function isValidClientTransition(currentStatus, nextStatus) {
-  return CLIENT_WORKFLOW[currentStatus]?.includes(nextStatus) ;
+export function isValidClientTransition(currentStatus, nextStatus) {
+  return CLIENT_WORKFLOW[currentStatus]?.includes(nextStatus);
 }
-
-module.exports = { isValidClientTransition };

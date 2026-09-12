@@ -1,10 +1,10 @@
-const AppError = require("../../utils/AppError");
-const { createActivityService } = require("../activity/activity.service.ts");
-const { notifyDashboardDataChanged } = require("../dashboard/dashboard.events");
-const { isValidClientTransition } = require("../client/client.utils");
-const prisma = require("../../db/prisma");
-const { ActivityEntityType } = require("../../generated/prisma");
-import type { Prisma } from "../../generated/prisma";
+import AppError from "../../utils/AppError.js";
+import { createActivityService } from "../activity/activity.service.ts";
+import { notifyDashboardDataChanged } from "../dashboard/dashboard.events.js";
+import { isValidClientTransition } from "../client/client.utils.js";
+import prisma from "../../db/prisma.js";
+import { ActivityEntityType } from "../../generated/prisma/client.js";
+import type { Prisma } from "../../generated/prisma/client.js";
 
 type User = {
   id: number | string;
@@ -331,7 +331,7 @@ async function updateClientWorkflowService({
   return updatedClient;
 }
 
-module.exports = {
+export {
   fetchClients,
   fetchClientsById,
   createClientService,

@@ -1,8 +1,6 @@
-const { getIO } = require("../../socket/socket");
+import { getIO } from "../../socket/socket.js";
 
-function notifyDashboardDataChanged() {
+export function notifyDashboardDataChanged() {
   const io = getIO();
   io.emit("dashboard_stats_updated");
 }
-
-module.exports = { notifyDashboardDataChanged };

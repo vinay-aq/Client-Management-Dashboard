@@ -1,4 +1,4 @@
-const CLIENT_STATUS = {
+export const CLIENT_STATUS = {
   LEAD: "LEAD",
   CONTACTED: "CONTACTED",
   QUALIFIED: "QUALIFIED",
@@ -7,8 +7,4 @@ const CLIENT_STATUS = {
   ONBOARDED: "ONBOARDED",
   SUSPENDED: "SUSPENDED",
   ARCHIVED: "ARCHIVED",
-};
-
-module.exports = {
-  CLIENT_STATUS,
 };

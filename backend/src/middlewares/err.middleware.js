@@ -1,4 +1,4 @@
-const { ZodError } = require("zod");
+import { ZodError } from "zod";
 
 function errorMiddleware(err, req, res, next) {
   if (err instanceof ZodError) {
@@ -20,4 +20,5 @@ function errorMiddleware(err, req, res, next) {
     },
   });
 }
-module.exports = errorMiddleware;
+
+export default errorMiddleware;

@@ -1,6 +1,9 @@
-const { fetchActivityService,fetchActivityByEntityService } = require("./activity.service.ts");
+import {
+  fetchActivityService,
+  fetchActivityByEntityService,
+} from "./activity.service.ts";
 
-async function getActivity(req, res, next) {
+export async function getActivity(req, res, next) {
   try {
     const activities = await fetchActivityService();
     res.status(200).json({ success: true, activities });
@@ -9,16 +12,17 @@ async function getActivity(req, res, next) {
   }
 }
 
-async function fetchActivitiesByEntity(req, res, next) {
+export async function fetchActivitiesByEntity(req, res, next) {
   const entityType = req.params.entityType;
   const entityId = req.params.entityId;
 
   try {
-    const activities = await fetchActivityByEntityService({entityType,entityId });
+    const activities = await fetchActivityByEntityService({
+      entityType,
+      entityId,
+    });
     res.status(200).json({ success: true, activities });
   } catch (err) {
     next(err);
   }
 }
-
-module.exports = { getActivity, fetchActivitiesByEntity };

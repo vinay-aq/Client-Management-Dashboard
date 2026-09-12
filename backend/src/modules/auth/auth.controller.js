@@ -1,6 +1,6 @@
-const authService = require("./auth.service");
+import * as authService from "./auth.service.js";
 
-async function signupUser(req, res, next) {
+export async function signupUser(req, res, next) {
   const { password, email, name } = req.body;
   try {
     await authService.registerUser(email, password, name);
@@ -10,7 +10,7 @@ async function signupUser(req, res, next) {
   }
 }
 
-async function loginUser(req, res, next) {
+export async function loginUser(req, res, next) {
   const { email, password } = req.body;
 
   try {
@@ -37,7 +37,7 @@ async function loginUser(req, res, next) {
   }
 }
 
-async function refreshToken(req, res, next) {
+export async function refreshToken(req, res, next) {
   const oldRefreshToken = req.cookies?.refreshToken;
   try {
     let { newAccessToken, newRefreshToken, user, permissions } =
@@ -62,9 +62,3 @@ async function refreshToken(req, res, next) {
     next(err);
   }
 }
-
-module.exports = {
-  loginUser,
-  refreshToken,
-  signupUser,
-};

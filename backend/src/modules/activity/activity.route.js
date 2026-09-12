@@ -1,12 +1,13 @@
-const express = require("express");
-const router = express.Router();
-const { authMiddleware } = require("../auth/auth.middleware");
-const {
+import express from "express";
+import { authMiddleware } from "../auth/auth.middleware.js";
+import {
   getActivity,
   fetchActivitiesByEntity,
-} = require("./activity.controller");
+} from "./activity.controller.js";
+
+const router = express.Router();
 
 router.get("/", authMiddleware, getActivity);
 router.get("/:entityType/:entityId", authMiddleware, fetchActivitiesByEntity);
 
-module.exports = router;
+export default router;

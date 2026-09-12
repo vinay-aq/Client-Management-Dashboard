@@ -1,7 +1,6 @@
-const prisma = require("../../db/prisma");
-const { getIO } = require("../../socket/socket");
-import  type { ActivityEntityType } from "../../generated/prisma";
-import type { Prisma } from "../../generated/prisma";
+import prisma from "../../db/prisma.js";
+import { getIO } from "../../socket/socket.js";
+import type { ActivityEntityType, Prisma } from "../../generated/prisma/client.js";
 
 
 type activiyServiceData = {
@@ -58,7 +57,7 @@ async function fetchActivityByEntityService({ entityType, entityId}: {
   return activities;
 }
 
-module.exports = {
+export {
   fetchActivityService,
   createActivityService,
   fetchActivityByEntityService,

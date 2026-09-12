@@ -1,6 +1,5 @@
-require("dotenv").config();
-
-const prisma = require("./prisma");
+import "dotenv/config";
+import prisma from "./prisma.js";
 
 async function testPrisma() {
   try {

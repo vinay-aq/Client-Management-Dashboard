@@ -31,4 +31,4 @@ const industries = [
   },
 ];
 
-module.exports = industries;
+export default industries;

@@ -1,19 +1,19 @@
-const express = require("express");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import path from "path";
 
-const authRoutes = require("./modules/auth/auth.routes");
-const clientRoutes = require("./modules/client/client.routes");
-const dashboardRoutes = require("./modules/dashboard/dashboard.routes");
-const userRoutes = require("./modules/user/user.routes");
-const masterRoutes = require("./modules/master/master.routes");
-const activityRoutes = require("./modules/activity/activity.route")
+import authRoutes from "./modules/auth/auth.routes.js";
+import clientRoutes from "./modules/client/client.routes.js";
+import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
+import userRoutes from "./modules/user/user.routes.js";
+import masterRoutes from "./modules/master/master.routes.js";
+import activityRoutes from "./modules/activity/activity.route.js";
 
-const errorMiddleware = require("./middlewares/err.middleware");
+import errorMiddleware from "./middlewares/err.middleware.js";
 
 const app = express();
 
-const path = require("path");
 app.use("/uploads", express.static(path.resolve("src/uploads")));
 
 app.use((req, res, next) => {
@@ -44,4 +44,4 @@ app.use("/api/masters", masterRoutes);
 
 app.use(errorMiddleware);
 
-module.exports = app;
+export default app;

@@ -49,4 +49,4 @@ const clientStatuses = [
   },
 ];
 
-module.exports = clientStatuses;
+export default clientStatuses;

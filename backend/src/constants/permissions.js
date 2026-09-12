@@ -1,4 +1,4 @@
-const PERMISSIONS = {
+export const PERMISSIONS = {
   CLIENT_CREATE: "client.create",
   CLIENT_EDIT: "client.edit",
   CLIENT_DELETE: "client.delete",
@@ -9,8 +9,4 @@ const PERMISSIONS = {
   DASHBOARD_VIEW: "dashboard.view",
   MASTER_VIEW: "master.view",
   MASTER_MANAGE: "master.manage",
-};
-
-module.exports = {
-  PERMISSIONS,
 };

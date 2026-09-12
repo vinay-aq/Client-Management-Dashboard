@@ -16,4 +16,4 @@ const clientTypes = [
   },
 ];
 
-module.exports = clientTypes;
+export default clientTypes;

@@ -1,9 +1,9 @@
-const { Server } = require("socket.io");
-const AppError = require("../utils/AppError");
+import { Server } from "socket.io";
+import AppError from "../utils/AppError.js";
 
 let io = null;
 
- const initSocket = (httpServer) => {
+export const initSocket = (httpServer) => {
   io = new Server(httpServer, {
     cors: {
       origin: "http://localhost:3000",
@@ -19,14 +19,10 @@ let io = null;
   });
 };
 
- const getIO = () => {
+export const getIO = () => {
   if (!io) {
-    new App("Socket.io is not initialized", 500);
+    throw new AppError("Socket.io is not initialized", 500);
   }
 
   return io;
 };
-
-module.exports = {
-    initSocket, getIO
-}

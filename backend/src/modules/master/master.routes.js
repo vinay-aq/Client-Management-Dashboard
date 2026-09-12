@@ -1,11 +1,12 @@
-const express = require("express");
-const router = express.Router();
-const masterController = require("./master.controller");
-const {
+import express from "express";
+import * as masterController from "./master.controller.js";
+import {
   authMiddleware,
   permissionAuthorize,
-} = require("../auth/auth.middleware");
-const { PERMISSIONS } = require("../../constants/permissions");
+} from "../auth/auth.middleware.js";
+import { PERMISSIONS } from "../../constants/permissions.js";
+
+const router = express.Router();
 
 // router.get(
 //   "/",
@@ -14,10 +15,7 @@ const { PERMISSIONS } = require("../../constants/permissions");
 //   masterController.getMasters,
 // );
 
-router.get(
-  "/",
-  masterController.getMasters,
-);
+router.get("/", masterController.getMasters);
 router.post(
   "/",
   authMiddleware,
@@ -38,4 +36,4 @@ router.delete(
   masterController.deleteMaster,
 );
 
-module.exports = router;
+export default router;

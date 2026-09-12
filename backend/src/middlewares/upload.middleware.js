@@ -1,11 +1,10 @@
-const multer = require("multer");
-const AppError = require("../utils/AppError");
-const path = require("path")
-
+import multer from "multer";
+import path from "path";
+import AppError from "../utils/AppError.js";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null,  path.resolve("src/uploads"));
+    cb(null, path.resolve("src/uploads"));
   },
   filename: (req, file, cb) => {
     const uniqueName = Date.now() + "-" + file.originalname;
@@ -14,7 +13,6 @@ const storage = multer.diskStorage({
 });
 
 function fileFilter(req, file, cb) {
-
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
@@ -31,4 +29,4 @@ const upload = multer({
   },
 });
 
-module.exports = upload;
+export default upload;

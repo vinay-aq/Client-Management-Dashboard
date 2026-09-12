@@ -1,7 +1,7 @@
-const AppError = require("../../utils/AppError");
-const { createActivityService } = require("../activity/activity.service.ts");
-const { ActivityEntityType } = require("../../generated/prisma");
-const prisma = require("../../db/prisma");
+import AppError from "../../utils/AppError.js";
+import { createActivityService } from "../activity/activity.service.ts";
+import { ActivityEntityType } from "../../generated/prisma/client.js";
+import prisma from "../../db/prisma.js";
 
 async function fetchUsers() {
   let users = await prisma.user.findMany({
@@ -111,8 +111,4 @@ async function toggleUserStatusService(userId, isActive, authUser) {
   return updatedUser;
 }
 
-module.exports = {
-  fetchUsers,
-  updateUserRoleService,
-  toggleUserStatusService,
-};
+export { fetchUsers, updateUserRoleService, toggleUserStatusService };

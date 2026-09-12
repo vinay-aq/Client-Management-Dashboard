@@ -1,4 +1,4 @@
-const ROLES = {
+export const ROLES = {
   ADMIN: "admin",
 
   MANAGER: "manager",
@@ -6,9 +6,4 @@ const ROLES = {
   VIEWER: "viewer",
 };
 
-const ROLE_VALUES = Object.values(ROLES);
-
-module.exports = {
-  ROLES,
-  ROLE_VALUES,
-};
+export const ROLE_VALUES = Object.values(ROLES);

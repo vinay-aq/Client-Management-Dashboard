@@ -1,6 +1,6 @@
-const { PERMISSIONS } = require("./permissions");
+import { PERMISSIONS } from "./permissions.js";
 
-const ROLE_PERMISSIONS = {
+export const ROLE_PERMISSIONS = {
   admin: [
     PERMISSIONS.CLIENT_CREATE,
     PERMISSIONS.CLIENT_EDIT,
@@ -27,8 +27,4 @@ const ROLE_PERMISSIONS = {
     PERMISSIONS.DASHBOARD_VIEW,
     PERMISSIONS.MASTER_VIEW,
   ],
-};
-
-module.exports = {
-  ROLE_PERMISSIONS,
 };
