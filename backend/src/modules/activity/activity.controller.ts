@@ -1,9 +1,14 @@
+import type { Request, Response, NextFunction } from "express";
 import {
   fetchActivityService,
   fetchActivityByEntityService,
 } from "./activity.service.ts";
 
-export async function getActivity(req, res, next) {
+export async function getActivity(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const activities = await fetchActivityService();
     res.status(200).json({ success: true, activities });
@@ -12,7 +17,11 @@ export async function getActivity(req, res, next) {
   }
 }
 
-export async function fetchActivitiesByEntity(req, res, next) {
+export async function fetchActivitiesByEntity(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const entityType = req.params.entityType;
   const entityId = req.params.entityId;
 

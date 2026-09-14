@@ -30,12 +30,15 @@ function toScreamingSnakeCase(input: string): string {
   );
 }
 
-async function fetchMasterService(type: MasterType) {
+function isMasterType(value: unknown): value is MasterType {
+  return typeof value === "string" && masterTypes.includes(value as MasterType);
+}
+async function fetchMasterService(type: string) {
   if (!type) {
     throw new AppError("master type is required");
   }
 
-  const validMasterType = masterTypes.includes(type);
+  const validMasterType = isMasterType(type);
   if (!validMasterType) {
     throw new AppError("Invalid master type");
   }
@@ -272,7 +275,12 @@ async function updateClientIndustries(
   });
 }
 
-async function deleteMasterService(masterId: string, masterType: MasterType) {
+async function deleteMasterService(masterId: string, masterType: string) {
+  const validMasterType = isMasterType(masterType);
+  if (!validMasterType) {
+    throw new AppError("Invalid master type");
+  }
+
   const id = Number(masterId);
   switch (masterType) {
     case MASTER_TYPES.USER_ROLE:

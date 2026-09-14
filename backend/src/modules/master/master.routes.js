@@ -1,5 +1,5 @@
 import express from "express";
-import * as masterController from "./master.controller.js";
+import * as masterController from "./master.controller.ts";
 import {
   authMiddleware,
   permissionAuthorize,

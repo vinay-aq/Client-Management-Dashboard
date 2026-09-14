@@ -1,6 +1,11 @@
+import type { Request, Response, NextFunction } from "express";
 import * as authService from "./auth.service.js";
 
-export async function signupUser(req, res, next) {
+export async function signupUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { password, email, name } = req.body;
   try {
     await authService.registerUser(email, password, name);
@@ -10,7 +15,11 @@ export async function signupUser(req, res, next) {
   }
 }
 
-export async function loginUser(req, res, next) {
+export async function loginUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { email, password } = req.body;
 
   try {
@@ -37,7 +46,11 @@ export async function loginUser(req, res, next) {
   }
 }
 
-export async function refreshToken(req, res, next) {
+export async function refreshToken(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const oldRefreshToken = req.cookies?.refreshToken;
   try {
     let { newAccessToken, newRefreshToken, user, permissions } =

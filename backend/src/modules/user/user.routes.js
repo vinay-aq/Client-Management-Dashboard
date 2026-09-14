@@ -3,7 +3,7 @@ import {
   authMiddleware,
   permissionAuthorize,
 } from "../auth/auth.middleware.js";
-import * as userController from "./user.controller.js";
+import * as userController from "./user.controller.ts";
 import { PERMISSIONS } from "../../constants/permissions.js";
 
 const router = express.Router();

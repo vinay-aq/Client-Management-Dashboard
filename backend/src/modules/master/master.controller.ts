@@ -1,12 +1,19 @@
+import type { Request, Response, NextFunction } from "express";
 import {
   fetchMasterService,
   createMasterService,
   updateMasterService,
   deleteMasterService,
-} from "./master.service.ts";
+} from "./master.service.js";
+import { MasterType } from "../../constants/masterTypes.js";
 
-export async function getMasters(req, res, next) {
-  const { type } = req.query;
+export async function getMasters(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const type = String(req.query.type);
+
   try {
     const masters = await fetchMasterService(type);
     res.status(200).json({ success: true, masters, type });
@@ -15,7 +22,11 @@ export async function getMasters(req, res, next) {
   }
 }
 
-export async function createMaster(req, res, next) {
+export async function createMaster(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const master = await createMasterService(req.body);
     res.status(201).json({ success: true, message: "Master created", master });
@@ -24,12 +35,16 @@ export async function createMaster(req, res, next) {
   }
 }
 
-export async function updateMaster(req, res, next) {
+export async function updateMaster(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { id: masterId } = req.params;
   const { master } = req.body;
 
   try {
-    const updatedMaster = await updateMasterService(masterId, master);
+    const updatedMaster = await updateMasterService(String(masterId), master);
     res.status(200).json({
       success: true,
       message: "Master updated successfuly",
@@ -40,11 +55,15 @@ export async function updateMaster(req, res, next) {
   }
 }
 
-export async function deleteMaster(req, res, next) {
-  const { id: masterId } = req.params;
-  const { type: masterType } = req.query;
+export async function deleteMaster(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const masterId = req.params.id;
+  const masterType = String(req.query.type);
   try {
-    await deleteMasterService(masterId, masterType);
+    await deleteMasterService(String(masterId), masterType);
     res.status(200).json({
       success: true,
       message: "Master deleted successfuly",

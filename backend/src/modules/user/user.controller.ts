@@ -1,10 +1,15 @@
+import type { Request, Response, NextFunction } from "express";
 import {
   fetchUsers,
   updateUserRoleService,
   toggleUserStatusService,
 } from "./user.service.js";
 
-export async function getUsers(req, res, next) {
+export async function getUsers(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const users = await fetchUsers();
     return res.status(200).json({ success: true, users: users });
@@ -13,7 +18,11 @@ export async function getUsers(req, res, next) {
   }
 }
 
-export async function updateUserRole(req, res, next) {
+export async function updateUserRole(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const userId = req.params.id;
   const roleId = req.body.roleId;
   const authUser = req.user;
@@ -25,7 +34,11 @@ export async function updateUserRole(req, res, next) {
   }
 }
 
-export async function toggleUserStatus(req, res, next) {
+export async function toggleUserStatus(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const userId = req.params.id;
   const role = req.body.isActive;
   const authUser = req.user;

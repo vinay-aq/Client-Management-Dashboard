@@ -1,5 +1,5 @@
 import AppError from "../../utils/AppError.js";
-import { createActivityService } from "../activity/activity.service.ts";
+import { createActivityService } from "../activity/activity.service.js";
 import { notifyDashboardDataChanged } from "../dashboard/dashboard.events.js";
 import { isValidClientTransition } from "../client/client.utils.js";
 import prisma from "../../db/prisma.js";
@@ -7,9 +7,21 @@ import { ActivityEntityType } from "../../generated/prisma/client.js";
 import type { Prisma } from "../../generated/prisma/client.js";
 
 type User = {
-  id: number | string;
-  email: string;
+  id: number;
   name: string;
+  role: {
+    id: number;
+    name: string;
+    description: string;
+    code: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  permissions: string[];
+  iat: number;
+  exp: number;
 };
 
 type CreateClientData = {
@@ -24,7 +36,7 @@ type CreateClientData = {
 };
 
 type UpdateClientType = {
-  name: string | number;
+  name: string;
   email: string;
   phone: string;
   company: string;
@@ -161,9 +173,7 @@ async function createClientService(data: CreateClientData) {
     message: `User ${user.name} created client ${newClient.name}`,
     entityType: "client",
     entityId: newClient.id,
-    action: "client_created",
     actorId: user.id,
-    actorName: user.name,
     oldValue: null,
     newValue: null,
   });
@@ -172,10 +182,7 @@ async function createClientService(data: CreateClientData) {
   return newClient;
 }
 
-async function updateClientService(
-  id: number | string,
-  data: UpdateClientType,
-) {
+async function updateClientService(id: number, data: UpdateClientType) {
   const {
     name,
     email,
@@ -262,7 +269,7 @@ async function deleteClientService(id: string | number, user: User) {
 
 type UpdateWorkflowData = {
   clientId: number | string;
-  nextStatusId: number | string;
+  nextStatusId: number;
   user: User;
 };
 
@@ -290,11 +297,13 @@ async function updateClientWorkflowService({
 
   const clientStatus = client.clientStatus;
 
-  console.log("nextStatusId", nextStatusId);
-
   const nextStatus = await prisma.clientStatus.findUnique({
     where: { id: nextStatusId },
   });
+
+  if (!nextStatus) {
+    throw new AppError("Invalid next status", 400);
+  }
 
   const isValidTransition = isValidClientTransition(
     clientStatus.code,

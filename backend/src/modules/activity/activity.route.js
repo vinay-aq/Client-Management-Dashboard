@@ -3,7 +3,7 @@ import { authMiddleware } from "../auth/auth.middleware.js";
 import {
   getActivity,
   fetchActivitiesByEntity,
-} from "./activity.controller.js";
+} from "./activity.controller.ts";
 
 const router = express.Router();
 
