@@ -1,9 +1,10 @@
 import { Server } from "socket.io";
 import AppError from "../utils/AppError.js";
+import type { Server as httpServer } from "http";
 
-let io = null;
+let io: Server |  null = null;
 
-export const initSocket = (httpServer) => {
+export const initSocket = (httpServer: httpServer) => {
   io = new Server(httpServer, {
     cors: {
       origin: "http://localhost:3000",

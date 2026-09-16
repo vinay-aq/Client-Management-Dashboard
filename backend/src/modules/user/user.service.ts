@@ -1,7 +1,8 @@
 import AppError from "../../utils/AppError.js";
-import { createActivityService } from "../activity/activity.service.ts";
+import { createActivityService } from "../activity/activity.service.js";
 import { ActivityEntityType } from "../../generated/prisma/client.js";
 import prisma from "../../db/prisma.js";
+import type { AuthUser } from "../../types/auth.js";
 
 async function fetchUsers() {
   let users = await prisma.user.findMany({
@@ -17,24 +18,33 @@ async function fetchUsers() {
     },
   });
 
-  users = users.map((user) => ({
+  return users.map((user) => ({
     ...user,
     role: user?.role?.name,
     id: user.id,
   }));
-
-  return users;
 }
 
-async function updateUserRoleService(userId, roleId, authUser) {
-  if (authUser.id === userId) {
+async function updateUserRoleService(
+  userId: string,
+  roleId: number,
+  authUser: AuthUser,
+) {
+  let id = Number(userId);
+
+  if (authUser.id === id) {
     throw new AppError("You cannot modify your own role", 400);
   }
-  userId = Number(userId);
 
   const user = await prisma.user.findUnique({
     where: {
-      id: userId,
+      id,
+    },
+    omit: {
+      passwordHash: true,
+    },
+    include: {
+      role: true,
     },
   });
 
@@ -43,10 +53,13 @@ async function updateUserRoleService(userId, roleId, authUser) {
   }
 
   const updatedUser = await prisma.user.update({
-    where: { id: userId },
+    where: { id },
     data: { roleId },
     omit: {
       passwordHash: true,
+    },
+    include: {
+      role: true,
     },
   });
 
@@ -65,16 +78,20 @@ async function updateUserRoleService(userId, roleId, authUser) {
   return updatedUser;
 }
 
-async function toggleUserStatusService(userId, isActive, authUser) {
-  if (authUser.id === userId) {
+async function toggleUserStatusService(
+  userId: string,
+  isActive: boolean,
+  authUser: AuthUser,
+) {
+  let id = Number(userId);
+
+  if (authUser.id === id) {
     throw new AppError("You cannot change your own status", 400);
   }
 
-  userId = Number(userId);
-
   const user = await prisma.user.findUnique({
     where: {
-      id: userId,
+      id,
     },
   });
 
@@ -87,13 +104,12 @@ async function toggleUserStatusService(userId, isActive, authUser) {
   }
 
   const updatedUser = await prisma.user.update({
-    where: { id: userId },
+    where: { id },
     data: { isActive },
     omit: {
       passwordHash: true,
     },
   });
-
 
   await createActivityService({
     message: `User ${updatedUser.name} is marked as ${isActive ? "active" : "inactive"}`,

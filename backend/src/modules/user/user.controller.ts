@@ -23,9 +23,10 @@ export async function updateUserRole(
   res: Response,
   next: NextFunction,
 ) {
-  const userId = req.params.id;
+  const userId = req.params.id as string;
   const roleId = req.body.roleId;
   const authUser = req.user;
+  console.log(userId, roleId, authUser)
   try {
     const updatedUser = await updateUserRoleService(userId, roleId, authUser);
     res.status(200).json(updatedUser);
@@ -39,7 +40,7 @@ export async function toggleUserStatus(
   res: Response,
   next: NextFunction,
 ) {
-  const userId = req.params.id;
+  const userId = req.params.id as string;
   const role = req.body.isActive;
   const authUser = req.user;
   try {

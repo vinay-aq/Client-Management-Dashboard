@@ -1,5 +1,5 @@
 import express from "express";
-import * as clientController from "./client.controller.ts";
+import * as clientController from "./client.controller.js";
 import {
   authMiddleware,
   permissionAuthorize,
