@@ -10,6 +10,18 @@ export const loginAPI = async (data) => {
   return res.data;
 };
 
+export const logoutAPI = async (id) => {
+  const res = await axios.post(
+    `${BASE_URL}/auth/logout`,
+    { id: id },
+    {
+      withCredentials: true,
+    },
+  );
+
+  return res.data;
+};
+
 export const sessionRestoreAPI = async () => {
   const res = await axios.post(
     `${BASE_URL}/auth/refresh`,

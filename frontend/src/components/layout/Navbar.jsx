@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { logout } from "../../features/auth/authSlice";
+import { logoutUser } from "../../features/auth/authSlice";
 import usePermission from "../../hooks/usePermission";
 import { PERMISSIONS } from "../../utils/permissions";
 
@@ -12,10 +12,9 @@ function Navbar() {
   const canManageUsers = usePermission(PERMISSIONS.USERS_VIEW);
 
   function handleLogout() {
-    dispatch(logout());
-    navigate("/login");
+    dispatch(logoutUser(user?.id));
+    navigate("/");
   }
-
 
   return (
     <nav
@@ -57,7 +56,6 @@ function Navbar() {
           gap: "12px",
         }}
       >
-
         <span>{user?.email}</span>
         <span>{user?.role?.name}</span>
         <span onClick={handleLogout} style={{ cursor: "pointer" }}>

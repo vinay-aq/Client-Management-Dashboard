@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginAPI, sessionRestoreAPI } from "./authAPI";
+import { loginAPI, sessionRestoreAPI, logoutAPI } from "./authAPI";
 import { setAccessToken, clearAccessToken } from "../../services/axiosInstance";
 
 const initialState = {
@@ -39,6 +39,20 @@ export const loginUser = createAsyncThunk(
   },
 );
 
+export const logoutUser = createAsyncThunk(
+  "/auth/logoutUser",
+  async (id, thunkAPI) => {
+    try {
+      const response = await logoutAPI(id);
+      return response;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Logout failed",
+      );
+    }
+  },
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -47,12 +61,6 @@ const authSlice = createSlice({
       state.user = action.payload?.user;
       state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
-    },
-
-    logout: (state) => {
-      state.user = null;
-      state.accessToken = null;
-      state.isAuthenticated = false;
     },
   },
   extraReducers: (builder) => {
@@ -88,6 +96,12 @@ const authSlice = createSlice({
       state.authInitialized = true;
       state.error = action.payload;
       clearAccessToken();
+    });
+
+    builder.addCase(logoutUser.fulfilled, (state, action) => {
+      state.user = null;
+      state.accessToken = null;
+      state.isAuthenticated = false;
     });
   },
 });

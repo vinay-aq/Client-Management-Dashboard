@@ -75,3 +75,18 @@ export async function refreshToken(
     next(err);
   }
 }
+
+export async function logoutUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const { id } = req.body;
+  const refreshToken = req.cookies?.refreshToken;
+  try {
+    await authService.handleLogout(refreshToken);
+    res.status(200).json("User logged out successfully !");
+  } catch (err) {
+    next(err);
+  }
+}

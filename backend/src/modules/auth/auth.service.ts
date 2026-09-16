@@ -8,7 +8,11 @@ import prisma from "../../db/prisma.js";
 import { ROLE_PERMISSIONS } from "../../constants/rolePermissions.js";
 import AppError from "../../utils/AppError.js";
 
-export async function registerUser(email, password, name) {
+export async function registerUser(
+  email: string,
+  password: string,
+  name: string,
+) {
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
   if (existingUser) {
@@ -30,7 +34,7 @@ export async function registerUser(email, password, name) {
   return user;
 }
 
-export async function loginUser(email, password) {
+export async function loginUser(email: string, password: string) {
   let user = await prisma.user.findUnique({
     where: { email },
     include: {
@@ -50,7 +54,7 @@ export async function loginUser(email, password) {
     throw new AppError("Password Incorrect. Please try again", 401);
   }
   const role = user?.role?.name;
-  const permissions = ROLE_PERMISSIONS[role] || [];
+  const permissions = ROLE_PERMISSIONS[role] || [] ;
 
   let accessToken = generateAccessToken(user, permissions);
   let refreshToken = generateRefreshToken(user, permissions);
@@ -66,7 +70,7 @@ export async function loginUser(email, password) {
   return { accessToken, refreshToken, user, permissions };
 }
 
-export async function handleRefreshToken(oldRefreshToken) {
+export async function handleRefreshToken(oldRefreshToken: string) {
   if (!oldRefreshToken) {
     throw new AppError("No refresh token found!", 401);
   }
@@ -99,7 +103,10 @@ export async function handleRefreshToken(oldRefreshToken) {
     throw new AppError("User does not exist", 400);
   }
 
-  let newRefreshToken = generateRefreshToken(user);
+  const role = user?.role?.name;
+  const permissions = ROLE_PERMISSIONS[role] || [];
+
+  let newRefreshToken = generateRefreshToken(user, permissions);
 
   await prisma.refreshToken.deleteMany({ where: { userId: Number(user.id) } });
   //here all the sessions of the user are revoked instead of the particular session which is requested to be refreshed.
@@ -112,17 +119,14 @@ export async function handleRefreshToken(oldRefreshToken) {
     },
   });
 
-  const role = user?.role?.name;
-  const permissions = ROLE_PERMISSIONS[role] || [];
-
   let newAccessToken = generateAccessToken(user, permissions);
   return { newAccessToken, newRefreshToken, user, permissions };
 }
 
-export async function handleLogout(userId) {
-  await prisma.refreshToken.deleteOne({ where: { userId } });
+export async function handleLogout(refreshToken: string) {
+  await prisma.refreshToken.delete({ where: {refreshTokenHash: refreshToken} });
 }
 
-export async function handleLogoutAll(userId) {
-  await prisma.refreshToken.deleteMany({ where: { userId } });
+export async function handleLogoutAll(userId: number) {
+  await prisma.refreshToken.deleteMany({ where: { id: userId } });
 }

@@ -19,7 +19,7 @@ root.render(
       position="top-right"
       reverseOrder={false}
       toastOptions={{
-        duration: 1700,
+        duration: 1200,
 
         style: {
           background: "#333",
