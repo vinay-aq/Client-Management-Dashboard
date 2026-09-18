@@ -174,8 +174,6 @@ async function createClientService(data: CreateClientData) {
     entityType: "client",
     entityId: newClient.id,
     actorId: user.id,
-    oldValue: null,
-    newValue: null,
   });
 
   notifyDashboardDataChanged();
@@ -259,8 +257,6 @@ async function deleteClientService(id: string | number, user: User) {
     entityType: ActivityEntityType.client,
     entityId: client.id,
     actorId: user.id,
-    oldValue: null,
-    newValue: null,
   });
 
   notifyDashboardDataChanged();
@@ -303,6 +299,10 @@ async function updateClientWorkflowService({
 
   if (!nextStatus) {
     throw new AppError("Invalid next status", 400);
+  }
+
+  if (!clientStatus.code || !nextStatus.code) {
+    throw new AppError("client status is not valid", 400);
   }
 
   const isValidTransition = isValidClientTransition(

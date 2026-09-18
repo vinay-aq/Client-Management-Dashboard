@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import {
   fetchActivityService,
   fetchActivityByEntityService,
-} from "./activity.service.ts";
+} from "./activity.service.js";
 
 export async function getActivity(
   req: Request,
@@ -22,8 +22,8 @@ export async function fetchActivitiesByEntity(
   res: Response,
   next: NextFunction,
 ) {
-  const entityType = req.params.entityType;
-  const entityId = req.params.entityId;
+  const entityType = req.params.entityType as string;
+  const entityId = req.params.entityId as string;
 
   try {
     const activities = await fetchActivityByEntityService({

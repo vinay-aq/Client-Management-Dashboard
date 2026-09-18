@@ -6,18 +6,18 @@ import type { ActivityEntityType, Prisma } from "../../generated/prisma/client.j
 type activiyServiceData = {
   message: string,
   entityType: ActivityEntityType,
-  entityId: string | number,
-  actorId: string | number,
-  oldValue? : Prisma.InputJsonValue | null,
-  newValue? : Prisma.InputJsonValue | null,
+  entityId:  number | undefined,
+  actorId: number,
+  oldValue? : Prisma.InputJsonValue | undefined,
+  newValue? : Prisma.InputJsonValue | undefined,
 }
 async function createActivityService({
   message,
   entityType,
   entityId,
   actorId,
-  oldValue = null,
-  newValue = null,
+  oldValue ,
+  newValue ,
 }: activiyServiceData) {
   const activity = await prisma.activity.create({
     data: {

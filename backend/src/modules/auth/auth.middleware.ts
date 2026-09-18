@@ -57,7 +57,7 @@ export async function authMiddleware(
     };
     next();
   } catch (err) {
-    return next(new AppError(err || "Invalid token", 401));
+    return next(new AppError("Something went wrong, auth unsuccessful", 401));
   }
 }
 
