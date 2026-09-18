@@ -1,6 +1,31 @@
 import jwt from "jsonwebtoken";
+import AppError from "../../utils/AppError.js";
 
-export function generateAccessToken(user, permissions) {
+type UserType = {
+  id: number;
+  name: string;
+  email: string;
+  passwordHash: string;
+  roleId: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  role: {
+    id: number;
+    name: string;
+    description: string | null;
+    code: string;
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+};
+
+export function generateAccessToken(user: UserType, permissions: string[]) {
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (!JWT_SECRET) {
+    throw new AppError("Invalid JWT secret", 400);
+  }
   const token = jwt.sign(
     {
       id: user.id,
@@ -9,14 +34,18 @@ export function generateAccessToken(user, permissions) {
       permissions: permissions,
       name: user.name,
     },
-    process.env.JWT_SECRET,
+    JWT_SECRET,
     { expiresIn: "15m" },
   );
 
   return token;
 }
 
-export function generateRefreshToken(user, permissions) {
+export function generateRefreshToken(user: UserType, permissions: string[]) {
+  const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
+  if (!JWT_SECRET_REFRESH) {
+    throw new AppError("Invalid JWT secret", 400);
+  }
   const token = jwt.sign(
     {
       id: user.id,
@@ -25,14 +54,18 @@ export function generateRefreshToken(user, permissions) {
       permissions: permissions,
       name: user.name,
     },
-    process.env.JWT_SECRET_REFRESH,
+    JWT_SECRET_REFRESH,
     { expiresIn: "7d" },
   );
 
   return token;
 }
 
-export function verifyRefreshToken(token) {
-  const decodedUser = jwt.verify(token, process.env.JWT_SECRET_REFRESH);
+export function verifyRefreshToken(token: string) {
+  const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
+  if (!JWT_SECRET_REFRESH) {
+    throw new AppError("Invalid JWT secret", 400);
+  }
+  const decodedUser = jwt.verify(token, JWT_SECRET_REFRESH);
   return decodedUser;
 }

@@ -1,6 +1,8 @@
 import { PERMISSIONS } from "./permissions.js";
+import type { PermissionsType } from "./permissions.js";
+import type { RoleType } from "./roles.js";
 
-export const ROLE_PERMISSIONS = {
+export const ROLE_PERMISSIONS: Record<RoleType, PermissionsType[]> = {
   admin: [
     PERMISSIONS.CLIENT_CREATE,
     PERMISSIONS.CLIENT_EDIT,
@@ -27,4 +29,4 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.DASHBOARD_VIEW,
     PERMISSIONS.MASTER_VIEW,
   ],
-};
+} as const;

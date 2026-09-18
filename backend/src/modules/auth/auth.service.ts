@@ -7,6 +7,7 @@ import {
 import prisma from "../../db/prisma.js";
 import { ROLE_PERMISSIONS } from "../../constants/rolePermissions.js";
 import AppError from "../../utils/AppError.js";
+import { isRoleType } from "../../constants/roles.js";
 
 export async function registerUser(
   email: string,
@@ -54,7 +55,11 @@ export async function loginUser(email: string, password: string) {
     throw new AppError("Password Incorrect. Please try again", 401);
   }
   const role = user?.role?.name;
-  const permissions = ROLE_PERMISSIONS[role] || [] ;
+  if (!isRoleType(role)) {
+    throw new AppError("Invalid role", 400);
+  }
+
+  const permissions = ROLE_PERMISSIONS[role] || [];
 
   let accessToken = generateAccessToken(user, permissions);
   let refreshToken = generateRefreshToken(user, permissions);
@@ -74,7 +79,12 @@ export async function handleRefreshToken(oldRefreshToken: string) {
   if (!oldRefreshToken) {
     throw new AppError("No refresh token found!", 401);
   }
+
   let decodedUser = verifyRefreshToken(oldRefreshToken);
+
+  if (typeof decodedUser === "string") {
+    throw new AppError("Invalid token", 400);
+  }
   let refreshToken = await prisma.refreshToken.findFirst({
     where: {
       refreshTokenHash: oldRefreshToken,
@@ -89,7 +99,7 @@ export async function handleRefreshToken(oldRefreshToken: string) {
     );
   }
 
-  if (refreshToken.expiresAt < Date.now()) {
+  if (refreshToken.expiresAt.getTime() < Date.now()) {
     throw new AppError("Refresh token is exired.", 403);
   }
 
@@ -104,6 +114,10 @@ export async function handleRefreshToken(oldRefreshToken: string) {
   }
 
   const role = user?.role?.name;
+  if (!isRoleType(role)) {
+    throw new AppError("Invalid role", 400);
+  }
+
   const permissions = ROLE_PERMISSIONS[role] || [];
 
   let newRefreshToken = generateRefreshToken(user, permissions);
@@ -124,7 +138,9 @@ export async function handleRefreshToken(oldRefreshToken: string) {
 }
 
 export async function handleLogout(refreshToken: string) {
-  await prisma.refreshToken.delete({ where: {refreshTokenHash: refreshToken} });
+  await prisma.refreshToken.delete({
+    where: { refreshTokenHash: refreshToken },
+  });
 }
 
 export async function handleLogoutAll(userId: number) {

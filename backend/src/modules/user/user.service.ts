@@ -2,7 +2,7 @@ import AppError from "../../utils/AppError.js";
 import { createActivityService } from "../activity/activity.service.js";
 import { ActivityEntityType } from "../../generated/prisma/client.js";
 import prisma from "../../db/prisma.js";
-import type { AuthUser } from "../../types/auth.js";
+import type { AuthUser } from "../auth/auth.types.js";
 
 async function fetchUsers() {
   let users = await prisma.user.findMany({

@@ -4,13 +4,12 @@ export type AuthUser = {
   role: {
     id: number;
     name: string;
-    description: string;
+    description: string | null;
     code: string;
     isActive: boolean;
     createdAt: string;
     updatedAt: string;
   };
   permissions: string[];
-  iat: number;
-  exp: number;
+  
 };

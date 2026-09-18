@@ -1,6 +1,8 @@
 import multer from "multer";
 import path from "path";
 import AppError from "../utils/AppError.js";
+import type { FileFilterCallback } from "multer";
+import type { Request } from "express";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -12,12 +14,16 @@ const storage = multer.diskStorage({
   },
 });
 
-function fileFilter(req, file, cb) {
+function fileFilter(
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback,
+) {
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new AppError("Only image files allowed", 400), false);
+    cb(new AppError("Only image files allowed", 400));
   }
 }
 

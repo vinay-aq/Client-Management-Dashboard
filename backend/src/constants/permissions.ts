@@ -9,4 +9,6 @@ export const PERMISSIONS = {
   DASHBOARD_VIEW: "dashboard.view",
   MASTER_VIEW: "master.view",
   MASTER_MANAGE: "master.manage",
-};
+} as const;
+
+export type PermissionsType = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
