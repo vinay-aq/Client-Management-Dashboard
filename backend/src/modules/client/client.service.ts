@@ -5,24 +5,9 @@ import { isValidClientTransition } from "../client/client.utils.js";
 import prisma from "../../db/prisma.js";
 import { ActivityEntityType } from "../../generated/prisma/client.js";
 import type { Prisma } from "../../generated/prisma/client.js";
+import type { AuthUser } from "../auth/auth.types.js";
 
-type User = {
-  id: number;
-  name: string;
-  role: {
-    id: number;
-    name: string;
-    description: string;
-    code: string;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-  };
-
-  permissions: string[];
-  iat: number;
-  exp: number;
-};
+type User = AuthUser;
 
 type CreateClientData = {
   name: string;
