@@ -5,32 +5,11 @@ import { isValidClientTransition } from "../client/client.utils.js";
 import prisma from "../../db/prisma.js";
 import { ActivityEntityType } from "../../generated/prisma/client.js";
 import type { Prisma } from "../../generated/prisma/client.js";
-import type { AuthUser } from "../auth/auth.types.js";
-
-type User = AuthUser;
-
-type CreateClientData = {
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-  avatar?: string | null;
-  user: User;
-  clientTypeId: string | number;
-  industryId: string | number;
-};
-
-type UpdateClientType = {
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-  status_id: string;
-  type_id: string;
-  industry_id: string;
-  avatar?: string | null;
-  user: User;
-};
+import type {
+  User,
+  CreateClientData,
+  UpdateClientType,
+} from "./client.types.js";
 
 async function fetchClients(page: number, limit: number, search?: string) {
   let skip = limit * (page - 1);
