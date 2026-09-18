@@ -1,21 +1,8 @@
 import AppError from "../../utils/AppError.js";
-import {
-  masterTypes,
-  MASTER_TYPES,
-  MasterType,
-} from "../../constants/masterTypes.js";
+import { masterTypes, MASTER_TYPES } from "../../constants/masterTypes.js";
+import type { MasterType } from "../../constants/masterTypes.js";
 import prisma from "../../db/prisma.js";
-
-type MasterData = {
-  type: MasterType;
-  name: string;
-  description?: string;
-};
-
-type UpdateMasterData = {
-  name: string;
-  description?: string;
-};
+import type { MasterData, UpdateMasterData } from "./master.types.js";
 
 function toScreamingSnakeCase(input: string): string {
   return (

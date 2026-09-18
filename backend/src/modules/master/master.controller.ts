@@ -5,7 +5,6 @@ import {
   updateMasterService,
   deleteMasterService,
 } from "./master.service.js";
-import { MasterType } from "../../constants/masterTypes.js";
 
 export async function getMasters(
   req: Request,
