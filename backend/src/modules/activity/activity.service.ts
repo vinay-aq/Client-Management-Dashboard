@@ -1,23 +1,25 @@
 import prisma from "../../db/prisma.js";
 import { getIO } from "../../socket/socket.js";
-import type { ActivityEntityType, Prisma } from "../../generated/prisma/client.js";
-
+import type {
+  ActivityEntityType,
+  Prisma,
+} from "../../generated/prisma/client.js";
 
 type activiyServiceData = {
-  message: string,
-  entityType: ActivityEntityType,
-  entityId:  number | undefined,
-  actorId: number,
-  oldValue? : Prisma.InputJsonValue | undefined,
-  newValue? : Prisma.InputJsonValue | undefined,
-}
+  message: string;
+  entityType: ActivityEntityType;
+  entityId?: number;
+  actorId: number;
+  oldValue?: Prisma.InputJsonValue;
+  newValue?: Prisma.InputJsonValue;
+};
 async function createActivityService({
   message,
   entityType,
   entityId,
   actorId,
-  oldValue ,
-  newValue ,
+  oldValue,
+  newValue,
 }: activiyServiceData) {
   const activity = await prisma.activity.create({
     data: {
@@ -45,8 +47,12 @@ async function fetchActivityService() {
   return activities;
 }
 
-async function fetchActivityByEntityService({ entityType, entityId}: {
-  entityType: string, entityId: number | string
+async function fetchActivityByEntityService({
+  entityType,
+  entityId,
+}: {
+  entityType: string;
+  entityId: number | string;
 }) {
   const activities = await prisma.activity.findMany({
     where: { entityType, entityId: Number(entityId) },
