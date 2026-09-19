@@ -17,7 +17,7 @@ model UserRole {
   id          Int      @id @default(autoincrement())
   name        String   @unique(map: "user_roles_name_unique") @db.VarChar(255)
   description String?
-  code        String  @unique() @db.VarChar(255)
+  code        String   @unique() @db.VarChar(255)
   isActive    Boolean  @default(true) @map("is_active")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -37,6 +37,7 @@ model User {
   updatedAt     DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   refreshTokens RefreshToken[]
   role          UserRole       @relation(fields: [roleId], references: [id], onUpdate: NoAction, map: "users_role_id_foreign")
+  activities    Activity[]
 
   @@index([roleId], map: "fki_USERS")
   @@index([roleId], map: "fki_users_role_id_foreign")
@@ -92,7 +93,6 @@ model Client {
   createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   avatar         String?      @db.VarChar(500)
-  activities     Activity[]
   clientStatus   ClientStatus @relation(fields: [clientStatusId], references: [id], onUpdate: NoAction, map: "clients_client_status_id_foreign")
   clientType     ClientType?  @relation(fields: [clientTypeId], references: [id], onDelete: Restrict, onUpdate: NoAction)
   industry       Industry     @relation(fields: [industryId], references: [id], onUpdate: NoAction, map: "clients_industry_id_foreign")
@@ -112,7 +112,7 @@ model Activity {
   entityType String?  @map("entity_type") @db.VarChar(50)
   oldValue   Json?    @map("old_value")
   newValue   Json?    @map("new_value")
-  actor      Client   @relation(fields: [actorId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "activities_actor_id_foreign")
+  actor      User     @relation(fields: [actorId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "activities_actor_id_foreign")
 
   @@index([actorId], map: "fki_activities_actor_id_foreign")
   @@map("activities")
