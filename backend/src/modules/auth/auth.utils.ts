@@ -46,7 +46,7 @@ export function generateAccessToken(user: UserType, permissions: string[]) {
       name: user.name,
     },
     PRIVATE_KEY,
-    { expiresIn: "15m" },
+    { algorithm: "RS256", expiresIn: "15m" },
   );
 
   return token;
@@ -65,7 +65,7 @@ export function generateRefreshToken(user: UserType, permissions: string[]) {
       name: user.name,
     },
     PRIVATE_KEY,
-    { expiresIn: "7d" },
+    { algorithm: "RS256", expiresIn: "7d" },
   );
 
   return token;
