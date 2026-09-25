@@ -1,5 +1,13 @@
 import jwt from "jsonwebtoken";
 import AppError from "../../utils/AppError.js";
+import path from "node:path";
+import fs from "node:fs";
+
+
+const PRIVATE_KEY = fs.readFileSync(
+  path.join(process.cwd(), "../keys/private_key.pem"),
+  "utf8"
+);
 
 type UserType = {
   id: number;
@@ -22,8 +30,7 @@ type UserType = {
 };
 
 export function generateAccessToken(user: UserType, permissions: string[]) {
-  const JWT_SECRET = process.env.JWT_SECRET;
-  if (!JWT_SECRET) {
+  if (!PRIVATE_KEY) {
     throw new AppError("Invalid JWT secret", 400);
   }
   const token = jwt.sign(
@@ -34,7 +41,7 @@ export function generateAccessToken(user: UserType, permissions: string[]) {
       permissions: permissions,
       name: user.name,
     },
-    JWT_SECRET,
+    PRIVATE_KEY,
     { expiresIn: "15m" },
   );
 
@@ -42,8 +49,7 @@ export function generateAccessToken(user: UserType, permissions: string[]) {
 }
 
 export function generateRefreshToken(user: UserType, permissions: string[]) {
-  const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
-  if (!JWT_SECRET_REFRESH) {
+  if (!PRIVATE_KEY) {
     throw new AppError("Invalid JWT secret", 400);
   }
   const token = jwt.sign(
@@ -54,7 +60,7 @@ export function generateRefreshToken(user: UserType, permissions: string[]) {
       permissions: permissions,
       name: user.name,
     },
-    JWT_SECRET_REFRESH,
+    PRIVATE_KEY,
     { expiresIn: "7d" },
   );
 
@@ -62,10 +68,9 @@ export function generateRefreshToken(user: UserType, permissions: string[]) {
 }
 
 export function verifyRefreshToken(token: string) {
-  const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
-  if (!JWT_SECRET_REFRESH) {
+  if (!PRIVATE_KEY) {
     throw new AppError("Invalid JWT secret", 400);
   }
-  const decodedUser = jwt.verify(token, JWT_SECRET_REFRESH);
+  const decodedUser = jwt.verify(token, PRIVATE_KEY);
   return decodedUser;
 }

@@ -3,6 +3,13 @@ import AppError from "../../utils/AppError.js";
 import type { Request, Response, NextFunction } from "express";
 import { ROLE_PERMISSIONS } from "../../constants/rolePermissions.js";
 import { isRoleType } from "../../constants/roles.js";
+import path from "node:path";
+import fs from "node:fs";
+
+const PRIVATE_KEY = fs.readFileSync(
+  path.join(process.cwd(), "keys/private_key.pem"),
+  "utf8",
+);
 
 export async function authMiddleware(
   req: Request,
@@ -11,11 +18,11 @@ export async function authMiddleware(
 ) {
   let accessToken = req.headers?.authorization?.split(" ")[1] ?? "";
   try {
-    if (!process.env.JWT_SECRET) {
-      return next(new AppError("JWT_SECRET is not configured", 400));
+    if (!PRIVATE_KEY) {
+      return next(new AppError("PRIVATE_KEY is not configured", 400));
     }
 
-    const user = jwt.verify(accessToken, process.env.JWT_SECRET);
+    const user = jwt.verify(accessToken, PRIVATE_KEY);
 
     if (typeof user === "string") {
       return next(new AppError("Invalid token", 400));
@@ -28,7 +35,7 @@ export async function authMiddleware(
     }
 
     const permissions = ROLE_PERMISSIONS[role] || [];
-   
+
     req.user = {
       id: user.id,
       name: user.name,
@@ -45,7 +52,12 @@ export async function authMiddleware(
     };
     next();
   } catch (err) {
-    return next(new AppError(err instanceof Error ? err.message : "Something went wrong, in auth", 401));
+    return next(
+      new AppError(
+        err instanceof Error ? err.message : "Something went wrong, in auth",
+        401,
+      ),
+    );
   }
 }
 
