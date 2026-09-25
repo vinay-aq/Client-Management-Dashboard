@@ -6,8 +6,8 @@ import { isRoleType } from "../../constants/roles.js";
 import path from "node:path";
 import fs from "node:fs";
 
-const PRIVATE_KEY = fs.readFileSync(
-  path.join(process.cwd(), "keys/private_key.pem"),
+const PUBLIC_KEY = fs.readFileSync(
+  path.join(process.cwd(), "keys/public_key.pem"),
   "utf8",
 );
 
@@ -18,11 +18,11 @@ export async function authMiddleware(
 ) {
   let accessToken = req.headers?.authorization?.split(" ")[1] ?? "";
   try {
-    if (!PRIVATE_KEY) {
-      return next(new AppError("PRIVATE_KEY is not configured", 400));
+    if (!PUBLIC_KEY) {
+      return next(new AppError("PUBLIC_KEY is not configured", 400));
     }
 
-    const user = jwt.verify(accessToken, PRIVATE_KEY);
+    const user = jwt.verify(accessToken, PUBLIC_KEY);
 
     if (typeof user === "string") {
       return next(new AppError("Invalid token", 400));

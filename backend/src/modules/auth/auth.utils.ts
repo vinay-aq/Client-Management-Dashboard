@@ -3,10 +3,14 @@ import AppError from "../../utils/AppError.js";
 import path from "node:path";
 import fs from "node:fs";
 
-
 const PRIVATE_KEY = fs.readFileSync(
-  path.join(process.cwd(), "../keys/private_key.pem"),
-  "utf8"
+  path.join(process.cwd(), "keys/private_key.pem"),
+  "utf8",
+);
+
+const PUBLIC_KEY = fs.readFileSync(
+  path.join(process.cwd(), "keys/public_key.pem"),
+  "utf8",
 );
 
 type UserType = {
@@ -68,9 +72,9 @@ export function generateRefreshToken(user: UserType, permissions: string[]) {
 }
 
 export function verifyRefreshToken(token: string) {
-  if (!PRIVATE_KEY) {
+  if (!PUBLIC_KEY) {
     throw new AppError("Invalid JWT secret", 400);
   }
-  const decodedUser = jwt.verify(token, PRIVATE_KEY);
+  const decodedUser = jwt.verify(token, PUBLIC_KEY);
   return decodedUser;
 }
