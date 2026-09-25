@@ -1,6 +1,5 @@
-import jwt, { Secret } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import AppError from "../../utils/AppError.js";
-import prisma from "../../db/prisma.js";
 import type { Request, Response, NextFunction } from "express";
 import { ROLE_PERMISSIONS } from "../../constants/rolePermissions.js";
 import { isRoleType } from "../../constants/roles.js";
@@ -16,20 +15,10 @@ export async function authMiddleware(
       return next(new AppError("JWT_SECRET is not configured", 400));
     }
 
-    const decodedUser = jwt.verify(accessToken, process.env.JWT_SECRET);
+    const user = jwt.verify(accessToken, process.env.JWT_SECRET);
 
-    if (typeof decodedUser === "string") {
+    if (typeof user === "string") {
       return next(new AppError("Invalid token", 400));
-    }
-
-    let user = await prisma.user.findUnique({
-      where: { id: decodedUser.id },
-      include: {
-        role: true,
-      },
-    });
-    if (!user) {
-      return next(new AppError("User does not exist", 400));
     }
 
     const role = user?.role?.name;
@@ -39,8 +28,7 @@ export async function authMiddleware(
     }
 
     const permissions = ROLE_PERMISSIONS[role] || [];
-    console.log(user);
-
+   
     req.user = {
       id: user.id,
       name: user.name,
@@ -50,14 +38,14 @@ export async function authMiddleware(
         description: user.role.description,
         code: user.role.code,
         isActive: user.role.isActive,
-        createdAt: user.role.createdAt.toISOString(),
-        updatedAt: user.role.updatedAt.toISOString(),
+        createdAt: user.role.createdAt,
+        updatedAt: user.role.updatedAt,
       },
       permissions,
     };
     next();
   } catch (err) {
-    return next(new AppError("Something went wrong, auth unsuccessful", 401));
+    return next(new AppError(err instanceof Error ? err.message : "Something went wrong, in auth", 401));
   }
 }
 

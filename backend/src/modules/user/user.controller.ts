@@ -26,7 +26,6 @@ export async function updateUserRole(
   const userId = req.params.id as string;
   const roleId = req.body.roleId;
   const authUser = req.user;
-  console.log(userId, roleId, authUser)
   try {
     const updatedUser = await updateUserRoleService(userId, roleId, authUser);
     res.status(200).json(updatedUser);

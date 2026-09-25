@@ -61,8 +61,6 @@ function ClientForm({ initialFormData, loading, submitLabel, onSubmit }) {
     setPreviewImage(imageURL);
   }
 
-  console.log("cti", clientType, industry);
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
