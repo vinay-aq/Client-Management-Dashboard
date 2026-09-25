@@ -75,6 +75,8 @@ export function verifyRefreshToken(token: string) {
   if (!PUBLIC_KEY) {
     throw new AppError("Invalid JWT secret", 400);
   }
-  const decodedUser = jwt.verify(token, PUBLIC_KEY);
+  const decodedUser = jwt.verify(token, PUBLIC_KEY, {
+    algorithms: ["RS256"],
+  });
   return decodedUser;
 }

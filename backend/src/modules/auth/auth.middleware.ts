@@ -5,6 +5,7 @@ import { ROLE_PERMISSIONS } from "../../constants/rolePermissions.js";
 import { isRoleType } from "../../constants/roles.js";
 import path from "node:path";
 import fs from "node:fs";
+import { verifyRefreshToken } from "./auth.utils.js";
 
 const PUBLIC_KEY = fs.readFileSync(
   path.join(process.cwd(), "keys/public_key.pem"),
@@ -22,7 +23,7 @@ export async function authMiddleware(
       return next(new AppError("PUBLIC_KEY is not configured", 400));
     }
 
-    const user = jwt.verify(accessToken, PUBLIC_KEY);
+    const user = verifyRefreshToken(accessToken)
 
     if (typeof user === "string") {
       return next(new AppError("Invalid token", 400));
